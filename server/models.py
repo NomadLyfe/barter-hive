@@ -20,8 +20,8 @@ class User(db.Model, SerializerMixin):
     phone = db.Column(db.String, nullable=False)
     reputation = db.Column(db.Integer)
     city = db.Column(db.String, nullable=False)
-    state = db.Column(db.String, nullable=False)
     country = db.Column(db.String, nullable=False)
+    state = db.Column(db.String)
 
     friendships1 = db.relationship('Friendship', back_populates='user1', cascade='all, delete-orphan')
     friendships2 = db.relationship('Friendship', back_populates='user2', cascade='all, delete-orphan')

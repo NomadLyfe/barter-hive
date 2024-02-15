@@ -1,4 +1,5 @@
 from config import app, db, Api
+from models import User, Friendship, Post, Chat, Comment, Message
 from flask import request, session, render_template
 from flask_restful import Resource
 import requests
