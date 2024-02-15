@@ -38,6 +38,20 @@ class User(db.Model, SerializerMixin):
     def __repr__(self):
         return f'User {self.username}, ID {self.id}'
     
+    @validates('username', 'email')
+    def validate(self, key, value):
+        if key == 'username' and len(value) > 25:
+            raise ValueError('Username is too long.')
+        if key == 'email':
+            if len(value) > 50:
+                raise ValueError('Email is too long.')
+            pattern = r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+            regex = re.compile(pattern)
+            match = regex.search(value)
+            if match == None:
+                raise ValueError('Not a proper email')
+        return value
+
     @hybrid_property
     def password_hash(self):
         return self._password_hash
