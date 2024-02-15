@@ -21,6 +21,23 @@ class User(db.Model, SerializerMixin):
     state = db.Column(db.String, nullable=False)
     country = db.Column(db.String, nullable=False)
 
+    friendships = db.relationship('Friendship', back_populates='user', cascade='all, delete-orphan')
+    friends = association_proxy('friendships', 'user')
+ 
     def __repr__(self):
         return f'User {self.username}, ID {self.id}'
-    
+
+class Friendship(db.Model, SerializerMixin):
+    __tablename__ = 'friendships'
+
+    id = db.Column(db.Integer, primary_key=True)
+    status = db.Column(db.String, nullable=False)
+
+    user1_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user2_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    user1 = db.relationship('User', back_populates='friendships', cascade='all, delete-orphan')
+    user2 = db.relationship('User', back_populates='friendships', cascade='all, delete-orphan')
+
+    def __repr__(self):
+        return f'Friendship between {self.user1.username} and {self.user2.username}, ID {self.id}'
