@@ -21,7 +21,8 @@ class User(db.Model, SerializerMixin):
     state = db.Column(db.String, nullable=False)
     country = db.Column(db.String, nullable=False)
 
-    friendships = db.relationship('Friendship', back_populates='user', cascade='all, delete-orphan')
+    friendships1 = db.relationship('Friendship', back_populates='user1', cascade='all, delete-orphan')
+    friendships2 = db.relationship('Friendship', back_populates='user2', cascade='all, delete-orphan')
     friends = association_proxy('friendships', 'user')
     
     posts = db.relationship('Post', back_populates='user', cascade='all, delete-orphan')
@@ -89,16 +90,32 @@ class Comment(db.Model, SerializerMixin):
 class Chat(db.Model, SerializerMixin):
     __tablename__ = 'chats'
 
-    id = db.Column()
-    theme = db.Column()
-    font = db.Column()
-    font_size = db.Column()
+    id = db.Column(db.Integer, primary_key=True)
+    theme = db.Column(db.String)
+    font = db.Column(db.String)
+    font_size = db.Column(db.Integer)
 
     user1_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user2_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    user1 = db.relationship('User', back_populates='friendships', cascade='all, delete-orphan')
-    user2 = db.relationship('User', back_populates='friendships', cascade='all, delete-orphan')
+    user1 = db.relationship('User', back_populates='chats', cascade='all, delete-orphan')
+    user2 = db.relationship('User', back_populates='chats', cascade='all, delete-orphan')
+
+    messages = db.relationship('Message', back_populates='chat', cascade='all, delete-orphan')
 
     def __repr__(self):
         return f'Chat ID {self.id}'
+
+class Message(db.Model, SerializerMixin):
+    __tablename__ = 'messages'
+
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String)
+    reactions = db.Column(db.String)
+
+    chat_id = db.Column(db.Integer, db.ForeignKey('chats.id'))
+
+    chat = db.relationship('Chat', back_populates='messages', cascade='all, delete-orphan')
+
+    def __repr__(self):
+        return f'Message ID {self.id}'
