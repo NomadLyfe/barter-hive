@@ -8,6 +8,8 @@ import re
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
+    serialize_rules = ('-posts.user', '-comments.user1', '-comments.user2', '-chats.user1', '-chats.user2', 'friendships1.user1', 'friendships2.user1', 'friendships1.user2', 'friendships2.user2',)
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True, nullable=False)
     _password_hash = db.Column(db.String)
@@ -23,7 +25,8 @@ class User(db.Model, SerializerMixin):
 
     friendships1 = db.relationship('Friendship', back_populates='user1', cascade='all, delete-orphan')
     friendships2 = db.relationship('Friendship', back_populates='user2', cascade='all, delete-orphan')
-    friends = association_proxy('friendships', 'user')
+    friends1 = association_proxy('friendships', 'user', creator=lambda user_obj: Comment(user1=user_obj))
+    friends2 = association_proxy('friendships', 'user', creator=lambda user_obj: Comment(user2=user_obj))
     
     posts = db.relationship('Post', back_populates='user', cascade='all, delete-orphan')
 
@@ -37,6 +40,8 @@ class User(db.Model, SerializerMixin):
 
 class Friendship(db.Model, SerializerMixin):
     __tablename__ = 'friendships'
+
+    serialize_rules = ('user1.', 'user2.',)
 
     id = db.Column(db.Integer, primary_key=True)
     status = db.Column(db.String, nullable=False)
@@ -53,6 +58,8 @@ class Friendship(db.Model, SerializerMixin):
 class Post(db.Model, SerializerMixin):
     __tablename__ = 'posts'
 
+    serialize_rules = ('-comments.post', '-user.posts',)
+
     id = db.Column(db.Integer, primary_key=True)
     endorse = db.Column(db.Integer, nullable=False)
     renounce = db.Column(db.Integer, nullable=False)
@@ -64,6 +71,8 @@ class Post(db.Model, SerializerMixin):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
+    user = db.relationship('User', back_populates='posts', cascade='all, delete-orphan')
+
     comments = db.relationship('Comment', back_populates='post', cascade='all, delete-orphan')
 
     commenting_users = association_proxy('comments', 'user', creator=lambda user_obj: Comment(user=user_obj))
@@ -73,6 +82,8 @@ class Post(db.Model, SerializerMixin):
  
 class Comment(db.Model, SerializerMixin):
     __tablename__ = 'comments'
+
+    serialize_rules = ('-post.comments', '-user.comments',)
 
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String, nullable=False)
@@ -89,6 +100,8 @@ class Comment(db.Model, SerializerMixin):
 
 class Chat(db.Model, SerializerMixin):
     __tablename__ = 'chats'
+
+    serialize_rules = ('-user1.chats', '-user2.chats', '-messages.chat')
 
     id = db.Column(db.Integer, primary_key=True)
     theme = db.Column(db.String)
@@ -108,6 +121,8 @@ class Chat(db.Model, SerializerMixin):
 
 class Message(db.Model, SerializerMixin):
     __tablename__ = 'messages'
+
+    serialize_rules = ('-chat.messages',)
 
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String)
