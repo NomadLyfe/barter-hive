@@ -23,7 +23,9 @@ class User(db.Model, SerializerMixin):
 
     friendships = db.relationship('Friendship', back_populates='user', cascade='all, delete-orphan')
     friends = association_proxy('friendships', 'user')
- 
+    
+    posts = db.relationship('Post', back_populates='user', cascade='all, delete-orphan')
+
     def __repr__(self):
         return f'User {self.username}, ID {self.id}'
 
@@ -41,3 +43,21 @@ class Friendship(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'Friendship between {self.user1.username} and {self.user2.username}, ID {self.id}'
+    
+class Post(db.Model, SerializerMixin):
+    __tablename__ = 'posts'
+
+    id = db.Column(db.Integer, primary_key=True)
+    endorse = db.Column(db.Integer, nullable=False)
+    renounce = db.Column(db.Integer, nullable=False)
+    str_content = db.Column(db.String)
+    pic_content = db.Column(db.String)
+    price = db.Column(db.Float, nullable=False)
+    is_sold = db.Column(db.Boolean, nullable=False)
+    type = db.Column(db.String, nullable=False)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    def __repr__(self):
+        return f'Post ID {self.id}'
+ 
