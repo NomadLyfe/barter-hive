@@ -27,8 +27,9 @@ class User(db.Model, SerializerMixin):
     posts = db.relationship('Post', back_populates='user', cascade='all, delete-orphan')
 
     comments = db.relationship('Comment', back_populates='user', cascade='all, delete-orphan')
-
     commented_posts = association_proxy('comments', 'post', creator=lambda post_obj: Comment(post=post_obj))
+
+    chats = db.relationship('Chat', back_populates='user', cascade='all, delete-orphan')
 
     def __repr__(self):
         return f'User {self.username}, ID {self.id}'
@@ -77,11 +78,27 @@ class Comment(db.Model, SerializerMixin):
     likes = db.Column(db.Integer, nullable=False)
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user = db.relationship('User', back_populates='comments', cascade='all, delete-orphan')
-
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+    
+    user = db.relationship('User', back_populates='comments', cascade='all, delete-orphan')
     post = db.relationship('Post', back_populates='comments', cascade='all, delete-orphan')
 
     def __repr__(self):
         return f'Comment ID {self.id}'
 
+class Chat(db.Model, SerializerMixin):
+    __tablename__ = 'chats'
+
+    id = db.Column()
+    theme = db.Column()
+    font = db.Column()
+    font_size = db.Column()
+
+    user1_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user2_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    user1 = db.relationship('User', back_populates='friendships', cascade='all, delete-orphan')
+    user2 = db.relationship('User', back_populates='friendships', cascade='all, delete-orphan')
+
+    def __repr__(self):
+        return f'Chat ID {self.id}'
