@@ -26,6 +26,10 @@ class User(db.Model, SerializerMixin):
     
     posts = db.relationship('Post', back_populates='user', cascade='all, delete-orphan')
 
+    comments = db.relationship('Comment', back_populates='user', cascade='all, delete-orphan')
+
+    commented_posts = association_proxy('comments', 'post', creator=lambda post_obj: Comment(post=post_obj))
+
     def __repr__(self):
         return f'User {self.username}, ID {self.id}'
 
@@ -58,6 +62,26 @@ class Post(db.Model, SerializerMixin):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
+    comments = db.relationship('Comment', back_populates='post', cascade='all, delete-orphan')
+
+    commenting_users = association_proxy('comments', 'user', creator=lambda user_obj: Comment(user=user_obj))
+    
     def __repr__(self):
         return f'Post ID {self.id}'
  
+class Comment(db.Model, SerializerMixin):
+    __tablename__ = 'comments'
+
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String, nullable=False)
+    likes = db.Column(db.Integer, nullable=False)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user = db.relationship('User', back_populates='comments', cascade='all, delete-orphan')
+
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+    post = db.relationship('Post', back_populates='comments', cascade='all, delete-orphan')
+
+    def __repr__(self):
+        return f'Comment ID {self.id}'
+
