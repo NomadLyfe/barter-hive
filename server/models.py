@@ -8,7 +8,17 @@ import re
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
-    serialize_rules = ('-posts.user', '-comments.user1', '-comments.user2', '-chats.user1', '-chats.user2', 'friendships1.user1', 'friendships2.user1', 'friendships1.user2', 'friendships2.user2',)
+    serialize_rules = (
+        '-posts.user',
+        '-comments.user1',
+        '-comments.user2',
+        '-chats.user1',
+        '-chats.user2',
+        'friendships1.user1',
+        'friendships2.user1',
+        'friendships1.user2',
+        'friendships2.user2',
+    )
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True, nullable=False)
@@ -64,6 +74,7 @@ class User(db.Model, SerializerMixin):
     def authenticate(self, password):
         return bcrypt.check_password_hash(self._password_hash, password.encode('utf-8'))
 
+
 class Friendship(db.Model, SerializerMixin):
     __tablename__ = 'friendships'
 
@@ -80,7 +91,8 @@ class Friendship(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'Friendship between {self.user1.username} and {self.user2.username}, ID {self.id}'
-    
+
+
 class Post(db.Model, SerializerMixin):
     __tablename__ = 'posts'
 
@@ -105,7 +117,8 @@ class Post(db.Model, SerializerMixin):
     
     def __repr__(self):
         return f'Post ID {self.id}'
- 
+
+
 class Comment(db.Model, SerializerMixin):
     __tablename__ = 'comments'
 
@@ -123,6 +136,7 @@ class Comment(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'Comment ID {self.id}'
+
 
 class Chat(db.Model, SerializerMixin):
     __tablename__ = 'chats'
@@ -144,6 +158,7 @@ class Chat(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'Chat ID {self.id}'
+
 
 class Message(db.Model, SerializerMixin):
     __tablename__ = 'messages'
