@@ -16,6 +16,7 @@ gunicorn = "*"
 psycopg2-binary = "*"
 requests = "*"
 faker = "*"
+ipdb = "*"
 
 [dev-packages]
 

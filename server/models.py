@@ -10,14 +10,16 @@ class User(db.Model, SerializerMixin):
 
     serialize_rules = (
         '-posts.user',
-        '-comments.user1',
-        '-comments.user2',
-        '-chats.user1',
-        '-chats.user2',
-        'friendships1.user1',
-        'friendships2.user1',
-        'friendships1.user2',
-        'friendships2.user2',
+        '-comments.user',
+        '-chat_users.user1',
+        '-chat_users.user2',
+    #    '-friendships1.user1',
+    #    '-friendships2.user1',
+    #    '-friendships1.user2',
+    #    '-friendships2.user2',
+        '-friends.users1',
+        '-friends.users2',
+        '-commented_posts.user',
     )
 
     id = db.Column(db.Integer, primary_key=True)
@@ -33,17 +35,18 @@ class User(db.Model, SerializerMixin):
     country = db.Column(db.String, nullable=False)
     state = db.Column(db.String)
 
-    friendships1 = db.relationship('Friendship', back_populates='user1', cascade='all, delete-orphan')
-    friendships2 = db.relationship('Friendship', back_populates='user2', cascade='all, delete-orphan')
-    friends1 = association_proxy('friendships', 'user', creator=lambda user_obj: Comment(user1=user_obj))
-    friends2 = association_proxy('friendships', 'user', creator=lambda user_obj: Comment(user2=user_obj))
+    friends = db.relationship('User', secondary='friendships', primaryjoin="or_(User.id==Friendship.user1_id, User.id==Friendship.user2_id)", secondaryjoin="or_(User.id==Friendship.user1_id, User.id==Friendship.user2_id)")
+    #friends = db.relationship('Friendship', back_populates='and_(user1, user2)', cascade='all, delete-orphan')
+    #friendships2 = db.relationship('Friendship', back_populates='user2', cascade='all, delete-orphan')
+    #friends = association_proxy('friendships', 'user')
+    #friends2 = association_proxy('friendships', 'user', creator=lambda user_obj: Comment(user2=user_obj))
     
     posts = db.relationship('Post', back_populates='user', cascade='all, delete-orphan')
 
     comments = db.relationship('Comment', back_populates='user', cascade='all, delete-orphan')
     commented_posts = association_proxy('comments', 'post', creator=lambda post_obj: Comment(post=post_obj))
 
-    chats = db.relationship('Chat', back_populates='user', cascade='all, delete-orphan')
+    chat_users = db.relationship('User', secondary='chats', primaryjoin="or_(User.id==Chat.user1_id, User.id==Chat.user2_id)", secondaryjoin="or_(User.id==Chat.user1_id, User.id==Chat.user2_id)")
 
     def __repr__(self):
         return f'User {self.username}, ID {self.id}'
@@ -78,7 +81,7 @@ class User(db.Model, SerializerMixin):
 class Friendship(db.Model, SerializerMixin):
     __tablename__ = 'friendships'
 
-    serialize_rules = ('user1.', 'user2.',)
+    serialize_rules = ()
 
     id = db.Column(db.Integer, primary_key=True)
     status = db.Column(db.String, nullable=False)
@@ -86,17 +89,17 @@ class Friendship(db.Model, SerializerMixin):
     user1_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user2_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    user1 = db.relationship('User', back_populates='friendships', cascade='all, delete-orphan')
-    user2 = db.relationship('User', back_populates='friendships', cascade='all, delete-orphan')
+    #user1 = db.relationship('User', back_populates='friends', cascade='all, delete-orphan')
+    #user2 = db.relationship('User', back_populates='friends', cascade='all, delete-orphan')
 
     def __repr__(self):
-        return f'Friendship between {self.user1.username} and {self.user2.username}, ID {self.id}'
+        return f'Friendship between two friends, ID {self.id}'
 
 
 class Post(db.Model, SerializerMixin):
     __tablename__ = 'posts'
 
-    serialize_rules = ('-comments.post', '-user.posts',)
+    serialize_rules = ('-comments.post', '-user.posts', '-commenting_users.posts',)
 
     id = db.Column(db.Integer, primary_key=True)
     endorse = db.Column(db.Integer, nullable=False)
@@ -109,7 +112,7 @@ class Post(db.Model, SerializerMixin):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    user = db.relationship('User', back_populates='posts', cascade='all, delete-orphan')
+    user = db.relationship('User', back_populates='posts')
 
     comments = db.relationship('Comment', back_populates='post', cascade='all, delete-orphan')
 
@@ -131,8 +134,8 @@ class Comment(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
     
-    user = db.relationship('User', back_populates='comments', cascade='all, delete-orphan')
-    post = db.relationship('Post', back_populates='comments', cascade='all, delete-orphan')
+    user = db.relationship('User', back_populates='comments')
+    post = db.relationship('Post', back_populates='comments')
 
     def __repr__(self):
         return f'Comment ID {self.id}'
@@ -141,7 +144,7 @@ class Comment(db.Model, SerializerMixin):
 class Chat(db.Model, SerializerMixin):
     __tablename__ = 'chats'
 
-    serialize_rules = ('-user1.chats', '-user2.chats', '-messages.chat')
+    serialize_rules = ('-messages.chat',)
 
     id = db.Column(db.Integer, primary_key=True)
     theme = db.Column(db.String)
@@ -151,8 +154,8 @@ class Chat(db.Model, SerializerMixin):
     user1_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user2_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    user1 = db.relationship('User', back_populates='chats', cascade='all, delete-orphan')
-    user2 = db.relationship('User', back_populates='chats', cascade='all, delete-orphan')
+    #user1 = db.relationship('User', back_populates='chats', cascade='all, delete-orphan')
+    #user2 = db.relationship('User', back_populates='chats', cascade='all, delete-orphan')
 
     messages = db.relationship('Message', back_populates='chat', cascade='all, delete-orphan')
 
@@ -171,7 +174,7 @@ class Message(db.Model, SerializerMixin):
 
     chat_id = db.Column(db.Integer, db.ForeignKey('chats.id'))
 
-    chat = db.relationship('Chat', back_populates='messages', cascade='all, delete-orphan')
+    chat = db.relationship('Chat', back_populates='messages')
 
     def __repr__(self):
         return f'Message ID {self.id}'
