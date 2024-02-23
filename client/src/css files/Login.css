@@ -49,6 +49,12 @@
   
   @media (max-width: 1024px) {
     .loginForm {
-      width: 70vw;
+      width: 50vw;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .loginForm {
+      width: 75vw;
     }
   }

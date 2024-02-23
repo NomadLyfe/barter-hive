@@ -1,27 +1,28 @@
-import { useState, useEffect } from 'react'
-import { Routes, Route, useNavigate } from "react-router-dom";
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './css files/App.css'
+import { useEffect, useContext } from 'react';
+import { Routes, Route } from "react-router-dom";
+import reactLogo from './assets/react.svg';
+import viteLogo from '/vite.svg';
+import './css files/App.css';
 import Login from './Login';
+import { Context } from './Context';
 
 function App() {
-    const [user, setUser] = useState(null);
-    const [count, setCount] = useState(0);
-    const history = useNavigate();
+    const { user, setUser, history, inactivityCount, setInactivityCount } = useContext(Context)
 
     useEffect(() => {
         const interval = setInterval(() => {
-        setCount(count + 1)
+        setInactivityCount(inactivityCount + 1)
+        console.log(inactivityCount + 1)
         }, 1000);
 
         return () => clearInterval(interval)
 
-    }, [count])
+    }, [inactivityCount])
 
 
     function resetTimer(e) {
-        setCount(0)
+        setInactivityCount(0)
+        console.log(0)
     }
 
     if (!user) {
@@ -51,7 +52,7 @@ function App() {
                         </div>
                         <h1>Vite + React</h1>
                         <div className="card">
-                            <button onClick={() => setCount((count) => count + 1)}>
+                            <button onClick={() => setCount((inactivityCount) => inactivityCount + 1)}>
                                 count is {count}
                             </button>
                             <p>

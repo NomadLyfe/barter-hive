@@ -1,9 +1,11 @@
-import React from "react"
+import { useContext } from "react";
 import { useFormik } from "formik";
+import { Context } from './Context';
 import * as yup from "yup";
-import './css files/Login.css'
+import './css files/Login.css';
 
 function Login() {
+    const { user, setUser } = useContext(Context)
 
     const formSchema = yup.object().shape({
         username: yup.string().required('Must enter username').max(20),
@@ -17,13 +19,26 @@ function Login() {
         },
         validationSchema: formSchema,
         onSubmit: (values) => {
-
+            fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(values)
+            }).then((resp) => {
+                if (resp.ok) {
+                    resp.json().then((user) => {
+                        setUser(user);
+                    });
+                }
+            });
+            formik.resetForm();
         }
-    })
+    });
 
     return (
         <>
-            <div className="loginForm">
+            <form className="loginForm" onSubmit={formik.handleSubmit}>
                 <h1>Login</h1>
                 <label id='username' htmlFor='usernameinp'>Username</label>
                 <input placeholder='Type your username' type='text' id='usernameinp' name='username' autoComplete="on" onChange={formik.handleChange} value={formik.values.username} />
@@ -32,7 +47,7 @@ function Login() {
                 <a>Forgot Password?</a>
                 <button type='submit'>LOGIN</button>
                 <a>Or Sign Up</a>
-            </div>
+            </form>
         </>
     )
 }
