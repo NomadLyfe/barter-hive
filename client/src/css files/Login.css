@@ -1,0 +1,54 @@
+.loginForm {
+    width: 25vw;
+    height: 80vh;
+    align-self: center;
+    justify-self: center;
+    display: grid;
+    border-radius: 15px;
+    background-color: whitesmoke;
+    padding-bottom: 30px;
+  }
+  
+  .loginForm * {
+    display: grid;
+    align-self: center;
+    justify-self: center;
+    width: 80%;
+    color: black;
+    text-align: center;
+  }
+  
+  .loginForm label {
+    text-align: start;
+  }
+  
+  .loginForm input {
+    outline: none;
+    text-align: start;
+    background-color: whitesmoke;
+    border: 0px;
+    border-bottom: 1px solid gray;
+    height: 50px;
+  }
+  
+  .loginForm input::placeholder {
+    color: gray;
+  }
+  
+  .loginForm a {
+    color: #646cff;
+    width: auto;
+    height: auto;
+  }
+  
+  .loginForm button {
+    color: white;
+    background-color: #242424;
+    border-radius: 25px;
+  }
+  
+  @media (max-width: 1024px) {
+    .loginForm {
+      width: 70vw;
+    }
+  }
