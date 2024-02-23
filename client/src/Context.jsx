@@ -6,9 +6,9 @@ export const Context = createContext();
 function ContextProvider({ children }) {
     const [user, setUser] = useState(null);
     const [inactivityCount, setInactivityCount] = useState(0);
-    const history = useNavigate();
+    const navigate = useNavigate();
     return (
-        <Context.Provider value={{ user, setUser, history, inactivityCount, setInactivityCount }}>
+        <Context.Provider value={{ user, setUser, navigate, inactivityCount, setInactivityCount }}>
             {children}
         </Context.Provider>
     );

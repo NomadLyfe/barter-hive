@@ -4,10 +4,11 @@ import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './css files/App.css';
 import Login from './Login';
+import Signup from './Signup'
 import { Context } from './Context';
 
 function App() {
-    const { user, setUser, history, inactivityCount, setInactivityCount } = useContext(Context)
+    const { user, setUser, navigate, inactivityCount, setInactivityCount } = useContext(Context)
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -28,7 +29,10 @@ function App() {
     if (!user) {
         return (
             <>
-                <Login />
+                <Routes>
+                    <Route path='/login?' element={<Login />} />
+                    <Route path='/signup' element={<Signup />} />
+                </Routes>
             </>
         )
     }
@@ -39,9 +43,7 @@ function App() {
                 <NavBar />
                 <div>
                     <Routes>
-                        <Route exact path='/:user'>
-
-                        </Route>
+                        <Route exact path='/:user' />
                         <div>
                             <a href="https://vitejs.dev" target="_blank">
                                 <img src={viteLogo} className="logo" alt="Vite logo" />

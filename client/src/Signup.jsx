@@ -4,7 +4,7 @@ import { Context } from './Context';
 import * as yup from "yup";
 import './css files/Login.css';
 
-function Login() {
+function Signup() {
     const { user, setUser, navigate } = useContext(Context)
 
     const formSchema = yup.object().shape({
@@ -36,24 +36,23 @@ function Login() {
         }
     });
 
-    function handleSignUpClick(e) {
-        navigate('/signup')
+    function handleClick(e) {
+        navigate('/login')
     }
 
     return (
         <>
             <form className="loginForm" onSubmit={formik.handleSubmit}>
-                <h1>Login</h1>
+                <h1>Sign Up</h1>
                 <label id='username' htmlFor='usernameinp'>Username</label>
                 <input placeholder='Type your username' type='text' id='usernameinp' name='username' autoComplete="on" onChange={formik.handleChange} value={formik.values.username} />
                 <label id='password' htmlFor='passwordinp'>Password</label>
                 <input placeholder='Type your password' type='password' id='passwordinp' name='password' onChange={formik.handleChange} value={formik.values.password} />
-                <a>Forgot Password?</a>
-                <button type='submit'>LOGIN</button>
-                <a onClick={handleSignUpClick}>Or Sign Up</a>
+                <button type='submit'>SIGN UP</button>
+                <a onClick={handleClick}>Or Login</a>
             </form>
         </>
     )
 }
 
-export default Login
+export default Signup
