@@ -44,7 +44,7 @@ function Signup() {
                     if (resp.ok) {
                         resp.json().then((user) => {
                             setUser(() => {
-                                navigate('/')
+                                navigate(`/${user.username}`)
                                 return user
                             });
                         });

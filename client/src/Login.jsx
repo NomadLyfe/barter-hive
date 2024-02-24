@@ -28,7 +28,10 @@ function Login() {
             }).then((resp) => {
                 if (resp.ok) {
                     resp.json().then((user) => {
-                        setUser(user);
+                        setUser(() => {
+                            navigate(`/${user.username}`)
+                            return user
+                        });
                     });
                 }
             });
