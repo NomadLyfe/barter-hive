@@ -6,7 +6,7 @@
   justify-self: center;
   display: grid;
   border-radius: 15px;
-  background-color: whitesmoke;
+  background-color: #FFF6DB;
   padding-bottom: 30px;
   margin: 8vh 0px;
 }
@@ -22,40 +22,43 @@
 }
   
 .loginForm label {
+  color: #9C9A40;
   text-align: start;
 }
 
 .loginForm input {
   outline: none;
   text-align: start;
-  background-color: whitesmoke;
+  background-color: #FFF6DB;
   border: 0px;
-  border-bottom: 1px solid gray;
+  border-bottom: 1px solid #3B4131;
   height: 50px;
   transition: 0.25s;
+  color: #3B4131;
 }
 .loginForm input:hover {
-  border-color: #747bff;
+  border-color: #9C9A40;
 }
 
 .loginForm input::placeholder {
   transition: 0.25s;
-  color: gray;
-}
-.loginForm input:hover::placeholder {
-  color: #747bff;
+  color: #3B413190;
 }
 
 .loginForm a {
-  color: #646cff;
+  color: #9C9A40;
   width: auto;
   height: auto;
 }
 
 .loginForm button {
-  color: white;
-  background-color: #242424;
+  color: #FFF6DB;
+  background-color: #3B4131;
   border-radius: 25px;
+}
+
+.loginForm h1 {
+  color: #3B4131;
 }
 
 @media (max-width: 1500px) {

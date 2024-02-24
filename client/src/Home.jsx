@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import { Context } from './Context';
-import reactLogo from './assets/react.svg';
+import reactLogo from './images/react.svg';
 import viteLogo from '/vite.svg';
 
 function Home() {

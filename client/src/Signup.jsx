@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import { Context } from './Context';
 import * as yup from "yup";
 import './css files/Login.css';
+import logoNoBack from './images/logo-no-background.svg';
 
 function Signup() {
     const { user, setUser, navigate } = useContext(Context)
@@ -62,6 +63,7 @@ function Signup() {
     return (
         <>
             <form className="loginForm" onSubmit={formik.handleSubmit}>
+                <img src={logoNoBack} className="logo" alt="logo-no-back" />
                 <h1>Sign Up</h1>
                 <label id='username'>Username</label>
                 <input placeholder='Type your username' type='text' id='usernameinp' name='username' autoComplete="on" onChange={formik.handleChange} value={formik.values.username} />
