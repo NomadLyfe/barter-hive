@@ -1,60 +1,77 @@
 .loginForm {
-    width: 25vw;
-    height: 80vh;
-    align-self: center;
-    justify-self: center;
-    display: grid;
-    border-radius: 15px;
-    background-color: whitesmoke;
-    padding-bottom: 30px;
-  }
+  width: 25vw;
+  min-height: 80vh;
+  height: auto;
+  align-self: self-start;
+  justify-self: center;
+  display: grid;
+  border-radius: 15px;
+  background-color: whitesmoke;
+  padding-bottom: 30px;
+  margin: 8vh 0px;
+}
   
-  .loginForm * {
-    display: grid;
-    align-self: center;
-    justify-self: center;
-    width: 80%;
-    color: black;
-    text-align: center;
-  }
+.loginForm * {
+  display: grid;
+  align-self: center;
+  justify-self: center;
+  width: 80%;
+  color: black;
+  text-align: center;
+  margin: 24px;
+}
   
-  .loginForm label {
-    text-align: start;
-  }
-  
-  .loginForm input {
-    outline: none;
-    text-align: start;
-    background-color: whitesmoke;
-    border: 0px;
-    border-bottom: 1px solid gray;
-    height: 50px;
-  }
-  
-  .loginForm input::placeholder {
-    color: gray;
-  }
-  
-  .loginForm a {
-    color: #646cff;
-    width: auto;
-    height: auto;
-  }
-  
-  .loginForm button {
-    color: white;
-    background-color: #242424;
-    border-radius: 25px;
-  }
-  
-  @media (max-width: 1024px) {
-    .loginForm {
-      width: 50vw;
-    }
-  }
+.loginForm label {
+  text-align: start;
+}
 
-  @media (max-width: 700px) {
-    .loginForm {
-      width: 75vw;
-    }
+.loginForm input {
+  outline: none;
+  text-align: start;
+  background-color: whitesmoke;
+  border: 0px;
+  border-bottom: 1px solid gray;
+  height: 50px;
+  transition: 0.25s;
+}
+.loginForm input:hover {
+  border-color: #747bff;
+}
+
+.loginForm input::placeholder {
+  transition: 0.25s;
+  color: gray;
+}
+.loginForm input:hover::placeholder {
+  color: #747bff;
+}
+
+.loginForm a {
+  color: #646cff;
+  width: auto;
+  height: auto;
+}
+
+.loginForm button {
+  color: white;
+  background-color: #242424;
+  border-radius: 25px;
+}
+
+@media (max-width: 1500px) {
+  .loginForm {
+    width: 38vw;
   }
+}
+
+@media (max-width: 1024px) {
+  .loginForm {
+    width: 50vw;
+  }
+}
+
+@media (max-width: 700px) {
+  .loginForm {
+    width: 75vw;
+  }
+}
