@@ -1,33 +1,44 @@
 import { useContext } from "react"
 import { Context } from './Context';
-import reactLogo from './images/react.svg';
-import viteLogo from '/vite.svg';
+import './css files/Home.css'
 
 function Home() {
     const { inactivityCount, setInactivityCount } = useContext(Context)
 
     return (
         <>
-            <div>
-                <a href="https://vitejs.dev" target="_blank">
-                    <img src={viteLogo} className="logo" alt="Vite logo" />
-                </a>
-                <a href="https://react.dev" target="_blank">
-                    <img src={reactLogo} className="logo react" alt="React logo" />
-                </a>
+            <div className="mainPage">
+                <div className="leftPanel">
+                    <div className="buttons text">
+                        1
+                    </div>
+                    <div className="shortcuts text">
+                        2
+                    </div>
+                </div>
+                <div className="feed">
+                    <h1 className="text">Your Feed</h1>
+                    <div className="card">
+                        <button onClick={() => setInactivityCount((inactivityCount) => inactivityCount + 1)}>
+                            count is {inactivityCount}
+                        </button>
+                        <p className="text">
+                            Edit <code>src/App.jsx</code> and save to test HMR
+                        </p>
+                    </div>
+                </div>
+                <div className="rightPanel">
+                    <div className="suggestion text">
+                        1
+                    </div>
+                    <div className="bdays text">
+                        2
+                    </div>
+                    <div className="friends text">
+                        3
+                    </div>
+                </div>
             </div>
-            <h1 className="text">Vite + React</h1>
-            <div className="card">
-                <button onClick={() => setInactivityCount((inactivityCount) => inactivityCount + 1)}>
-                    count is {inactivityCount}
-                </button>
-                <p className="text">
-                    Edit <code>src/App.jsx</code> and save to test HMR
-                </p>
-            </div>
-            <p className="read-the-docs">
-                Click on the Vite and React logos to learn more
-            </p>
         </>
     )
 }

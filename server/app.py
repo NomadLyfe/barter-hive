@@ -20,6 +20,11 @@ class Login(Resource):
             print('You logged in!')
             return user.to_dict(), 201
         return {'error': 'Invalid username or password'}, 401
+    def delete(self):
+        if session.get('user_id'):
+            session['user_id'] = None
+            return {}, 204
+        return {'error': 'You are not logged in'}, 401
     
 class Users(Resource):
     def post(self):

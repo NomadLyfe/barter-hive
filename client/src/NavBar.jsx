@@ -11,10 +11,10 @@ function NavBar() {
     const { user, setUser, navigate } = useContext(Context)
 
     function handleLogoutClick() {
-        fetch("/logout", { method: "DELETE" }).then((resp) => {
+        fetch("/api/login", { method: "DELETE" }).then((resp) => {
             if (resp.ok) {
-                history.push('/');
-                onLogout(null);
+                navigate('/');
+                setUser(null);
             }
         });
     };
@@ -30,16 +30,15 @@ function NavBar() {
         },
         validationSchema: formSchema,
         onSubmit: (values) => {
-            fetch(`/results`, {
+            fetch(`/users`, {
                 method: 'POST',
                 headers: {
                     'accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(values, null, 2)
-            }).then(resp => resp.json()).then(restaurants => {
-                history.push(`/results/${values.restaurant}/${values.location}`);
-                onSearch(restaurants.businesses);
+            }).then(resp => resp.json()).then(() => {
+                navigate(`/`);
             })
             formik.resetForm();
         }

@@ -1,0 +1,21 @@
+.mainPage {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.mainPage div {
+    margin: 1rem;
+}
+
+.leftPanel {
+    visibility: visible;
+}
+
+.feed {
+    visibility: visible;
+}
+
+.rightPanel {
+    visibility: visible;
+}
