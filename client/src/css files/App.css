@@ -37,3 +37,61 @@ main {
   height: 100%;
   background-color: #FFF6DB;
 }
+
+.profile-pic {
+    height: 42.19px;
+}
+
+.post-form {
+    display: none;
+    position: fixed;
+    background-color: #ebe0c1;
+    box-shadow: 10px 10px 20px rgb(14, 14, 14);
+    align-self: center;
+    z-index: 1;
+    border-radius: 15px;
+}
+
+.post-form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.post-form form * {
+    margin: 20px;
+    background-color: #3B4131;
+    color: #9C9A40;
+}
+
+.image-drop {
+	border: 1px sold #3B4131;
+	width: 410px;
+	height: 181px;
+	border-radius: 15px;
+	padding: 40px 20px;
+}
+
+.image-drop img {
+	height: 40px;
+	margin-bottom: 0px;
+}
+
+.profile-pic:hover {
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+}
+
+.createPostTitle {
+	color: #9C9A40;
+	border-bottom: 1px solid #3B4131;
+	margin: 20px;
+}

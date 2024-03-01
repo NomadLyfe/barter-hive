@@ -60,15 +60,12 @@
     }
   }
 
-.user_pic {
+.profile-pic {
     padding: 0px;
     border-radius: 25px;
     height: 44.25px;
     width: 44.25px;
-}
-
-.user_pic img {
-    height: 42.19px;
+    margin: 1.5rem;
 }
 
 .user_dropdown {

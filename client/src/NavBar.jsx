@@ -75,7 +75,7 @@ function NavBar() {
                 <div className="notifications">
                     {!user ? <NavLink to="/login">Login</NavLink> : null}
                     {!user ? <NavLink to='/signup'>Signup</NavLink> : null}
-                    <button onClick={handleUserClick} className="user_pic"><img src={user.profile_pic ? user.profile_pic : no_pic} alt="user-pic" /></button>
+                    <img onClick={handleUserClick} className="user_pic" src={user.profile_pic ? user.profile_pic : no_pic} className="profile-pic" alt="user-pic" />
                     <div className="status"><img src={isActive ? active : inactive} alt="status" /></div>
                     <div className="user_dropdown">
                         <div></div>
