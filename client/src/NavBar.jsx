@@ -6,9 +6,18 @@ import { Context } from './Context';
 import { useContext } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import active from './images/active.png'
+import inactive from './images/inactive.png'
+import no_pic from './images/no-profile-pic.png'
 
 function NavBar() {
-    const { user, setUser, navigate } = useContext(Context)
+    const { user, setUser, navigate, isActive } = useContext(Context)
+
+    function handleUserClick() {
+        const dropdown = document.querySelector('.user_dropdown')
+        console.log(dropdown.style.display)
+        dropdown.style.display == '' ? dropdown.style.display = 'block' : dropdown.style.display = ''
+    }
 
     function handleLogoutClick() {
         fetch("/api/login", { method: "DELETE" }).then((resp) => {
@@ -62,13 +71,19 @@ function NavBar() {
                 <div className="navlinks">
                     <NavLink><button>1</button></NavLink>
                     <NavLink><button>2</button></NavLink>
-                    <NavLink><button>3</button></NavLink>
                 </div>
                 <div className="notifications">
-                    {!user ? <NavLink to="/login" className='link' >Login</NavLink> : null}
-                    {!user ? <NavLink to='/signup' className='link' >Signup</NavLink> : null}
-                    {/* {user ? <Link to="/account" className='link' >Account</Link> : null} */}
-                    {user ? <button onClick={handleLogoutClick} className='link' >Log Out</button> : null}
+                    {!user ? <NavLink to="/login">Login</NavLink> : null}
+                    {!user ? <NavLink to='/signup'>Signup</NavLink> : null}
+                    <button onClick={handleUserClick} className="user_pic"><img src={user.profile_pic ? user.profile_pic : no_pic} alt="user-pic" /></button>
+                    <div className="status"><img src={isActive ? active : inactive} alt="status" /></div>
+                    <div className="user_dropdown">
+                        <div></div>
+                        <div className="dropdown_buttons">
+                            {user ? <NavLink to="/account">Account</NavLink> : null}
+                            {user ? <NavLink onClick={handleLogoutClick}>Log Out</NavLink> : null}
+                        </div>
+                    </div>
                 </div>
             </div>
         </>

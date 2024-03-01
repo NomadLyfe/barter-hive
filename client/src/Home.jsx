@@ -5,6 +5,8 @@ import './css files/Home.css'
 function Home() {
     const { inactivityCount, setInactivityCount } = useContext(Context)
 
+
+
     return (
         <>
             <div className="mainPage">

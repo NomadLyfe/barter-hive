@@ -8,14 +8,17 @@ import NavBar from './NavBar';
 import Home from './Home';
 
 function App() {
-    const { user, setUser, navigate, inactivityCount, setInactivityCount } = useContext(Context)
+    const { user, setUser, navigate, inactivityCount, setInactivityCount, setIsActive } = useContext(Context)
 
     useEffect(() => {
         const interval = setInterval(() => {
-        setInactivityCount(inactivityCount + 1)
-        console.log(inactivityCount + 1)
+            setInactivityCount(inactivityCount + 1)
         }, 1000);
-
+        if (inactivityCount < 300) {
+            setIsActive(true)
+        } else {
+            setIsActive(false)
+        }
         return () => clearInterval(interval)
 
     }, [inactivityCount])
@@ -23,7 +26,6 @@ function App() {
 
     function resetTimer(e) {
         setInactivityCount(0)
-        console.log(0)
     }
 
     if (!user) {

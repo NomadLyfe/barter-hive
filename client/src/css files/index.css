@@ -52,6 +52,13 @@ button {
   transition: border-color 0.25s;
   margin: 1.5rem;
 }
+
+@media (max-width: 900px) {
+  button {
+    margin: 0.5rem;
+  }
+}
+
 button:hover {
   border-color: #9C9A40;
   background: linear-gradient(#3B4131d0, #3B4131);
