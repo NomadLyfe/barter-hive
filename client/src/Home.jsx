@@ -4,7 +4,7 @@ import './css files/Home.css'
 import no_pic from './images/no-profile-pic.png'
 
 function Home() {
-    const { user, inactivityCount, setInactivityCount } = useContext(Context)
+    const { user, inactivityCount } = useContext(Context)
 
     function handlePostFormClick() {
         const overlay = document.querySelector('.overlay')
@@ -34,12 +34,27 @@ function Home() {
                     </div>
                     <div className="feed">
                         <div className="card">
-                            <button onClick={() => setInactivityCount((inactivityCount) => inactivityCount + 1)}>
-                                count is {inactivityCount}
-                            </button>
+                            <h2 className="text">Post Title</h2>
+                            <div className="media">
+
+                            </div>
                             <p className="text">
-                                Edit <code>src/App.jsx</code> and save to test HMR
+                                Post text
                             </p>
+                            <div className="stats text">
+                                <div className="endorses-num">{inactivityCount} endorses</div>
+                                <div className="renounces-num">{inactivityCount} renounces</div>
+                                <div className="comments-num">{inactivityCount} comments</div>
+                            </div>
+                            <div className="buttons text">
+                                <button>Endorse</button>
+                                <button>Renounce</button>
+                                <button>Comment</button>
+                                <button>Share</button>
+                            </div>
+                            <div className="comments">
+
+                            </div>
                         </div>
                     </div>
                 </div>

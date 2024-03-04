@@ -25,6 +25,8 @@
     border-radius: 10px;
     width: 680px;
     margin: 20px;
+    display: flex;
+    flex-direction: column;
   }
 
   @media (max-width: 1320px) {
@@ -73,6 +75,34 @@
 
 .createPostDiv {
     display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
+}
+
+.card * {
+    text-align: left;
+    margin: 25px;
+}
+
+.card h2 {
+    align-self: center;
+}
+
+.card .buttons {
+    display: flex;
+    justify-content: space-around;
+    border-top: 1px solid #3B4131;
+    border-bottom: 1px solid #3B4131;
+    margin-top: 5px;
+}
+
+.stats, .stats * {
+    margin: 0px 12.5px;
+}
+
+.stats {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }

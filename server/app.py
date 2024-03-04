@@ -26,6 +26,13 @@ class Login(Resource):
             return {}, 204
         return {'error': 'You are not logged in'}, 401
     
+class CheckSession(Resource):
+    def get(self):
+        if session.get('user_id'):
+            user = User.query.filter_by(id = session['user_id']).first()
+            return user.to_dict(), 200
+        return {}, 204
+    
 class Users(Resource):
     def post(self):
         try:
@@ -48,6 +55,7 @@ class Users(Resource):
             return {'error': 'Invalid user information'}, 422
 
 api.add_resource(Login, '/api/login', endpoint='login')
+api.add_resource(CheckSession, '/api/check_session', endpoint='check_session')
 api.add_resource(Users, '/api/users', endpoint='users')
 
 if __name__ == "__main__":

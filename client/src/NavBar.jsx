@@ -13,12 +13,6 @@ import no_pic from './images/no-profile-pic.png'
 function NavBar() {
     const { user, setUser, navigate, isActive } = useContext(Context)
 
-    function handleUserClick() {
-        const dropdown = document.querySelector('.user_dropdown')
-        console.log(dropdown.style.display)
-        dropdown.style.display == '' ? dropdown.style.display = 'block' : dropdown.style.display = ''
-    }
-
     function handleLogoutClick() {
         fetch("/api/login", { method: "DELETE" }).then((resp) => {
             if (resp.ok) {
@@ -75,7 +69,7 @@ function NavBar() {
                 <div className="notifications">
                     {!user ? <NavLink to="/login">Login</NavLink> : null}
                     {!user ? <NavLink to='/signup'>Signup</NavLink> : null}
-                    <img onClick={handleUserClick} className="user_pic" src={user.profile_pic ? user.profile_pic : no_pic} className="profile-pic" alt="user-pic" />
+                    <img id="user_pic" src={user.profile_pic ? user.profile_pic : no_pic} className="profile-pic" alt="user-pic" />
                     <div className="status"><img src={isActive ? active : inactive} alt="status" /></div>
                     <div className="user_dropdown">
                         <div></div>

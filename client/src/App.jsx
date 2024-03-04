@@ -7,19 +7,26 @@ import { Context } from './Context';
 import NavBar from './NavBar';
 import Home from './Home';
 import upload from './images/upload.svg'
+import no_pic from './images/no-profile-pic.png'
 
 function App() {
     const { user, setUser, navigate, inactivityCount, setInactivityCount, setIsActive } = useContext(Context)
 
     useEffect(() => {
+        fetch('/api/check_session').then((resp) => {
+            if (resp.status === 200) {
+                resp.json().then((user) => setUser(user));
+            }
+        });
+    }, [])
+
+    useEffect(() => {
         const interval = setInterval(() => {
             setInactivityCount(inactivityCount + 1)
         }, 1000);
-        if (inactivityCount < 300) {
-            setIsActive(true)
-        } else {
-            setIsActive(false)
-        }
+
+        inactivityCount < 300 ? setIsActive(true) : setIsActive(false);
+
         return () => clearInterval(interval)
 
     }, [inactivityCount])
@@ -40,6 +47,16 @@ function App() {
         }
     }
 
+    function handleMainClick(e) {
+        const userPic = document.querySelector('#user_pic')
+        const dropdown = document.querySelector('.user_dropdown')
+        if (e.target != dropdown && e.target != userPic) {
+            dropdown.style.display = ''
+        } else if (e.target == userPic) {
+            dropdown.style.display == '' ? dropdown.style.display = 'block' : dropdown.style.display = ''
+        }   
+    }
+
     if (!user) {
         return (
             <>
@@ -53,13 +70,14 @@ function App() {
 
     return (
         <>
-            <div className='overlay' onClick={handleOverlayClick}>
+            <div className='overlay' onClick={handleOverlayClick} onMouseMove={resetTimer}>
                 <div className="post-form">
                     <div className='createPostTitle'>
                         <h2>Create Post</h2>
                         <div></div>
                     </div>
                     <form>
+                        <img src={user.profile_pic ? user.profile_pic : no_pic} className="profile-pic" alt="profile pic" />
                         <input type='text' name="queryTerm" placeholder='Search Barter Hive' />
                         <div className='image-drop' type='image' name="queryTerm" placeholder='Search Barter Hive'>
                             <img src={upload} alt='add' />
@@ -71,7 +89,7 @@ function App() {
                     </form>
                 </div>
             </div>
-            <main onMouseMove={resetTimer}>
+            <main onMouseMove={resetTimer} onClick={handleMainClick}>
                 <NavBar />
                 <Routes>
                     <Route exact path='/:username' element={<Home />} />
