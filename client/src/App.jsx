@@ -10,7 +10,7 @@ import upload from './images/upload.svg'
 import no_pic from './images/no-profile-pic.png'
 
 function App() {
-    const { user, setUser, navigate, inactivityCount, setInactivityCount, setIsActive } = useContext(Context)
+    const { user, setUser, navigate, inactivityCount, setInactivityCount, setIsActive, posts, setPosts } = useContext(Context)
 
     useEffect(() => {
         fetch('/api/check_session').then((resp) => {
@@ -18,6 +18,13 @@ function App() {
                 resp.json().then((user) => setUser(user));
             }
         });
+
+        fetch('/api/posts').then((resp) => {
+            if (resp.status === 200) {
+                resp.json().then((postList) => setPosts(postList))
+            }
+        })
+
     }, [])
 
     useEffect(() => {
@@ -26,6 +33,8 @@ function App() {
         }, 1000);
 
         inactivityCount < 300 ? setIsActive(true) : setIsActive(false);
+
+        console.log(posts)
 
         return () => clearInterval(interval)
 

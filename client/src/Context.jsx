@@ -7,9 +7,10 @@ function ContextProvider({ children }) {
     const [user, setUser] = useState(null);
     const [inactivityCount, setInactivityCount] = useState(0);
     const [isActive, setIsActive] = useState(null)
+    const [posts, setPosts] = useState([])
     const navigate = useNavigate();
     return (
-        <Context.Provider value={{ user, setUser, navigate, inactivityCount, setInactivityCount, isActive, setIsActive }}>
+        <Context.Provider value={{ user, setUser, navigate, inactivityCount, setInactivityCount, isActive, setIsActive, posts, setPosts }}>
             {children}
         </Context.Provider>
     );

@@ -27,7 +27,7 @@ function Home() {
                     </div>
                 </div>
                 <div className="center">
-                    <div>something</div>
+                    <div className="text">something</div>
                     <div className="card createPostDiv">
                         <img src={user.profile_pic ? user.profile_pic : no_pic} className="profile-pic" alt="profile pic" />
                         <button onClick={handlePostFormClick} className="creatPostButton">{user.username.charAt(0).toUpperCase() + user.username.slice(1)}, create a post!</button>
@@ -53,7 +53,7 @@ function Home() {
                                 <button>Share</button>
                             </div>
                             <div className="comments">
-
+                                
                             </div>
                         </div>
                     </div>

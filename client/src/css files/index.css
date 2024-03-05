@@ -1,5 +1,10 @@
+@font-face {
+  font-family: wire;
+  src: url('../font\ files/WireOne-Regular.ttf');
+}
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: wire, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -46,11 +51,12 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background: linear-gradient(#3B4131, #3B4131d0);
+  /* background: linear-gradient(#3B4131, #3B4131d0); */
+  background-color: #00000000;
   cursor: pointer;
-  color: #9C9A40;
-  transition: border-color 0.25s;
+  color: #3B4131;
   margin: 1.5rem;
+  transition: 0.25s;
 }
 
 @media (max-width: 900px) {
@@ -60,12 +66,12 @@ button {
 }
 
 button:hover {
-  border-color: #9C9A40;
-  background: linear-gradient(#3B4131d0, #3B4131);
+  /* background: linear-gradient(#3B4131d0, #3B4131); */
+  background-color: #9C9A40d0;
 }
 
 .text {
-  color: #9C9A40;
+  color: #3B4131;
 }
 /* button:focus,
 button:focus-visible {
