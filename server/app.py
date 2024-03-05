@@ -53,10 +53,18 @@ class Users(Resource):
             return {'error': 'Invalid information submitted'}, 422
         except:
             return {'error': 'Invalid user information'}, 422
+        
+class Posts(Resource):
+    def get(self):
+        posts = [post.to_dict() for post in Post.query.all()]
+        if posts:
+            return posts, 200
+        return {}, 204
 
 api.add_resource(Login, '/api/login', endpoint='login')
 api.add_resource(CheckSession, '/api/check_session', endpoint='check_session')
 api.add_resource(Users, '/api/users', endpoint='users')
+api.add_resource(Posts, '/api/posts', endpoint='posts')
 
 if __name__ == "__main__":
     app.run(port=5555, debug=True)
