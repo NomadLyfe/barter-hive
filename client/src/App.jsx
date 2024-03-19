@@ -23,7 +23,7 @@ function App() {
             if (resp.status === 200) {
                 resp.json().then((postList) => setPosts(postList))
             }
-        })
+        });
 
     }, [])
 

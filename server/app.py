@@ -35,6 +35,11 @@ class CheckSession(Resource):
         return {}, 204
     
 class Users(Resource):
+    def get(self):
+        users = [user.to_dict() for user in User.query.all()]
+        if users:
+            return users, 200
+        return {}, 204
     def post(self):
         try:
             username = request.get_json().get('username')
@@ -62,11 +67,20 @@ class Posts(Resource):
         if posts:
             return posts, 200
         return {}, 204
+    
+class SearchUsers(Resource):
+    def get(self, term):
+        users = [user.to_dict() for user in User.query.filter(User.username.contains(term)).all()]
+        if users:
+            return users, 200
+        return {}, 204
+
 
 api.add_resource(Login, '/api/login', endpoint='login')
 api.add_resource(CheckSession, '/api/check_session', endpoint='check_session')
 api.add_resource(Users, '/api/users', endpoint='users')
 api.add_resource(Posts, '/api/posts', endpoint='posts')
+api.add_resource(SearchUsers, '/api/search_users/<string:term>', endpoint='search_users')
 
 if __name__ == "__main__":
     app.run(port=5555, debug=True)

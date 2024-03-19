@@ -4,8 +4,10 @@
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid #9C9A40;
-    background: linear-gradient(#ffffff00 50%, #ebe0c1);
+    background: linear-gradient(#FFF6DB 30%, #ebe0c1);
     height: 80px;
+    position: sticky;
+    top: 0px;
 }
 
 .logo {
@@ -95,4 +97,8 @@
     right: 22px;
     background-color: #3B4131;
     border-radius: 15px;
+}
+
+.dynamicResults {
+    display: none;
 }

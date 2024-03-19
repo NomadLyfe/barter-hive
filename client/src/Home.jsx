@@ -17,19 +17,11 @@ function Home() {
     let renderedPostList = null
     if (posts) {
         renderedPostList = posts.map((post, i) => {
-            let renderedCommentList = () => {
-                return (
-                    <div className="text">
-                        <div className="user_and_comment">
-                            <span>No comments yet.</span>
-                        </div>
-                    </div>
-                )
-            }
+            let renderedCommentList = 'No comments'
             if (post.comments) {
                 renderedCommentList = post.comments.map((comment, j) => {
                     return (
-                        <div className="text" key={j}>
+                        <div className="text comment_obj" key={j}>
                             <div className="user_and_comment">
                                 <img id="user_pic" src={comment.user.profile_pic ? comment.user.profile_pic : no_pic} className="profile-pic" alt="user-pic" />
                                 <div className="comment">{comment.content}</div>

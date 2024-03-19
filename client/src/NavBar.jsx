@@ -11,7 +11,7 @@ import inactive from './images/inactive.png'
 import no_pic from './images/no-profile-pic.png'
 
 function NavBar() {
-    const { user, setUser, navigate, isActive } = useContext(Context)
+    const { user, setUser, navigate, isActive, users, setUsers } = useContext(Context)
 
     function handleLogoutClick() {
         fetch("/api/login", { method: "DELETE" }).then((resp) => {
@@ -47,6 +47,54 @@ function NavBar() {
         }
     });
 
+    function handleSearchChange(e) {
+        formik.handleChange(e)
+        if (e.target.value) {
+            fetch(`/api/search_users/${e.target.value}`).then((resp) => {
+                if (resp.status === 200) {
+                    resp.json().then((userList) => {
+                        console.log(userList)
+                        setUsers(userList)
+                    })
+                }
+            });
+        } else {
+            setUsers(null)
+        }
+    }
+
+    function handleSearchFocus(e) {
+        const results = document.querySelector('.dynamicResults')
+        results.style.display = 'block';
+        e.target.style.width = '250px';
+    }
+
+    function handleSearchBlur(e) {
+        const results = document.querySelector('.dynamicResults')
+        results.style.display = 'none';
+        e.target.style.width = '169px';
+    }
+
+    let renderedDynamicSearch = null
+    if (users) {
+        renderedDynamicSearch = users.map((u, index) => {
+            return (
+                <div className="result" key={index}>
+                    <img id="user_pic" src={u.profile_pic ? u.profile_pic : no_pic} className="profile-pic" alt="user-pic" />
+                    <div>
+                        <span>{u.username}</span>
+                        {/* {user.friends.includes(u) ? <span>friend</span> : <span>x mutual friends</span>} */}
+                    </div>
+                </div>
+            )
+        })
+    } else {
+        <div className="dynamicResults">
+            No results
+        </div>
+    }
+
+
     return (
         <>
             <div className="navigation">
@@ -57,9 +105,12 @@ function NavBar() {
                         </a>
                     </div>
                     <div className="searchbar">
-                        <form onSubmit={formik.handleSubmit}>
-                            <input type='text'name="queryTerm" value={formik.values.queryTerm} onChange={formik.handleChange} placeholder='Search Barter Hive' />
+                        <form onSubmit={formik.handleSubmit} onFocus={handleSearchFocus} onBlur={handleSearchBlur}>
+                            <input type='text'name="queryTerm" value={formik.values.queryTerm} onChange={handleSearchChange} placeholder='Search Barter Hive' />
                         </form>
+                        <div className="dynamicResults text">
+                            {renderedDynamicSearch}
+                        </div>
                     </div>
                 </div>
                 <div className="navlinks">
