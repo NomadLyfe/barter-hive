@@ -71,15 +71,7 @@
 
 .creatPostButton {
     width: 75%;
-    background: #ebe0c1;
     border: 1px solid #3B4131;
-    transition: 0.25s;
-}
-
-.creatPostButton:hover {
-    background: #FFF6DB60;
-    border: 1px solid #3B4131;
-
 }
 
 .createPostDiv {
@@ -104,6 +96,7 @@
     border-top: 1px solid #3B4131;
     border-bottom: 1px solid #3B4131;
     margin-top: 5px;
+    margin-bottom: 0px;
 }
 
 .card .buttons * {
@@ -122,4 +115,52 @@
 
 .stats * {
     cursor: pointer;
+}
+
+.comments {
+    margin: 0px 25px;
+}
+
+.user_and_comment {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0px 0px 5px 0px;
+    height: auto;
+}
+
+.comment {
+    border: 1px solid #3B4131;
+    border-radius: 15px;
+    padding: 13px;
+    font-size: 12px;
+    margin: 0px 0px 0px 10px;
+}
+
+.comment_likes {
+    font-size: 12px;
+    margin: 0px;
+}
+
+.comment_likes button {
+    margin: 0px 10px 0px 0px;
+}
+
+.user_and_post_owner {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 20px 20px 0px 20px;
+}
+
+.user_and_post_owner * {
+    margin: 0px 0px 0px 10px;
+}
+
+.post_str {
+    margin-top: 0px;
+}
+
+.media {
+    margin: 12px 25px;
 }

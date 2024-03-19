@@ -3,6 +3,7 @@ from models import User, Friendship, Post, Chat, Comment, Message
 from flask import request, session, render_template
 from flask_restful import Resource
 import requests
+import ipdb
 
 @app.route('/')
 @app.route('/<int:id>')
@@ -57,6 +58,7 @@ class Users(Resource):
 class Posts(Resource):
     def get(self):
         posts = [post.to_dict() for post in Post.query.all()]
+        # ipdb.set_trace()
         if posts:
             return posts, 200
         return {}, 204

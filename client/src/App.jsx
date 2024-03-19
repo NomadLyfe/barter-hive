@@ -10,7 +10,7 @@ import upload from './images/upload.svg'
 import no_pic from './images/no-profile-pic.png'
 
 function App() {
-    const { user, setUser, navigate, inactivityCount, setInactivityCount, setIsActive, posts, setPosts } = useContext(Context)
+    const { user, setUser, navigate, inactivityCount, setInactivityCount, setIsActive, setPosts } = useContext(Context)
 
     useEffect(() => {
         fetch('/api/check_session').then((resp) => {
@@ -33,8 +33,6 @@ function App() {
         }, 1000);
 
         inactivityCount < 300 ? setIsActive(true) : setIsActive(false);
-
-        console.log(posts)
 
         return () => clearInterval(interval)
 
@@ -90,7 +88,7 @@ function App() {
                         <input type='text' name="queryTerm" placeholder='Search Barter Hive' />
                         <div className='image-drop' type='image' name="queryTerm" placeholder='Search Barter Hive'>
                             <img src={upload} alt='add' />
-                            <p><h2>Add Photos and/or Videos</h2></p>
+                            <h2><p>Add Photos and/or Videos</p></h2>
                             <p>or drag and drop</p>
                         </div>
                         <textarea type='text' name="queryTerm" placeholder='Search Barter Hive' />
