@@ -19,6 +19,7 @@ class Login(Resource):
             session['user_id'] = user.id
             session.modified = True
             print('You logged in!')
+            # ipdb.set_trace()
             return user.to_dict(), 201
         return {'error': 'Invalid username or password'}, 401
     def delete(self):
@@ -62,8 +63,14 @@ class Users(Resource):
         
 class Posts(Resource):
     def get(self):
-        posts = [post.to_dict() for post in Post.query.all()]
+        posts = [post.to_dict() for post in Post.query.limit(5).all()]
         # ipdb.set_trace()
+        if posts:
+            return posts, 200
+        return {}, 204
+    def post(self):
+        offset = request.get_json().get('offset')
+        posts = [post.to_dict() for post in Post.query.offset(offset).limit(5).all()]
         if posts:
             return posts, 200
         return {}, 204
