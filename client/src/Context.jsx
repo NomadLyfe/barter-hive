@@ -8,10 +8,40 @@ function ContextProvider({ children }) {
     const [inactivityCount, setInactivityCount] = useState(0);
     const [isActive, setIsActive] = useState(null)
     const [posts, setPosts] = useState([])
-    const [users, setUsers] = useState([])
+    const [users, setUsers] = useState(null)
+    const [offset, setOffset] = useState(0)
+    const [scroll, setScroll] = useState(0)
+    const [currdate, setCurrdate] = useState(new Date())
+    const [showingposts, setShowingposts] = useState(posts)
+    const [numposts, setNumposts] = useState(0)
+    const [maxposts, setMaxposts] = useState(25)
     const navigate = useNavigate();
     return (
-        <Context.Provider value={{ user, setUser, navigate, inactivityCount, setInactivityCount, isActive, setIsActive, posts, setPosts, users, setUsers }}>
+        <Context.Provider value={{ 
+            user,
+            setUser, 
+            navigate, 
+            inactivityCount, 
+            setInactivityCount, 
+            isActive, 
+            setIsActive, 
+            posts, 
+            setPosts, 
+            users, 
+            setUsers, 
+            offset, 
+            setOffset, 
+            scroll, 
+            setScroll, 
+            currdate, 
+            setCurrdate,
+            showingposts,
+            setShowingposts,
+            numposts, 
+            setNumposts,
+            maxposts, 
+            setMaxposts
+        }}>
             {children}
         </Context.Provider>
     );

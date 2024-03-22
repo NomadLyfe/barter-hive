@@ -6,7 +6,7 @@ import './css files/Login.css';
 import logoNoBack from './images/logo-no-background.svg';
 
 function Signup() {
-    const { user, setUser, navigate } = useContext(Context)
+    const { user, setUser, navigate, setPosts, offset, setOffset, setShowingposts, setNumposts, setMaxposts } = useContext(Context)
 
     const formSchema = yup.object().shape({
         username: yup.string().required('Must enter username').max(20),
@@ -45,7 +45,24 @@ function Signup() {
                     if (resp.ok) {
                         resp.json().then((user) => {
                             setUser(() => {
-                                navigate(`/${user.username}`)
+                                navigate(`/`)
+                                fetch('/api/posts', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({offset: offset})
+                                }).then((resp) => {
+                                    if (resp.status === 200) {
+                                        resp.json().then((postList) => {
+                                            setPosts(postList)
+                                            setShowingposts(postList)
+                                            setNumposts(postList.length)
+                                            setMaxposts(25)
+                                            setOffset(offset + 5)
+                                        })
+                                    }
+                                });
                                 return user
                             });
                         });
@@ -72,11 +89,11 @@ function Signup() {
                 <label id='passwordconf'>Confirm Password</label>
                 <input placeholder='Type your password' type='password' id='passwordconfinp' name='passwordconf' onChange={formik.handleChange} value={formik.values.passwordconf} />
                 <label id='email'>E-mail</label>
-                <input placeholder='Type your email' type='text' id='emailinp' name='email' onChange={formik.handleChange} value={formik.values.email} />
+                <input placeholder='Type your email' type='email' id='emailinp' name='email' onChange={formik.handleChange} value={formik.values.email} />
                 <label id='bday'>Birthday</label>
-                <input placeholder='Type your birthday' type='text' id='bdayinp' name='bday' onChange={formik.handleChange} value={formik.values.bday} />
+                <input placeholder='Type your birthday' type='date' id='bdayinp' name='bday' onChange={formik.handleChange} value={formik.values.bday} />
                 <label id='phone'>Phone Number</label>
-                <input placeholder='Type your phone number' type='text' id='phoneinp' name='phone' onChange={formik.handleChange} value={formik.values.phone} />
+                <input placeholder='Type your phone number' type='tel' id='phoneinp' name='phone' onChange={formik.handleChange} value={formik.values.phone} />
                 <label id='country'>Country</label>
                 <input placeholder='Type your country' type='text' id='countryinp' name='country' onChange={formik.handleChange} value={formik.values.country} />
                 <label id='state'>State</label>

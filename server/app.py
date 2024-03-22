@@ -63,21 +63,25 @@ class Users(Resource):
         
 class Posts(Resource):
     def get(self):
-        posts = [post.to_dict() for post in Post.query.limit(5).all()]
+        pass
+        # posts = [post.to_dict() for post in Post.query.limit(5).all()]
         # ipdb.set_trace()
-        if posts:
-            return posts, 200
-        return {}, 204
+        # if posts:
+        #     return posts, 200
+        # return {}, 204
     def post(self):
         offset = request.get_json().get('offset')
-        posts = [post.to_dict() for post in Post.query.offset(offset).limit(5).all()]
+        allposts = Post.query.count()
+        posts = None
+        if offset < allposts - 5:
+            posts = [post.to_dict() for post in Post.query.offset(offset).limit(5).all()]
         if posts:
             return posts, 200
         return {}, 204
     
 class SearchUsers(Resource):
     def get(self, term):
-        users = [user.to_dict() for user in User.query.filter(User.username.contains(term)).all()]
+        users = [user.to_dict() for user in User.query.filter(User.username.contains(term)).limit(8).all()]
         if users:
             return users, 200
         return {}, 204

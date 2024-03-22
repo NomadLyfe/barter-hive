@@ -45,6 +45,10 @@
   color: #3B413190;
 }
 
+.loginForm input:-webkit-autofill, .loginForm input:-webkit-autofill:focus {
+  transition: all 0s 600000s !important;
+}
+
 .loginForm a {
   color: #9C9A40;
   width: auto;
@@ -52,7 +56,14 @@
 }
 
 .loginForm button {
-  color: #FFF6DB;
+  color: #9C9A40;
+  background-color: #dad2ba;
+  border-radius: 25px;
+}
+
+.loginForm button:hover {
+  color: #3B4131;
+  background-color: #9C9A40;
   border-radius: 25px;
 }
 

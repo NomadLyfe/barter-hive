@@ -6,7 +6,7 @@ import './css files/Login.css';
 import logoNoBack from './images/logo-no-background.svg';
 
 function Login() {
-    const { user, setUser, navigate } = useContext(Context)
+    const { user, setUser, navigate, setPosts, offset, setOffset, setShowingposts, setNumposts, setMaxposts } = useContext(Context)
 
     const formSchema = yup.object().shape({
         username: yup.string().required('Must enter username').max(20),
@@ -30,7 +30,24 @@ function Login() {
                 if (resp.ok) {
                     resp.json().then((user) => {
                         setUser(() => {
-                            navigate(`/${user.username}`)
+                            navigate(`/`)
+                            fetch('/api/posts', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({offset: offset})
+                            }).then((resp) => {
+                                if (resp.status === 200) {
+                                    resp.json().then((postList) => {
+                                        setPosts(postList)
+                                        setShowingposts(postList)
+                                        setNumposts(postList.length)
+                                        setMaxposts(25)
+                                        setOffset(offset + 5)
+                                    })
+                                }
+                            });
                             return user
                         });
                     });

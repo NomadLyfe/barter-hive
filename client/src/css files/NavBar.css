@@ -8,6 +8,7 @@
     height: 80px;
     position: sticky;
     top: 0px;
+    z-index: 10;
 }
 
 .logo {
@@ -74,8 +75,8 @@
 .user_dropdown {
     display: none;
     position: fixed;
-    top: 80px;
-    right: 20px;
+    top: 70px;
+    right: 15px;
     background-color: #ebe0c1;
     box-shadow: 5px 5px 15px #3B4131;
     border-radius: 10px;
@@ -84,10 +85,11 @@
 .dropdown_buttons {
     display: flex;
     flex-direction: column;
+    margin: 10px px;
 }
 
 .dropdown_buttons * {
-    margin: 20px;
+    margin: 10px 15px;
 }
 
 .status img {
@@ -101,4 +103,40 @@
 
 .dynamicResults {
     display: none;
+    position: fixed;
+    top: 68px;
+    left: 95px;
+    background-color: #ebe0c1;
+    box-shadow: 5px 5px 15px #3B4131;
+    border-radius: 10px;
+    width: 272px;
+    padding: 5px 0px;
+}
+
+.result a {
+    all: unset;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0px 5px;
+    border-radius: 10px;
+}
+
+.result:hover {
+    background-color: #dbd0b2;
+    cursor: pointer;
+}
+
+.result .profile-pic {
+    margin: 5px 10px;
+}
+
+.user_info {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.no_results {
+    margin: 5px 10px;
 }

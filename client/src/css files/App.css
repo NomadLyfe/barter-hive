@@ -1,16 +1,16 @@
 #root {
-  width: 100vw;
-  margin: 0 auto;
-  text-align: center;
-  min-height: 100vh;
-  display: grid;
+    width: 100vw;
+    margin: 0 auto;
+    text-align: center;
+    min-height: 100vh;
+    display: grid;
 }
 
 .logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+    height: 6em;
+    padding: 1.5em;
+    will-change: filter;
+    transition: filter 300ms;
 }
 
 /* .logo:hover {
@@ -33,14 +33,23 @@
 } */
 
 main {
-  width: 100%;
-  height: 100%;
-  background-color: #FFF6DB;
+    width: 100%;
+    height: 100%;
+    background-color: #FFF6DB;
 }
 
 .profile-pic {
     height: 42.19px;
-	transition: 0.25s;
+	  transition: 0.25s;
+}
+
+#user_pic {
+    margin: 18.25px 24px;
+}
+
+#user_pic:hover {
+    opacity: 0.8;
+    cursor: pointer;
 }
 
 .post-form {
@@ -65,21 +74,16 @@ main {
 }
 
 .image-drop {
-	border: 1px sold #3B4131;
-	width: 410px;
-	height: 181px;
-	border-radius: 15px;
-	padding: 40px 20px;
+    border: 1px sold #3B4131;
+    width: 410px;
+    height: 181px;
+    border-radius: 15px;
+    padding: 40px 20px;
 }
 
 .image-drop img {
-	height: 40px;
-	margin-bottom: 0px;
-}
-
-.profile-pic:hover {
-    opacity: 0.8;
-    cursor: pointer;
+    height: 40px;
+    margin-bottom: 0px;
 }
 
 .overlay {
@@ -92,7 +96,7 @@ main {
 }
 
 .createPostTitle {
-	color: #9C9A40;
-	border-bottom: 1px solid #3B4131;
-	margin: 20px;
+    color: #9C9A40;
+    border-bottom: 1px solid #3B4131;
+    margin: 20px;
 }

@@ -17,6 +17,8 @@
   -moz-osx-font-smoothing: grayscale;
 
   min-height: 100vh;
+  
+  overflow-y: scroll;
 }
 
 a {
@@ -49,7 +51,8 @@ button {
   font-size: 1em;
   font-family: inherit;
   /* background: linear-gradient(#3B4131, #3B4131d0); */
-  background-color: #dbd0b2;
+  /* background-color: #dbd0b2; */
+  background-color: #dbd0b200;
   cursor: pointer;
   color: #3B4131;
   margin: 1.5rem;
@@ -64,7 +67,8 @@ button {
 
 button:hover {
   /* background: linear-gradient(#3B4131d0, #3B4131); */
-  background-color: #d1c5a5;
+  /* background-color: #d1c5a5; */
+  background-color: #9C9A40;
 }
 
 .text {
