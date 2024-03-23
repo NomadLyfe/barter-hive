@@ -95,6 +95,7 @@
 
 .createPostDiv a {
     all: unset;
+    height: 44.25px;
 }
 
 .createPostDiv img {
@@ -148,6 +149,7 @@
 
 .comments a {
     all: unset;
+    height: 44.25px;
 }
 
 .comments a img:hover {
@@ -192,6 +194,7 @@
 
 .user_and_post_owner a {
     all: unset;
+    height: 44.25px;
 }
 
 .user_and_post_owner img:hover {

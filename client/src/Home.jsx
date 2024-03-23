@@ -97,11 +97,11 @@ function Home() {
             <div className="mainPage">
                 <div className="leftPanel">
                     <div className="suggestion text">
-                        FILTERS!
+                        messages?
                     </div>
                 </div>
                 <div className="center">
-                    <div className="text">maybe nothing?</div>
+                    <div className="text">filters?</div>
                     <div className="card createPostDiv">
                         <NavLink to={`/${user.username}`}><img src={user.profile_pic ? user.profile_pic : no_pic} className="profile-pic" alt="profile pic" /></NavLink>
                         <button onClick={handlePostFormClick} className="creatPostButton">{user.username.charAt(0).toUpperCase() + user.username.slice(1)}, create a post!</button>
