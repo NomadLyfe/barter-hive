@@ -47,7 +47,6 @@ function App() {
                 navigate(`/login`)
             }
         });
-        setOffset(0)
         fetch('/api/posts', {
             method: 'POST',
             headers: {
@@ -94,9 +93,13 @@ function App() {
             }).then((resp) => {
                 if (resp.status === 200) {
                     resp.json().then((postList) => {
-                        setPosts(posts.concat(postList))
-                        setOffset(offset + 5)
-                        console.log('5 more posts')
+                        if (posts.length < maxposts) {
+                            setPosts(posts.concat(postList))
+                            setOffset(offset + 5)
+                            console.log('5 more posts')
+                        } else {
+                            controller.abort()
+                        }
                     })
                 }
             }).catch(err => {

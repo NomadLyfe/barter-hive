@@ -3,9 +3,12 @@ import { Context } from './Context';
 import { NavLink } from "react-router-dom";
 import './css files/Home.css'
 import no_pic from './images/no-profile-pic.png'
+import Friends from "./Friends";
+import Bdays from "./Bdays";
+import Chats from "./Chats";
 
 function Home() {
-    const { user, currdate, showingposts } = useContext(Context)
+    const { user, showingposts } = useContext(Context)
 
     function handlePostFormClick() {
         const overlay = document.querySelector('.overlay')
@@ -60,44 +63,13 @@ function Home() {
         })
     }
 
-    let renderedFriendList = null
-    if (user) {
-        const friends = [...user.friendships]
-        const friend_ids = friends.map(u => u.id)
-        friends.splice(friend_ids.indexOf(user.id), 1)
-        renderedFriendList = friends.map((friend, i) => {
-            return (
-                <NavLink className="friend" key={i} to={`/${friend.username}`}>
-                    <img src={friend.profile_pic ? friend.profile_pic : no_pic} className="profile-pic" alt="profile pic" />
-                    <div>{friend.username}</div>
-                </NavLink>
-            )
-        })
-    }
-
-    let renderedbdays = null
-    if (user) {
-        const friends = [...user.friendships]
-        const friend_ids = friends.map(u => u.id)
-        friends.splice(friend_ids.indexOf(user.id), 1)
-        renderedbdays = friends.map((friend, i) => {
-            let bday = new Date(friend.bday)
-            if (bday.getMonth() == currdate.getMonth() && bday.getDay() == currdate.getDay()) {
-                return (
-                    <div className="bday" key={i}>
-                        <div>It is {friend.username}</div>
-                    </div>
-                )
-            }
-        })
-    }
-
     return (
         <>
             <div className="mainPage">
                 <div className="leftPanel">
-                    <div className="suggestion text">
+                    <div className="messages text">
                         messages?
+                        <Chats />
                     </div>
                 </div>
                 <div className="center">
@@ -134,11 +106,11 @@ function Home() {
                 <div className="rightPanel">
                     <div className="bdays text">
                         <h3>Birthdays</h3>
-                        {renderedbdays[0] ? renderedbdays : <div className="no_bday">No Birthdays</div>}
+                        <Bdays />
                     </div>
                     <div className="friends text">
                         <h3>Friends</h3>
-                        {renderedFriendList}
+                        <Friends />
                     </div>
                 </div>
             </div>

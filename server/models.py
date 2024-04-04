@@ -5,6 +5,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import validates
 import re
 
+
 class Friendship(db.Model, SerializerMixin):
     __tablename__ = 'friendships'
 
@@ -16,11 +17,16 @@ class Friendship(db.Model, SerializerMixin):
     user1_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user2_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    # user1 = db.relationship('User', back_populates='friendships', cascade='all, delete-orphan')
-    # user2 = db.relationship('User', back_populates='friendships', cascade='all, delete-orphan')
+    # user1 = db.relationship(
+    #     'User', back_populates='friendships', cascade='all, delete-orphan'
+    # )
+    # user2 = db.relationship(
+    #     'User', back_populates='friendships', cascade='all, delete-orphan'
+    # )
 
     def __repr__(self):
         return f'Friendship between {self.user1_id} and {self.user2_id}'
+
 
 class Chat(db.Model, SerializerMixin):
     __tablename__ = 'chats'
@@ -35,25 +41,36 @@ class Chat(db.Model, SerializerMixin):
     user1_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user2_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    #user1 = db.relationship('User', back_populates='chats', cascade='all, delete-orphan')
-    #user2 = db.relationship('User', back_populates='chats', cascade='all, delete-orphan')
+    # user1 = db.relationship(
+    #     'User',
+    #     back_populates='chats',
+    #     cascade='all, delete-orphan'
+    # )
+    # user2 = db.relationship(
+    #     'User',
+    #     back_populates='chats',
+    #     cascade='all, delete-orphan'
+    # )
 
-    messages = db.relationship('Message', back_populates='chat', cascade='all, delete-orphan')
+    messages = db.relationship(
+        'Message', back_populates='chat', cascade='all, delete-orphan'
+    )
 
     def __repr__(self):
         return f'Chat ID {self.id}'
+
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
     serialize_rules = (
         '-posts.user',
-        # '-posts.comments.user',
-        # '-posts.wants.user',
-        # '-posts.passes.user',
-        '-posts.comments',
-        '-posts.wants',
-        '-posts.passes',
+        '-posts.comments.user',
+        '-posts.wants.user',
+        '-posts.passes.user',
+        # '-posts.comments',
+        # '-posts.wants',
+        # '-posts.passes',
         '-comments.user',
         '-comments.post',
         # '-commented_posts.user',
@@ -82,28 +99,59 @@ class User(db.Model, SerializerMixin):
     country = db.Column(db.String, nullable=False)
     state = db.Column(db.String)
 
-    friendships = db.relationship('User', secondary='friendships', primaryjoin="or_(User.id==Friendship.user1_id, User.id==Friendship.user2_id)", secondaryjoin="or_(User.id==Friendship.user1_id, User.id==Friendship.user2_id)")
-    
-    # friendships = db.relationship('User', secondary='friendships', primaryjoin=(Friendship.user1_id == id), secondaryjoin=(Friendship.user2_id == id))
+    friendships = db.relationship(
+        'User',
+        secondary='friendships',
+        primaryjoin=(
+            "or_(User.id==Friendship.user1_id, User.id==Friendship.user2_id)"
+        ),
+        secondaryjoin=(
+            "or_(User.id==Friendship.user1_id, User.id==Friendship.user2_id)"
+        )
+    )
 
-    posts = db.relationship('Post', back_populates='user', cascade='all, delete-orphan')
+    posts = db.relationship(
+        'Post', back_populates='user', cascade='all, delete-orphan'
+    )
 
-    comments = db.relationship('Comment', back_populates='user', cascade='all, delete-orphan')
-    commented_posts = association_proxy('comments', 'post', creator=lambda post_obj: Comment(post=post_obj))
+    comments = db.relationship(
+        'Comment', back_populates='user', cascade='all, delete-orphan'
+    )
+    commented_posts = association_proxy(
+        'comments', 'post', creator=lambda post_obj: Comment(post=post_obj)
+    )
 
-    wants = db.relationship('Want', back_populates='user', cascade='all, delete-orphan')
-    wanting_posts = association_proxy('wants', 'post', creator=lambda post_obj: Want(post=post_obj))
+    wants = db.relationship(
+        'Want', back_populates='user', cascade='all, delete-orphan'
+    )
+    wanting_posts = association_proxy(
+        'wants', 'post', creator=lambda post_obj: Want(post=post_obj)
+    )
 
-    passes = db.relationship('Pass', back_populates='user', cascade='all, delete-orphan')
-    passing_posts = association_proxy('passes', 'post', creator=lambda post_obj: Pass(post=post_obj))
+    passes = db.relationship(
+        'Pass', back_populates='user', cascade='all, delete-orphan'
+    )
+    passing_posts = association_proxy(
+        'passes', 'post', creator=lambda post_obj: Pass(post=post_obj)
+    )
 
-    chats = db.relationship('User', secondary='chats', primaryjoin="or_(User.id==Chat.user1_id, User.id==Chat.user2_id)", secondaryjoin="or_(User.id==Chat.user1_id, User.id==Chat.user2_id)")
+    chats = db.relationship(
+        'User',
+        secondary='chats',
+        primaryjoin="or_(User.id==Chat.user1_id, User.id==Chat.user2_id)",
+        secondaryjoin="or_(User.id==Chat.user1_id, User.id==Chat.user2_id)"
+    )
 
-    # chats = db.relationship('User', secondary='chats', primaryjoin=(Chat.user1_id == id), secondaryjoin=(Chat.user2_id == id))
+    # chats = db.relationship(
+    #     'User',
+    #     secondary='chats',
+    #     primaryjoin=(Chat.user1_id == id),
+    #     secondaryjoin=(Chat.user2_id == id)
+    # )
 
     def __repr__(self):
         return f'User {self.username}, ID {self.id}'
-    
+
     @validates('username', 'email')
     def validate(self, key, value):
         if key == 'username' and len(value) > 25:
@@ -114,7 +162,7 @@ class User(db.Model, SerializerMixin):
             pattern = r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
             regex = re.compile(pattern)
             match = regex.search(value)
-            if match == None:
+            if match is None:
                 raise ValueError('Not a proper email')
         return value
 
@@ -128,7 +176,10 @@ class User(db.Model, SerializerMixin):
         self._password_hash = password_hash.decode('utf-8')
 
     def authenticate(self, password):
-        return bcrypt.check_password_hash(self._password_hash, password.encode('utf-8'))
+        return bcrypt.check_password_hash(
+            self._password_hash, password.encode('utf-8')
+        )
+
 
 class Post(db.Model, SerializerMixin):
     __tablename__ = 'posts'
@@ -156,15 +207,27 @@ class Post(db.Model, SerializerMixin):
 
     user = db.relationship('User', back_populates='posts')
 
-    comments = db.relationship('Comment', back_populates='post', cascade='all, delete-orphan')
-    commenting_users = association_proxy('comments', 'user', creator=lambda user_obj: Comment(user=user_obj))
-    
-    wants = db.relationship('Want', back_populates='post', cascade='all, delete-orphan')
-    wanting_users = association_proxy('wants', 'user', creator=lambda user_obj: Want(user=user_obj))
+    comments = db.relationship(
+        'Comment', back_populates='post', cascade='all, delete-orphan'
+    )
+    commenting_users = association_proxy(
+        'comments', 'user', creator=lambda user_obj: Comment(user=user_obj)
+    )
 
-    passes = db.relationship('Pass', back_populates='post', cascade='all, delete-orphan')
-    passing_users = association_proxy('passes', 'user', creator=lambda user_obj: Pass(user=user_obj))
-    
+    wants = db.relationship(
+        'Want', back_populates='post', cascade='all, delete-orphan'
+    )
+    wanting_users = association_proxy(
+        'wants', 'user', creator=lambda user_obj: Want(user=user_obj)
+    )
+
+    passes = db.relationship(
+        'Pass', back_populates='post', cascade='all, delete-orphan'
+    )
+    passing_users = association_proxy(
+        'passes', 'user', creator=lambda user_obj: Pass(user=user_obj)
+    )
+
     def __repr__(self):
         return f'Post ID {self.id}'
 
@@ -180,13 +243,14 @@ class Comment(db.Model, SerializerMixin):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
-    
+
     user = db.relationship('User', back_populates='comments')
     post = db.relationship('Post', back_populates='comments')
 
     def __repr__(self):
         return f'Comment ID {self.id}'
-    
+
+
 class Want(db.Model, SerializerMixin):
     __tablename__ = 'wants'
 
@@ -196,13 +260,14 @@ class Want(db.Model, SerializerMixin):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
-    
+
     user = db.relationship('User', back_populates='wants')
     post = db.relationship('Post', back_populates='wants')
 
     def __repr__(self):
         return f'Comment ID {self.id}'
-    
+
+
 class Pass(db.Model, SerializerMixin):
     __tablename__ = 'passes'
 
@@ -212,12 +277,13 @@ class Pass(db.Model, SerializerMixin):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
-    
+
     user = db.relationship('User', back_populates='passes')
     post = db.relationship('Post', back_populates='passes')
 
     def __repr__(self):
         return f'Comment ID {self.id}'
+
 
 class Message(db.Model, SerializerMixin):
     __tablename__ = 'messages'
