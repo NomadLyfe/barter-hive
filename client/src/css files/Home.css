@@ -224,18 +224,22 @@
     justify-content: center;
 }
 
-.bdays, .friends {
+.bdays, .friends, .chats, .chatbox {
     display: flex;
     flex-direction: column;
     padding: 5px 0px;
     text-align: start;
 }
 
-.friends {
+.friends, .chatboxwrapper {
     border-top: 1px solid #3B4131;
 }
 
-.friends h3, .bdays h3 {
+.friends {
+    overflow-y: auto;
+}
+
+.friends h3, .bdays h3, .chats h3 {
     margin: 5px 0px 5px 5px;
 }
 
@@ -248,6 +252,7 @@
     margin: 2px 2px 2px 5px;
     padding: 5px;
     border-radius: 10px;
+    transition: 0.25s;
 }
 
 .bday, .no_bday {

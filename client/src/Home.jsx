@@ -67,9 +67,13 @@ function Home() {
         <>
             <div className="mainPage">
                 <div className="leftPanel">
-                    <div className="messages text">
-                        messages?
-                        <Chats />
+                    <div className="bdays text">
+                        <h3>Birthdays</h3>
+                        <Bdays />
+                    </div>
+                    <div className="friends text">
+                        <h3>Friends</h3>
+                        <Friends />
                     </div>
                 </div>
                 <div className="center">
@@ -104,13 +108,9 @@ function Home() {
                     </div>
                 </div>
                 <div className="rightPanel">
-                    <div className="bdays text">
-                        <h3>Birthdays</h3>
-                        <Bdays />
-                    </div>
-                    <div className="friends text">
-                        <h3>Friends</h3>
-                        <Friends />
+                    <div className="chats text">
+                        <h3>Chats</h3>
+                        <Chats />
                     </div>
                 </div>
             </div>

@@ -1,0 +1,90 @@
+.chatboxwrapper {
+    padding: 15px 0px;
+}
+
+.chatusers {
+    min-height: 40vh;
+    overflow-y: auto;
+}
+
+.chatbox {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    max-width: 300px; /* Adjust as needed */
+    margin: 0;
+    background-color: #faf1d8;
+}
+  
+.chatbox .messages {
+    padding: 10px;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 30vh;
+}
+  
+.chatbox .message {
+    padding: 5px 10px;
+    margin: 5px;
+    border-radius: 8px;
+}
+  
+.chatbox .message.user {
+    background-color: #f0f0f0;
+    align-self: flex-end;
+}
+  
+.chatbox .message.user:hover {
+    background-color: #e0e0e0;
+}
+
+.chatbox .message.bot {
+    background-color: #e0f0f0;
+    align-self: flex-start;
+}
+
+.chatbox message.bot:hover {
+    background-color: #d0e0e0;
+}
+
+.chatbox .input {
+    display: flex;
+    padding: 10px;
+    background-color: #ebe0c1;
+}
+
+.chatbox input[type="text"] {
+    flex: 1;
+    padding: 5px;
+    margin-right: 10px;
+    border: 0px solid #3B4131;
+    border-radius: 5px;
+    background-color: #FFF6DB;
+    color: #3B4131;
+    transition: 0.25s;
+}
+
+.chatbox input[type="text"]:focus {
+    outline-width: 0;
+}
+
+.chatbox input[type="text"]:hover {
+    background-color: #f5edd7;
+}
+
+.chatbox button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #9c9b4081;
+    color: #3b4131ad;
+    cursor: pointer;
+    margin: 0;
+}
+
+.chatbox button:hover {
+    background-color: #9C9A40;
+    color: #3b4131;
+}
