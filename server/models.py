@@ -84,6 +84,7 @@ class User(db.Model, SerializerMixin):
         '-friendships.chats',
         '-chats.chats',
         '-chats.friendships',
+        '-messages'
     )
 
     id = db.Column(db.Integer, primary_key=True)
@@ -148,6 +149,10 @@ class User(db.Model, SerializerMixin):
     #     primaryjoin=(Chat.user1_id == id),
     #     secondaryjoin=(Chat.user2_id == id)
     # )
+
+    messages = db.relationship(
+        'Message', back_populates='user', cascade='all, delete-orphan'
+    )
 
     def __repr__(self):
         return f'User {self.username}, ID {self.id}'
@@ -288,7 +293,7 @@ class Pass(db.Model, SerializerMixin):
 class Message(db.Model, SerializerMixin):
     __tablename__ = 'messages'
 
-    serialize_rules = ('-chat.messages',)
+    serialize_rules = ('-chat.messages', '-user.messages')
 
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String)
@@ -296,7 +301,11 @@ class Message(db.Model, SerializerMixin):
 
     chat_id = db.Column(db.Integer, db.ForeignKey('chats.id'))
 
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
     chat = db.relationship('Chat', back_populates='messages')
+
+    user = db.relationship('User', back_populates='messages')
 
     def __repr__(self):
         return f'Message ID {self.id}'

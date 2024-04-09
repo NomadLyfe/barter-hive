@@ -8,7 +8,7 @@ import Bdays from "./Bdays";
 import Chats from "./Chats";
 
 function Home() {
-    const { user, showingposts } = useContext(Context)
+    const { user, showingposts, setScroll } = useContext(Context)
 
     function handlePostFormClick() {
         const overlay = document.querySelector('.overlay')
@@ -62,6 +62,12 @@ function Home() {
             )
         })
     }
+
+    document.addEventListener('scroll', () => {
+        if (window.location.pathname === '/') {
+            setScroll(window.scrollY)
+        }
+    })
 
     return (
         <>

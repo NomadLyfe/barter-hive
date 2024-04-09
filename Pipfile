@@ -17,6 +17,7 @@ psycopg2-binary = "*"
 requests = "*"
 faker = "*"
 ipdb = "*"
+flask-socketio = "*"
 
 [dev-packages]
 

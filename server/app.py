@@ -1,4 +1,5 @@
-from config import app, db, api
+from flask_socketio import emit
+from config import app, db, api, socketio
 from models import User, Friendship, Post, Chat, Comment, Message
 from flask import request, session, render_template
 from flask_restful import Resource
@@ -10,6 +11,14 @@ import ipdb
 @app.route("/<int:id>")
 def index(id=0):
     return render_template("index.html")
+
+
+@socketio.on("chat")
+def handle_chat(data):
+    message = Message(content=data, reactions=None, chat_id="", user_id="")
+    db.session.add(message)
+    db.sesssion.commit()
+    emit("chat", data, broadcast=True)
 
 
 class Login(Resource):
@@ -91,8 +100,7 @@ class Posts(Resource):
         posts = None
         if offset <= allposts - 5:
             posts = [
-                post.to_dict() for post in
-                Post.query.offset(offset).limit(5).all()
+                post.to_dict() for post in Post.query.offset(offset).limit(5).all()
             ]
         if posts:
             return posts, 200
@@ -102,8 +110,8 @@ class Posts(Resource):
 class SearchUsers(Resource):
     def get(self, term):
         users = [
-            user.to_dict() for user in
-            User.query.filter(User.username.contains(term)).limit(8).all()
+            user.to_dict()
+            for user in User.query.filter(User.username.contains(term)).limit(8).all()
         ]
         if users:
             return users, 200
@@ -113,12 +121,25 @@ class SearchUsers(Resource):
 class SearchPosts(Resource):
     def get(self, username):
         user = User.query.filter_by(username=username).first()
-        posts = [
-            post.to_dict() for post in
-            Post.query.filter_by(user_id=user.id).all()
-        ]
+        posts = [post.to_dict() for post in Post.query.filter_by(user_id=user.id).all()]
         if posts:
             return posts, 200
+        return {}, 204
+
+
+class SearchChats(Resource):
+    def post(self):
+        username1 = request.get_json().get("user1")
+        username2 = request.get_json().get("user2")
+        print(username1, username2)
+        user1 = User.query.filter_by(username=username1).first()
+        user2 = User.query.filter_by(username=username2).first()
+        print(user1, user2)
+        chat = Chat.query.filter(
+            Chat.user1_id == user1.id and Chat.user2_id == user2.id
+        ).first()
+        if chat:
+            return chat.to_dict(), 200
         return {}, 204
 
 
@@ -132,6 +153,8 @@ api.add_resource(
 api.add_resource(
     SearchPosts, "/api/search_posts/<string:username>", endpoint="search_posts"
 )
+api.add_resource(SearchChats, "/api/search_chats", endpoint="search_chats")
 
 if __name__ == "__main__":
-    app.run(port=5555, debug=True)
+    socketio.run(app, port=5555, debug=True)
+    # app.run(port=5555, debug=True)

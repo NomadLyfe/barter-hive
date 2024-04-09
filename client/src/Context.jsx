@@ -17,6 +17,7 @@ function ContextProvider({ children }) {
     const [maxposts, setMaxposts] = useState(25)
     const [userpage, setUserpage] = useState(null)
     const [userposts, setUserposts] = useState(null)
+    const [messages, setMessages] = useState([])
     const navigate = useNavigate();
     return (
         <Context.Provider value={{ 
@@ -46,7 +47,9 @@ function ContextProvider({ children }) {
             userpage, 
             setUserpage,
             userposts, 
-            setUserposts
+            setUserposts,
+            messages,
+            setMessages
         }}>
             {children}
         </Context.Provider>

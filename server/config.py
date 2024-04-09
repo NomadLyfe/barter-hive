@@ -6,9 +6,21 @@ from flask_bcrypt import Bcrypt
 from flask_restful import Api
 from flask_cors import CORS
 from dotenv import load_dotenv
+from flask_socketio import SocketIO
 import os
 
 load_dotenv()
+
+# origins = None
+# if os.environ.get('FLASK_ENV') == 'production':
+#     origins = [
+#         'http://actual-app-url.herokuapp.com',
+#         'https://actual-app-url.herokuapp.com'
+#     ]
+# else:
+#     origins = "*"
+
+# socketio = SocketIO(cors_allowed_origins=origins)
 
 naming_convention = {
     "ix": "ix_%(column_0_label)s",
@@ -28,6 +40,9 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app=app, metadata=metadata)
 
 migrate = Migrate(app=app, db=db)
+
+# socketio.init_app(app)
+socketio = SocketIO(app)
 
 bcrypt = Bcrypt(app=app)
 

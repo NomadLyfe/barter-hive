@@ -23,6 +23,7 @@
     overflow-y: auto;
     flex: 1;
     min-height: 30vh;
+    max-height: 30vh;
 }
   
 .chatbox .message {
@@ -87,4 +88,8 @@
 .chatbox button:hover {
     background-color: #9C9A40;
     color: #3b4131;
+}
+
+.messages p {
+    text-align: center;
 }

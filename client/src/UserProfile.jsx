@@ -3,6 +3,8 @@ import { Context } from './Context';
 import { useParams, NavLink } from "react-router-dom";
 import './css files/Home.css'
 import no_pic from './images/no-profile-pic.png'
+import Chats from "./Chats";
+import Bdays from "./Bdays";
 import Friends from "./Friends";
 
 function UserProfile() {
@@ -33,6 +35,15 @@ function UserProfile() {
         })
 
     }, [username])
+
+    function handlePostFormClick() {
+        const overlay = document.querySelector('.overlay')
+        const main = document.querySelector('main')
+        const postForm = document.querySelector('.post-form')
+        overlay.style.display = 'flex'
+        postForm.style.display = 'block'
+        main.style.filter = 'brightness(40%)'
+    }
 
     let renderedPostList = null
     if (userposts) {
@@ -77,45 +88,43 @@ function UserProfile() {
             )
         })
     }
-
-    let renderedbdays = []
-    if (user) {
-        const friends = [...user.friendships]
-        const friend_ids = friends.map(u => u.id)
-        friends.splice(friend_ids.indexOf(user.id), 1)
-        renderedbdays = friends.map((friend, i) => {
-            let bday = new Date(friend.bday)
-            if (bday.getMonth() == currdate.getMonth() && bday.getDay() == currdate.getDay()) {
-                return (
-                    <div className="bday" key={i}>
-                        <div>It is {friend.username}</div>
-                    </div>
-                )
-            }
-        })
-    }
     
     return (
         <>
-            <div className="banner text"><img src="" /></div>
-            <div className="about text">2</div>
+            <div className="banner text">
+                {userpage ? <img src={userpage.banner_pic} /> : null}
+            </div>
+            <div className="about text">
+                <p>Joined: {}</p>
+                <p>Friends: {userpage ? userpage.friendships.length - 1 : null}</p>
+                <p>Posts: {userpage ? userpage.posts.length : null}</p>
+                <p>Relationship: {}</p>
+            </div>
             <div className="mainPage">
                 <div className="leftPanel">
-                    <div className="messages text">
-                        messages?
-                    </div>
-                </div>
-                <div className="center">
-                    <div className="feed">{renderedPostList}</div>
-                </div>
-                <div className="rightPanel">
                     <div className="bdays text">
                         <h3>Birthdays</h3>
-                        {renderedbdays[0] ? renderedbdays : <div className="no_bday">No Birthdays</div>}
+                        <Bdays />
                     </div>
                     <div className="friends text">
                         <h3>Friends</h3>
                         <Friends />
+                    </div>
+                </div>
+                <div className="center">
+                    {userpage && user.username === userpage.username ? 
+                    <div className="card createPostDiv">
+                        <NavLink to={`/${user.username}`}><img src={user.profile_pic ? user.profile_pic : no_pic} className="profile-pic" alt="profile pic" /></NavLink>
+                        <button onClick={handlePostFormClick} className="creatPostButton">{user.username.charAt(0).toUpperCase() + user.username.slice(1)}, create a post!</button>
+                    </div> : null}
+                    <div className="feed">
+                        {renderedPostList ? renderedPostList : <h2 className="text"><br /><br />You don't have any posts!</h2>}
+                    </div>
+                </div>
+                <div className="rightPanel">
+                    <div className="chats text">
+                        <h3>Chats</h3>
+                        <Chats />
                     </div>
                 </div>
             </div>

@@ -128,10 +128,6 @@ function App() {
         }
     }, [showingposts])
 
-    document.addEventListener('scroll', () => {
-        setScroll(window.scrollY)
-    })
-
     function resetTimer(e) {
         setInactivityCount(0)
     }
