@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useContext } from 'react';
 import { Routes, Route } from "react-router-dom";
 import './css files/App.css';
@@ -128,7 +129,7 @@ function App() {
         }
     }, [showingposts])
 
-    function resetTimer(e) {
+    function resetTimer() {
         setInactivityCount(0)
     }
 

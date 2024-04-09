@@ -1,6 +1,5 @@
 import { useEffect, useContext } from "react"
 import { Context } from './Context';
-import { NavLink } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import './css files/Home.css'

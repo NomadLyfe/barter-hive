@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useContext } from "react"
 import { Context } from './Context';
 import { useParams, NavLink } from "react-router-dom";
@@ -8,7 +9,7 @@ import Bdays from "./Bdays";
 import Friends from "./Friends";
 
 function UserProfile() {
-    const { user, userpage, setUserpage, currdate, userposts, setUserposts } = useContext(Context);
+    const { user, userpage, setUserpage, userposts, setUserposts } = useContext(Context);
     let { username } = useParams();
 
     useEffect(() => {
@@ -118,7 +119,7 @@ function UserProfile() {
                         <button onClick={handlePostFormClick} className="creatPostButton">{user.username.charAt(0).toUpperCase() + user.username.slice(1)}, create a post!</button>
                     </div> : null}
                     <div className="feed">
-                        {renderedPostList ? renderedPostList : <h2 className="text"><br /><br />You don't have any posts!</h2>}
+                        {renderedPostList ? renderedPostList : <h2 className="text"><br /><br />You don{"'"}t have any posts!</h2>}
                     </div>
                 </div>
                 <div className="rightPanel">

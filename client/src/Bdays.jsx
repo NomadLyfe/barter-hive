@@ -2,7 +2,6 @@ import { useContext } from "react"
 import { Context } from './Context';
 import { NavLink } from "react-router-dom";
 import './css files/Home.css'
-import no_pic from './images/no-profile-pic.png'
 
 function Bdays() {
     const { user, currdate } = useContext(Context)
@@ -17,7 +16,7 @@ function Bdays() {
             if (bday.getMonth() == currdate.getMonth() && bday.getDay() == currdate.getDay()) {
                 return (
                     <div className="bday" key={i}>
-                        <div>It is {friend.username}'s birthday today!</div>
+                        <div>It is <NavLink to={`/${friend.username}`}>{friend.username}{"'"}s</NavLink> birthday today!</div>
                     </div>
                 )
             }

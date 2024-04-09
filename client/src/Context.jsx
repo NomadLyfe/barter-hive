@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import { createContext, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
 export const Context = createContext();
@@ -54,6 +54,6 @@ function ContextProvider({ children }) {
             {children}
         </Context.Provider>
     );
-};
+}
 
 export default ContextProvider

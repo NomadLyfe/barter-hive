@@ -1,4 +1,3 @@
-import React from "react"
 import logoNoTitle from './images/logo-no-title.png'
 import { NavLink } from "react-router-dom";
 import './css files/NavBar.css'
@@ -21,7 +20,7 @@ function NavBar() {
                 setUser(null);
             }
         });
-    };
+    }
 
     const formSchema = yup.object().shape({
         queryTerm: yup.string()
@@ -92,7 +91,7 @@ function NavBar() {
                         <img src={u.profile_pic ? u.profile_pic : no_pic} className="profile-pic" alt="user-pic" />
                         <div className="user_info">
                             <span>{u.username}</span>
-                            {user.friendships.map((friend, i) => friend.id).includes(u.id) ? (u.id === user.id ? <span>you</span> : <span>friend</span>) : <span>x mutual friends</span>}
+                            {user.friendships.map((friend) => friend.id).includes(u.id) ? (u.id === user.id ? <span>you</span> : <span>friend</span>) : <span>x mutual friends</span>}
                         </div>
                     </NavLink>
                 </div>

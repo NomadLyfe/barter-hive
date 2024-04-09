@@ -6,7 +6,8 @@ import './css files/Login.css';
 import logoNoBack from './images/logo-no-background.svg';
 
 function Signup() {
-    const { user, setUser, navigate, setPosts, offset, setOffset, setShowingposts, setNumposts, setMaxposts } = useContext(Context)
+    // const { user, setUser, navigate, setPosts, offset, setOffset, setShowingposts, setNumposts, setMaxposts } = useContext(Context)
+    const { setUser, navigate } = useContext(Context)
 
     const formSchema = yup.object().shape({
         username: yup.string().required('Must enter username').max(20),
@@ -73,7 +74,7 @@ function Signup() {
         }
     });
 
-    function handleClick(e) {
+    function handleClick() {
         navigate('/login')
     }
 
