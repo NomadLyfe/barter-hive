@@ -11,16 +11,14 @@ import os
 
 load_dotenv()
 
-# origins = None
-# if os.environ.get('FLASK_ENV') == 'production':
-#     origins = [
-#         'http://actual-app-url.herokuapp.com',
-#         'https://actual-app-url.herokuapp.com'
-#     ]
-# else:
-#     origins = "*"
-
-# socketio = SocketIO(cors_allowed_origins=origins)
+origins = None
+if os.environ.get('FLASK_ENV') == 'production':
+    origins = [
+        'http://actual-app-url.herokuapp.com',
+        'https://actual-app-url.herokuapp.com'
+    ]
+else:
+    origins = "*"
 
 naming_convention = {
     "ix": "ix_%(column_0_label)s",
@@ -41,8 +39,7 @@ db = SQLAlchemy(app=app, metadata=metadata)
 
 migrate = Migrate(app=app, db=db)
 
-# socketio.init_app(app)
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins=origins)
 
 bcrypt = Bcrypt(app=app)
 

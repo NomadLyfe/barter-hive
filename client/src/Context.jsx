@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { createContext, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
@@ -17,7 +18,8 @@ function ContextProvider({ children }) {
     const [maxposts, setMaxposts] = useState(25)
     const [userpage, setUserpage] = useState(null)
     const [userposts, setUserposts] = useState(null)
-    const [messages, setMessages] = useState([])
+    const [chat, setChat] = useState(null)
+    const [messages, setMessages] = useState(null)
     const navigate = useNavigate();
     return (
         <Context.Provider value={{ 
@@ -48,7 +50,9 @@ function ContextProvider({ children }) {
             setUserpage,
             userposts, 
             setUserposts,
-            messages,
+            chat,
+            setChat,
+            messages, 
             setMessages
         }}>
             {children}

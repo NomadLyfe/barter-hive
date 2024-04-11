@@ -3,7 +3,7 @@
 }
 
 .chatusers {
-    min-height: 40vh;
+    min-height: 36vh;
     overflow-y: auto;
 }
 
@@ -19,11 +19,13 @@
 }
   
 .chatbox .messages {
+    display: flex;
     padding: 10px;
     overflow-y: auto;
     flex: 1;
-    min-height: 30vh;
+    min-height: 31vh;
     max-height: 30vh;
+    flex-direction: column-reverse;
 }
   
 .chatbox .message {

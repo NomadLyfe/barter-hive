@@ -14,31 +14,16 @@ import Settings from './Settings';
 
 function App() {
     const { 
-        user, 
-        setUser, 
-        navigate, 
-        inactivityCount, 
-        setInactivityCount, 
-        setIsActive, 
-        posts, 
-        setPosts, 
-        offset, 
-        setOffset, 
-        scroll, 
-        setScroll, 
-        setCurrdate, 
-        showingposts, 
-        setShowingposts,
-        numposts, 
-        setNumposts,
-        maxposts, 
-        setMaxposts
+        user,
+        inactivityCount,
+        setInactivityCount,
+        setCurrdate,
+        setIsActive,
+        navigate,
+        setUser
     } = useContext(Context)
-    
+
     useEffect(() => {
-        setOffset(0)
-        setScroll(0)
-        setMaxposts(25)
         fetch('/api/check_session').then((resp) => {
             if (resp.status === 200) {
                 resp.json().then((user) => {
@@ -48,23 +33,6 @@ function App() {
                 navigate(`/login`)
             }
         });
-        fetch('/api/posts', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({offset: offset})
-        }).then((resp) => {
-            if (resp.status === 200) {
-                resp.json().then((postList) => {
-                    setPosts(postList)
-                    setShowingposts(postList)
-                    setNumposts(postList.length)
-                    setOffset(offset + 5)
-                })
-            }
-        });
-
     }, [])
 
     useEffect(() => {
@@ -79,55 +47,6 @@ function App() {
         return () => clearInterval(interval)
 
     }, [inactivityCount])
-    
-    useEffect(() => {
-        let controller = new AbortController()
-        let signal = controller.signal
-        if (posts.length < maxposts) {
-            fetch('/api/posts', {
-                method: 'POST',
-                signal: signal,
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({offset: offset})
-            }).then((resp) => {
-                if (resp.status === 200) {
-                    resp.json().then((postList) => {
-                        if (posts.length < maxposts) {
-                            setPosts(posts.concat(postList))
-                            setOffset(offset + 5)
-                            console.log('5 more posts')
-                        } else {
-                            controller.abort()
-                        }
-                    })
-                }
-            }).catch(err => {
-                if (err.name === 'AbortError') {
-                    console.log('Fetch request aborted')
-                } else {
-                    console.error('Error fetching data:', err)
-                }
-            })
-            return () => controller.abort()
-        }
-    }, [posts])
-
-    useEffect(() => {
-        if (window.scrollY > document.getElementById('root').scrollHeight / 2) {
-            setShowingposts(posts.filter((p, i) => i < numposts))
-            setNumposts(numposts + 5)
-        }
-    }, [scroll])
-
-    useEffect(() => {
-        console.log(showingposts.length > 0.7 * posts.length)
-        if (showingposts.length > 0.7 * posts.length) {
-            setMaxposts(maxposts + 25)
-            setPosts([...posts])
-        }
-    }, [showingposts])
 
     function resetTimer() {
         setInactivityCount(0)

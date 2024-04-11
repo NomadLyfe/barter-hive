@@ -24,9 +24,6 @@ function UserProfile() {
                 }
             })
         }
-    }, [])
-
-    useEffect(() => {
         fetch(`/api/search_posts/${username}`).then((resp) => {
             if (resp.status === 200) {
                 resp.json().then((postList) => {
@@ -34,7 +31,6 @@ function UserProfile() {
                 })
             }
         })
-
     }, [username])
 
     function handlePostFormClick() {
@@ -44,6 +40,43 @@ function UserProfile() {
         overlay.style.display = 'flex'
         postForm.style.display = 'block'
         main.style.filter = 'brightness(40%)'
+    }
+
+    function handleWantClick(e) {
+        const post_id = e.target.parentNode.parentNode.id
+        const wants = e.target.parentNode.parentNode.children[3].children[0].firstChild.textContent
+        console.log(post_id, wants)
+        fetch('/api/wants', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({user_id: user.id, post_id: post_id})
+        }).then((resp) => {
+            if (resp.status === 200) {
+                resp.json().then(() => {
+                    e.target.parentNode.parentNode.children[3].children[0].firstChild.textContent = `${parseInt(wants) + 1}`
+                })
+            }
+        })
+    }
+
+    function handlePassClick(e) {
+        const post_id = e.target.parentNode.parentNode.id
+        const passes = e.target.parentNode.parentNode.children[3].children[1].firstChild.textContent
+        fetch('/api/passes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({user_id: user.id, post_id: post_id})
+        }).then((resp) => {
+            if (resp.status === 200) {
+                resp.json().then(() => {
+                    e.target.parentNode.parentNode.children[3].children[1].firstChild.textContent = `${parseInt(passes) + 1}`
+                })
+            }
+        })
     }
 
     let renderedPostList = null
@@ -64,7 +97,7 @@ function UserProfile() {
                 })
             }
             return (
-                <div className="card" key={i}>
+                <div id={post.id} className="card" key={i}>
                     <div className="user_and_post_owner">
                         <NavLink to={`/${userpage.username}`}><img src={userpage.profile_pic ? userpage.profile_pic : no_pic} className="profile-pic" alt="user-pic" /></NavLink>
                         <h2 className="text">{userpage.username}</h2>
@@ -74,13 +107,13 @@ function UserProfile() {
                     </div>
                     <p className="text post_str">{post.str_content}</p>
                     <div className="stats text">
-                        <div className="endorses-num">{} wants</div>
-                        <div className="renounces-num">{} passes</div>
-                        <div className="comments-num">{} comments</div>
+                        <div className="wants-num"><span>{post.wants.length}</span> wants</div>
+                        <div className="passes-num"><span>{post.passes.length}</span> passes</div>
+                        <div className="comments-num"><span>{post.comments.length}</span> comments</div>
                     </div>
                     <div className="buttons text">
-                        <button>Want</button>
-                        <button>Pass</button>
+                        <button onClick={handleWantClick}>Want</button>
+                        <button onClick={handlePassClick}>Pass</button>
                         <button>Comment</button>
                         <button>Share</button>
                     </div>
@@ -96,10 +129,19 @@ function UserProfile() {
                 {userpage ? <img src={userpage.banner_pic} /> : null}
             </div>
             <div className="about text">
-                <p>Joined: {}</p>
-                <p>Friends: {userpage ? userpage.friendships.length - 1 : null}</p>
-                <p>Posts: {userpage ? userpage.posts.length : null}</p>
-                <p>Relationship: {}</p>
+                <div className="basic_info">
+                    {userpage ? <img src={userpage.profile_pic ? userpage.profile_pic : no_pic} /> : null}
+                    {userpage ? <h1>{userpage.username}</h1> : null}
+                </div>
+                <div className="extra_info">
+                    <p>Joined: {}</p>
+                    <p>Friends: {userpage ? userpage.friendships.length - 1 : null}</p>
+                    <p>Posts: {userpage ? userpage.posts.length : null}</p>
+                    <p>Relationship: {}</p>
+                </div>
+                <div className="about_me">
+                    {userpage ? <div><h2>About me:</h2><p>Hi, asjdkflsdkfjskdlfksdjfklsdkfjsdklfjksdjf  sdjfk sdfjsdklf jsdkfls dksdjkfsdjkf sdkfjks dfrsd fksdlfksdkfsl dsjkld sdj fsjdkfskd sjd fklsd fjskdf skdlf sdkfls dkfls dfj sdkfjksd fjskdlfsjdfk sdkf skdjf ksdjfksldf s dfk sdklf sdklfj skldj fkls dlkf skldfjskd flksd klfjsdklfj skldfjl</p></div> : null}
+                </div>
             </div>
             <div className="mainPage">
                 <div className="leftPanel">

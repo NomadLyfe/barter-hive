@@ -1,4 +1,5 @@
-import { useContext } from "react"
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useContext, useEffect } from "react"
 import { Context } from './Context';
 import { NavLink } from "react-router-dom";
 import './css files/Home.css'
@@ -8,7 +9,108 @@ import Bdays from "./Bdays";
 import Chats from "./Chats";
 
 function Home() {
-    const { user, showingposts, setScroll } = useContext(Context)
+    const {
+        user,
+        navigate,
+        posts,
+        setPosts,
+        offset,
+        setOffset,
+        scroll,
+        setScroll,
+        showingposts,
+        setShowingposts,
+        numposts,
+        setNumposts,
+        maxposts,
+        setMaxposts
+    } = useContext(Context)
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.location.pathname === '/') {
+                setScroll(window.scrollY)
+            }
+        }
+
+        document.addEventListener('scroll', handleScroll)
+
+        return () => {
+            document.removeEventListener('scroll', handleScroll)
+        }
+    }, [])
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+        setOffset(0)
+        setScroll(0)
+        setMaxposts(25)
+        fetch('/api/posts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({offset: offset})
+        }).then((resp) => {
+            if (resp.status === 200) {
+                resp.json().then((postList) => {
+                    setPosts(postList)
+                    setShowingposts(postList)
+                    setNumposts(postList.length)
+                    setOffset(offset + 5)
+                })
+            }
+        });
+    }, [])
+    
+    useEffect(() => {
+        let controller = new AbortController()
+        let signal = controller.signal
+        if (posts.length < maxposts) {
+            fetch('/api/posts', {
+                method: 'POST',
+                signal: signal,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({offset: offset})
+            }).then((resp) => {
+                if (resp.status === 200) {
+                    resp.json().then((postList) => {
+                        if (posts.length < maxposts) {
+                            setPosts(posts.concat(postList))
+                            setOffset(offset + 5)
+                            console.log('5 more posts')
+                        } else {
+                            controller.abort()
+                        }
+                    })
+                }
+            }).catch(err => {
+                if (err.name === 'AbortError') {
+                    console.log('Fetch request aborted')
+                } else {
+                    console.error('Error fetching data:', err)
+                }
+            })
+            return () => controller.abort()
+        }
+    }, [posts])
+
+    useEffect(() => {
+        if (window.scrollY > document.getElementById('root').scrollHeight / 2) {
+            setShowingposts(posts.filter((p, i) => i < numposts))
+            setNumposts(numposts + 5)
+        }
+    }, [scroll])
+
+    useEffect(() => {
+        console.log(showingposts.length > 0.7 * posts.length)
+        if (showingposts.length > 0.7 * posts.length) {
+            setMaxposts(maxposts + 25)
+            setPosts([...posts])
+        }
+    }, [showingposts])
 
     function handlePostFormClick() {
         const overlay = document.querySelector('.overlay')
@@ -18,6 +120,43 @@ function Home() {
         postForm.style.display = 'block'
         main.style.filter = 'brightness(40%)'
     }
+
+    function handleWantClick(e) {
+        const post_id = e.target.parentNode.parentNode.id
+        const wants = e.target.parentNode.parentNode.children[3].children[0].firstChild.textContent
+        fetch('/api/wants', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({user_id: user.id, post_id: post_id})
+        }).then((resp) => {
+            if (resp.status === 200) {
+                resp.json().then(() => {
+                    e.target.parentNode.parentNode.children[3].children[0].firstChild.textContent = `${parseInt(wants) + 1}`
+                })
+            }
+        })
+    }
+
+    function handlePassClick(e) {
+        const post_id = e.target.parentNode.parentNode.id
+        const passes = e.target.parentNode.parentNode.children[3].children[1].firstChild.textContent
+        fetch('/api/passes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({user_id: user.id, post_id: post_id})
+        }).then((resp) => {
+            if (resp.status === 200) {
+                resp.json().then(() => {
+                    e.target.parentNode.parentNode.children[3].children[1].firstChild.textContent = `${parseInt(passes) + 1}`
+                })
+            }
+        })
+    }
+
     let renderedPostList = null
     if (showingposts[0]) {
         renderedPostList = showingposts.map((post, i) => {
@@ -37,7 +176,7 @@ function Home() {
             }
             
             return (
-                <div className="card" key={i}>
+                <div id={post.id} className="card" key={i}>
                     <div className="user_and_post_owner">
                         <NavLink to={`/${post.user.username}`}><img src={post.user.profile_pic ? post.user.profile_pic : no_pic} className="profile-pic" alt="user-pic" /></NavLink>
                         <h2 className="text">{post.user.username}</h2>
@@ -47,13 +186,13 @@ function Home() {
                     </div>
                     <p className="text post_str">{post.str_content}</p>
                     <div className="stats text">
-                        <div className="endorses-num">{post.wants.length} wants</div>
-                        <div className="renounces-num">{post.passes.length} passes</div>
-                        <div className="comments-num">{post.comments.length} comments</div>
+                        <div className="wants-num"><span>{post.wants.length}</span> wants</div>
+                        <div className="passes-num"><span>{post.passes.length}</span> passes</div>
+                        <div className="comments-num"><span>{post.comments.length}</span> comments</div>
                     </div>
                     <div className="buttons text">
-                        <button>Want</button>
-                        <button>Pass</button>
+                        <button onClick={handleWantClick}>Want</button>
+                        <button onClick={handlePassClick}>Pass</button>
                         <button>Comment</button>
                         <button>Share</button>
                     </div>
@@ -62,12 +201,6 @@ function Home() {
             )
         })
     }
-
-    document.addEventListener('scroll', () => {
-        if (window.location.pathname === '/') {
-            setScroll(window.scrollY)
-        }
-    })
 
     return (
         <>

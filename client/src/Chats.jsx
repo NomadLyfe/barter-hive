@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useContext } from "react"
 import { Context } from './Context';
 import { useFormik } from "formik";
@@ -10,13 +11,16 @@ import './css files/Chats.css';
 let socket;
 
 function Chats() {
-    const { user, messages, setMessages } = useContext(Context)
+    const { user, chat, setChat, messages, setMessages } = useContext(Context)
 
     useEffect(() => {
-        socket = io();
+        const URL = process.env.NODE_ENV === 'production' ? undefined : 'http://localhost:5555';
+        socket = io(URL);
 
-        socket.on('chat', (chat) => {
-            setMessages([...messages, chat])
+        socket.on('chat_result', (ms) => {
+            console.log(ms)
+            console.log([...ms])
+            setMessages([...ms])
         })
 
         return (() => {
@@ -44,8 +48,9 @@ function Chats() {
         }).then((resp) => {
             if (resp.status === 200) {
                 resp.json().then((chat) => {
-                    console.log(chat)
-                    setMessages(chat.messages)
+                    setChat(chat)
+                    setMessages([...chat.messages])
+                    console.log([...chat.messages])
                 })
             }
         })
@@ -68,8 +73,8 @@ function Chats() {
 
     let renderedmessages = null
     if (messages) {
-        renderedmessages = messages.map((message, i) => (
-            <div key={i} className={`message ${message.user}`}>
+        renderedmessages = messages.toReversed().map((message, i) => (
+            <div key={i} className={`message ${message.user.username}`}>
                 {message.user.username}: {message.content}
             </div>
         ))
@@ -82,24 +87,26 @@ function Chats() {
 
     const formik = useFormik({
         initialValues: {
-            message: ''
+            message: '',
+            // user_id: user.id,
+            // chat_id: chat ? chat.id : null
         },
         validationSchema: formSchema,
         onSubmit: (values) => {
-            fetch('/api/messages', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(values)
-            }).then((resp) => {
-                if (resp.ok) {
-                    resp.json().then((message) => {
-                        setMessages([...messages, message]);
-                        socket.emit('chat', { user: user.username, msg: values.message })
-                    });
-                }
-            });
+            socket.emit("json", { message: values.message, user_id: user.id, chat_id: chat ? chat.id : null })
+            // fetch('/api/messages', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify(values)
+            // }).then((resp) => {
+            //     if (resp.ok) {
+            //         resp.json().then((message) => {
+            //             setMessages([...messages, message]);
+            //         });
+            //     }
+            // });
             formik.resetForm();
         }
     });
@@ -117,10 +124,11 @@ function Chats() {
                         <input
                         type="text"
                         placeholder="Type your message..."
+                        name="message"
                         value={formik.values.message}
                         onChange={formik.handleChange}
                         />
-                        <button >Send</button>
+                        <button type="submit">Send</button>
                     </form>
                 </div>
             </div>

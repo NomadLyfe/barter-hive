@@ -88,6 +88,8 @@ if __name__ == "__main__":
         Chat.query.delete()
         Comment.query.delete()
         Message.query.delete()
+        Want.query.delete()
+        Pass.query.delete()
         db.session.commit()
         print("Creating records...")
         users = [
@@ -113,10 +115,23 @@ if __name__ == "__main__":
             city="newport news",
             country="united states",
             state="va",
-            profile_pic="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeik6d5EHLTi89m_CKLXyShylk4L92YflpJQ&usqp=CAU",
+            profile_pic="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFGmEnfLO_77jxxOEX_j4S8m0Z2R-IBHYWMhMyYMrALcGwScYNTbPr&usqp=CAE&s",
+            banner_pic="https://img.freepik.com/free-vector/stylish-glowing-digital-red-lines-banner_1017-23964.jpg",
+        )
+        two_user = User(
+            username="def",
+            password_hash="def",
+            email="def@gmail.com",
+            bday="25jul94",
+            phone="9086556982",
+            city="newport news",
+            country="united states",
+            state="va",
+            profile_pic="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtBTOKtD_t-qCMkgpujv0C_vjgSTZQhRNqHcuQKbysrb391Vgcqdaf&usqp=CAE&s",
             banner_pic="https://img.freepik.com/free-vector/stylish-glowing-digital-red-lines-banner_1017-23964.jpg",
         )
         users.append(one_user)
+        users.append(two_user)
         posts = [
             Post(
                 str_content=fake.paragraph(nb_sentences=5),
@@ -172,15 +187,28 @@ if __name__ == "__main__":
         db.session.add_all(friendships + chats + comments + wants + passes)
         db.session.commit()
         pulled_chats = Chat.query.all()
-        messages = [
-            Message(
+        messages = []
+        for i in range(1000):
+            chat = choice(pulled_chats)
+            user1 = User.query.filter_by(id=chat.user1_id).first()
+            user2 = User.query.filter_by(id=chat.user2_id).first()
+            user = choice([user1, user2])
+            m = Message(
                 content=fake.paragraph(nb_sentences=choice(range(5))),
                 reactions=fake.emoji(),
-                chat=choice(pulled_chats),
-                user=choice(pulled_users)
+                chat=chat,
+                user=user
             )
-            for i in range(1000)
-        ]
-        db.session.add_all(messages)
+            messages.append(m)
+        first_user = User.query.filter_by(username=one_user.username).first()
+        second_user = User.query.filter_by(username=two_user.username).first()
+        ind_chat = Chat(
+            theme="normal",
+            font="normal",
+            font_size=12,
+            user1_id=first_user.id,
+            user2_id=second_user.id,
+        )
+        db.session.add_all(messages + [ind_chat])
         db.session.commit()
         print("Complete.")
