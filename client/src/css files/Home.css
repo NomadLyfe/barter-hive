@@ -403,3 +403,7 @@
         width: 177px;
     }
 }
+
+.wants-num span, .passes-num span, .comments-num span {
+    margin: 0px;
+}

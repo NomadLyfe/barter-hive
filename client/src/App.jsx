@@ -7,10 +7,9 @@ import Signup from './Signup'
 import { Context } from './Context';
 import NavBar from './NavBar';
 import Home from './Home';
-import upload from './images/upload.svg'
-import no_pic from './images/no-profile-pic.png'
 import UserProfile from './UserProfile';
 import Settings from './Settings';
+import NewPostOverlay from './NewPostOverlay';
 
 function App() {
     const { 
@@ -24,6 +23,7 @@ function App() {
     } = useContext(Context)
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         fetch('/api/check_session').then((resp) => {
             if (resp.status === 200) {
                 resp.json().then((user) => {
@@ -52,17 +52,6 @@ function App() {
         setInactivityCount(0)
     }
 
-    function handleOverlayClick(e) {
-        const overlay = document.querySelector('.overlay')
-        if (e.target == overlay) {
-            const main = document.querySelector('main')
-            const postForm = document.querySelector('.post-form')
-            postForm.style.display = ''
-            overlay.style.display = ''
-            main.style.filter = ''
-        }
-    }
-
     function handleMainClick(e) {
         const userPic = document.querySelector('#user_pic')
         const dropdown = document.querySelector('.user_dropdown')
@@ -86,25 +75,7 @@ function App() {
 
     return (
         <>
-            <div className='overlay' onClick={handleOverlayClick} onMouseMove={resetTimer}>
-                <div className="post-form">
-                    <div className='createPostTitle'>
-                        <h2>Create Post</h2>
-                        <div></div>
-                    </div>
-                    <form>
-                        <img src={user.profile_pic ? user.profile_pic : no_pic} className="profile-pic" alt="profile pic" />
-                        <input type='text' name="queryTerm" placeholder='Search Barter Hive' />
-                        <div className='image-drop' type='image' name="queryTerm" placeholder='Search Barter Hive'>
-                            <img src={upload} alt='add' />
-                            <h2><p>Add Photos and/or Videos</p></h2>
-                            <p>or drag and drop</p>
-                        </div>
-                        <textarea type='text' name="queryTerm" placeholder='Search Barter Hive' />
-
-                    </form>
-                </div>
-            </div>
+            <NewPostOverlay />
             <main onMouseMove={resetTimer} onClick={handleMainClick}>
                 <NavBar />
                 <Routes>

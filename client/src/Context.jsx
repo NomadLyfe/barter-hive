@@ -13,9 +13,6 @@ function ContextProvider({ children }) {
     const [offset, setOffset] = useState(0)
     const [scroll, setScroll] = useState(0)
     const [currdate, setCurrdate] = useState(new Date())
-    const [showingposts, setShowingposts] = useState(posts)
-    const [numposts, setNumposts] = useState(0)
-    const [maxposts, setMaxposts] = useState(25)
     const [userpage, setUserpage] = useState(null)
     const [userposts, setUserposts] = useState(null)
     const [chat, setChat] = useState(null)
@@ -40,12 +37,6 @@ function ContextProvider({ children }) {
             setScroll, 
             currdate, 
             setCurrdate,
-            showingposts,
-            setShowingposts,
-            numposts, 
-            setNumposts,
-            maxposts, 
-            setMaxposts,
             userpage, 
             setUserpage,
             userposts, 

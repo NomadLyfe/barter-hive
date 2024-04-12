@@ -216,14 +216,17 @@ class Post(db.Model, SerializerMixin):
 
     serialize_rules = (
         '-user.posts',
-        '-comments.post',
         '-user.comments',
-        '-wants.post',
         '-user.wants',
+        '-user.passes',
+        '-user.friendships',
+        '-user.chats',
+        '-user.messages',
+        '-wants.post',
         '-wants.user',
         '-passes.post',
-        '-user.passes',
         '-passes.user',
+        '-comments.post',
     )
 
     id = db.Column(db.Integer, primary_key=True)

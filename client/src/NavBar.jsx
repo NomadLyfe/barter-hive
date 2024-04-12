@@ -45,6 +45,7 @@ function NavBar() {
         //     })
         //     formik.resetForm();
         // }
+        // Future: build a function that navigates to a results page that displays all the users based on your query
     });
 
     function handleSearchChange(e) {

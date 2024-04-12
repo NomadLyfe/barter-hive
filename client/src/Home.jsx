@@ -17,16 +17,11 @@ function Home() {
         offset,
         setOffset,
         scroll,
-        setScroll,
-        showingposts,
-        setShowingposts,
-        numposts,
-        setNumposts,
-        maxposts,
-        setMaxposts
+        setScroll
     } = useContext(Context)
 
     useEffect(() => {
+
         const handleScroll = () => {
             if (window.location.pathname === '/') {
                 setScroll(window.scrollY)
@@ -41,32 +36,29 @@ function Home() {
     }, [])
 
     useEffect(() => {
-        window.scrollTo(0, 0);
-        setOffset(0)
-        setScroll(0)
-        setMaxposts(25)
+        setOffset(() => 0)
+        setScroll(() => 0)
         fetch('/api/posts', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({offset: offset})
+            body: JSON.stringify({offset: 0})
         }).then((resp) => {
             if (resp.status === 200) {
                 resp.json().then((postList) => {
-                    setPosts(postList)
-                    setShowingposts(postList)
-                    setNumposts(postList.length)
                     setOffset(offset + 5)
+                    setPosts(postList)
                 })
             }
         });
-    }, [])
-    
+    }, [navigate])
+
     useEffect(() => {
-        let controller = new AbortController()
-        let signal = controller.signal
-        if (posts.length < maxposts) {
+        if (window.scrollY + window.innerHeight >= document.body.scrollHeight) {
+            console.log(offset)
+            let controller = new AbortController()
+            let signal = controller.signal
             fetch('/api/posts', {
                 method: 'POST',
                 signal: signal,
@@ -77,13 +69,9 @@ function Home() {
             }).then((resp) => {
                 if (resp.status === 200) {
                     resp.json().then((postList) => {
-                        if (posts.length < maxposts) {
                             setPosts(posts.concat(postList))
                             setOffset(offset + 5)
-                            console.log('5 more posts')
-                        } else {
-                            controller.abort()
-                        }
+                            // console.log('5 more posts')
                     })
                 }
             }).catch(err => {
@@ -95,22 +83,7 @@ function Home() {
             })
             return () => controller.abort()
         }
-    }, [posts])
-
-    useEffect(() => {
-        if (window.scrollY > document.getElementById('root').scrollHeight / 2) {
-            setShowingposts(posts.filter((p, i) => i < numposts))
-            setNumposts(numposts + 5)
-        }
     }, [scroll])
-
-    useEffect(() => {
-        console.log(showingposts.length > 0.7 * posts.length)
-        if (showingposts.length > 0.7 * posts.length) {
-            setMaxposts(maxposts + 25)
-            setPosts([...posts])
-        }
-    }, [showingposts])
 
     function handlePostFormClick() {
         const overlay = document.querySelector('.overlay')
@@ -158,8 +131,8 @@ function Home() {
     }
 
     let renderedPostList = null
-    if (showingposts[0]) {
-        renderedPostList = showingposts.map((post, i) => {
+    if (posts[0]) {
+        renderedPostList = posts.map((post, i) => {
             let renderedCommentList = null
             if (post.comments) {
                 renderedCommentList = post.comments.map((comment, j) => {
