@@ -3,7 +3,6 @@ from config import app, db, api, socketio
 from models import User, Friendship, Post, Chat, Comment, Message, Want, Pass
 from flask import request, session, render_template
 from flask_restful import Resource
-import json
 # import requests
 # import ipdb
 
@@ -27,7 +26,11 @@ def handle_chat(data):
     )
     db.session.add(message)
     db.session.commit()
-    messages = [m.to_dict() for m in Message.query.filter_by(chat_id=data.get('chat_id'))]
+    messages = [
+        m.to_dict() for m in Message.query.filter_by(
+            chat_id=data.get('chat_id')
+        )
+    ]
     emit("chat_result", messages, broadcast=True)
 
 
@@ -119,7 +122,6 @@ class Posts(Resource):
         return {}, 204
 
 
-
 class SearchUsers(Resource):
     def get(self, term):
         users = [
@@ -167,8 +169,12 @@ class SearchChats(Resource):
 
 class Wants(Resource):
     def post(self):
-        user = User.query.filter_by(id=request.get_json().get('user_id')).first()
-        post = Post.query.filter_by(id=request.get_json().get('post_id')).first()
+        user = User.query.filter_by(
+            id=request.get_json().get('user_id')
+        ).first()
+        post = Post.query.filter_by(
+            id=request.get_json().get('post_id')
+        ).first()
         want = Want(user=user, post=post)
         if want:
             db.session.add(want)
@@ -179,8 +185,12 @@ class Wants(Resource):
 
 class Passes(Resource):
     def post(self):
-        user = User.query.filter_by(id=request.get_json().get('user_id')).first()
-        post = Post.query.filter_by(id=request.get_json().get('post_id')).first()
+        user = User.query.filter_by(
+            id=request.get_json().get('user_id')
+        ).first()
+        post = Post.query.filter_by(
+            id=request.get_json().get('post_id')
+        ).first()
         p = Pass(user=user, post=post)
         if p:
             db.session.add(p)

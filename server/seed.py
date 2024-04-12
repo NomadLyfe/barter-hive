@@ -1,8 +1,8 @@
 from config import app, db
 from models import User, Friendship, Post, Chat, Comment, Message, Want, Pass
 from faker import Faker
-from random import randint, choice
-import ipdb
+from random import choice
+# import ipdb
 
 if __name__ == "__main__":
     fake = Faker()
@@ -80,6 +80,9 @@ if __name__ == "__main__":
         ]
         image = "https://imageio.forbes.com/specials-images/imageserve/5d35eacaf1176b0008974b54/0x0.jpg?format=jpg&crop=4560,2565,x790,y784,safe&height=900&width=1600&fit=bounds"
         banner = "https://img.freepik.com/premium-photo/wide-banner-with-many-random-square-hexagons-charcoal-dark-black-color_105589-1820.jpg"
+        mike_pic = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeik6d5EHLTi89m_CKLXyShylk4L92YflpJQ&usqp=CAU"
+        prof_pic_1 = ("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFGmEnfLO_77jxxOEX_j4S8m0Z2R-IBHYWMhMyYMrALcGwScYNTbPr&usqp=CAE&s")
+        prof_pic_2 = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtBTOKtD_t-qCMkgpujv0C_vjgSTZQhRNqHcuQKbysrb391Vgcqdaf&usqp=CAE&s"
         print("Starting seed...")
         print("Deleting all records...")
         User.query.delete()
@@ -102,8 +105,8 @@ if __name__ == "__main__":
                 city=fake.city(),
                 country=fake.country(),
                 state=choice(states),
-                profile_pic="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeik6d5EHLTi89m_CKLXyShylk4L92YflpJQ&usqp=CAU",
-                banner_pic="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/cebd17f1-b283-45e5-8600-6ec3edc558fd/dee2aqv-222532a7-8676-4788-b8e3-08d4f5be55e2.png/v1/fill/w_1280,h_640,q_80,strp/profile_banner_by_darkfigure4_dee2aqv-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NjQwIiwicGF0aCI6IlwvZlwvY2ViZDE3ZjEtYjI4My00NWU1LTg2MDAtNmVjM2VkYzU1OGZkXC9kZWUyYXF2LTIyMjUzMmE3LTg2NzYtNDc4OC1iOGUzLTA4ZDRmNWJlNTVlMi5wbmciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.sdy7FtZ92V4tHXX-hTf0PupZmkD7CQoG-BkmOY0_mQg"
+                profile_pic=mike_pic,
+                banner_pic=banner
             ) for i in range(50)
         ]
         one_user = User(
@@ -115,8 +118,8 @@ if __name__ == "__main__":
             city="newport news",
             country="united states",
             state="va",
-            profile_pic="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFGmEnfLO_77jxxOEX_j4S8m0Z2R-IBHYWMhMyYMrALcGwScYNTbPr&usqp=CAE&s",
-            banner_pic="https://img.freepik.com/free-vector/stylish-glowing-digital-red-lines-banner_1017-23964.jpg",
+            profile_pic=prof_pic_1,
+            banner_pic=banner
         )
         two_user = User(
             username="def",
@@ -127,8 +130,8 @@ if __name__ == "__main__":
             city="newport news",
             country="united states",
             state="va",
-            profile_pic="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtBTOKtD_t-qCMkgpujv0C_vjgSTZQhRNqHcuQKbysrb391Vgcqdaf&usqp=CAE&s",
-            banner_pic="https://img.freepik.com/free-vector/stylish-glowing-digital-red-lines-banner_1017-23964.jpg",
+            profile_pic=prof_pic_2,
+            banner_pic=banner
         )
         users.append(one_user)
         users.append(two_user)
