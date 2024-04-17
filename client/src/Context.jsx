@@ -17,6 +17,7 @@ function ContextProvider({ children }) {
     const [userposts, setUserposts] = useState(null)
     const [chat, setChat] = useState(null)
     const [messages, setMessages] = useState(null)
+    const [editOn, setEditOn] = useState(false)
     const navigate = useNavigate();
     return (
         <Context.Provider value={{ 
@@ -44,7 +45,9 @@ function ContextProvider({ children }) {
             chat,
             setChat,
             messages, 
-            setMessages
+            setMessages,
+            editOn,
+            setEditOn
         }}>
             {children}
         </Context.Provider>
