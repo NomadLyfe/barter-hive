@@ -78,11 +78,11 @@ if __name__ == "__main__":
             "West Virginia",
             "Wyoming",
         ]
-        image = "https://imageio.forbes.com/specials-images/imageserve/5d35eacaf1176b0008974b54/0x0.jpg?format=jpg&crop=4560,2565,x790,y784,safe&height=900&width=1600&fit=bounds"
-        banner = "https://img.freepik.com/premium-photo/wide-banner-with-many-random-square-hexagons-charcoal-dark-black-color_105589-1820.jpg"
-        mike_pic = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeik6d5EHLTi89m_CKLXyShylk4L92YflpJQ&usqp=CAU"
-        prof_pic_1 = ("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFGmEnfLO_77jxxOEX_j4S8m0Z2R-IBHYWMhMyYMrALcGwScYNTbPr&usqp=CAE&s")
-        prof_pic_2 = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtBTOKtD_t-qCMkgpujv0C_vjgSTZQhRNqHcuQKbysrb391Vgcqdaf&usqp=CAE&s"
+        image = "/images/post1.jpg"
+        banner = "/images/banner1.jpg"
+        mike_pic = "/images/mike.jpg"
+        prof_pic_1 = "/images/profile1.jpg"
+        prof_pic_2 = "/images/profile2.jpg"
         print("Starting seed...")
         print("Deleting all records...")
         User.query.delete()
