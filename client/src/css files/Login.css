@@ -7,7 +7,7 @@
   display: grid;
   border-radius: 15px;
   background-color: #FFF6DB;
-  padding-bottom: 30px;
+  padding: 50px;
   margin: 8vh 0px;
 }
   
@@ -97,14 +97,19 @@
 
 .settings .loginForm {
   margin-top: 0px;
+  padding: 0px;
 }
 
 .settings-wrapper, .settings-wrapper form {
   border-radius: 15px;
-  background-color: #dad2ba;
+  background-color: #ebe2c6;
   margin: 8vh 10vw;
   display: flex;
   flex-direction: column;
+}
+
+.settings-wrapper input {
+  background-color: #ebe2c6;
 }
 
 .loginForm span {
@@ -202,6 +207,7 @@ input:checked + .slider:before {
 
 .picInfo img {
   width: 400px;
+  border-radius: 100px;
 }
 
 header {

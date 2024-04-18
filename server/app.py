@@ -3,6 +3,7 @@ from config import app, db, api, socketio
 from models import User, Friendship, Post, Chat, Comment, Message, Want, Pass
 from flask import request, session, render_template
 from flask_restful import Resource
+import base64
 # import requests
 # import ipdb
 
@@ -68,6 +69,31 @@ class Users(Resource):
         if users:
             return users, 200
         return {}, 204
+
+    def patch(self):
+        # try:
+            user = User.query.filter_by(id=session["user_id"]).first()
+            user.username = request.get_json().get("username")
+            if request.get_json().get("password"):
+                user.password_hash = request.get_json().get("password")
+            user.email = request.get_json().get("email")
+            user.phone = request.get_json().get("phone")
+            user.city = request.get_json().get("city")
+            user.state = request.get_json().get("state")
+            user.country = request.get_json().get("country")
+            profile_pic = request.get_json().get("profile")
+            if request.get_json().get("profile"):
+                profile_pic = request.get_json().get("profile")
+                print(base64.b64decode(profile_pic))
+                with open(f'/home/asyouseeit/Development/code/phase-5/barter-hive/server/images/{user.id}profile.jpg', 'wb') as file:
+                    file.write(base64.b64decode(profile_pic))
+                user.profile_pic = f'https://github.com/NomadLyfe/barter-hive/blob/main/server/images/{user.id}profile.jpg'
+            db.session.add(user)
+            db.session.commit()
+            session["user_id"] = user.id
+            return user.to_dict(), 201
+        # except Exception:
+        #     return {"error": "Invalid user information"}, 422
 
     def post(self):
         try:

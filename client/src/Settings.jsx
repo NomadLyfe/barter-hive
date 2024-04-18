@@ -1,59 +1,109 @@
 import { useContext, useState } from "react"
 import { Context } from './Context';
+import { useFormik } from "formik";
+import * as yup from "yup";
 import './css files/Login.css'
 import no_pic from './images/no-profile-pic.png'
 
 function Settings() {
-    const { user, editOn, setEditOn } = useContext(Context)
+    const { user, setUser, editOn, setEditOn } = useContext(Context)
     
     // {`settings ${darkMode ? 'dark' : 'light'}`}
 
-    const [darkMode, setDarkMode] = useState(false);
+    const formSchema = yup.object().shape({
+        username: yup.string().max(20),
+        password: yup.string().max(20),
+        email: yup.string().max(50),
+        phone: yup.string().max(20),
+        profile: yup.mixed(),
+        banner: yup.mixed(),
+        city: yup.string().max(20),
+        state: yup.string().max(20),
+        country: yup.string().max(20)
+    })
 
-    const handleDarkModeToggle = () => {
-        setDarkMode(!darkMode);
-        console.log('hi')
-        // You can implement logic here to toggle dark mode in your app
+    const formik = useFormik({
+        initialValues: {
+            username: user.username,
+            password: '',
+            email: user.email,
+            phone: user.phone,
+            profile: '',
+            banner: '',
+            city: user.city,
+            state: user.state,
+            country: user.country
+        },
+        validationSchema: formSchema,
+        onSubmit: (values) => {
+            fetch('/api/users', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(values)
+            }).then((resp) => {
+                if (resp.ok) {
+                    resp.json().then((updatedUser) => {
+                        setUser(updatedUser);
+                        setEditOn(false)
+                        const check_box = document.querySelector('.switch').firstChild;
+                        check_box.checked = false;
+                    });
+                }
+            });
+        }
+    });
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0]
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64String = reader.result.split(',')[1];
+            formik.setFieldValue(`${e.target.name}`, base64String);
+        };
+        reader.readAsDataURL(file);
     };
 
     return (
         <div className="settings-wrapper text">
-            <header><h2>Settings</h2></header>
+            <header><h1>Settings</h1></header>
             <div className="editSwitch">
                 <p>Edit:</p>
-                <label class="switch">
+                <label className="switch">
                     <input type="checkbox" onClick={() => {
                         setEditOn(!editOn)
                         }} />
-                    <span class="slider round"></span>
+                    <span className="slider round"></span>
                 </label>
             </div>
             <div className="settings">
                 <div className="picInfo">
                     <img src={user.profile_pic} />
                 </div>
-                <form className="loginForm" onSubmit={handleDarkModeToggle}>
+                <form className="loginForm" onSubmit={formik.handleSubmit}>
                     <label id="username">Username:</label>
-                    {editOn ? <input placeholder='Type your username' type="text" id="usernameinp" name="username" autoComplete="on" /> : <span>{user.username ?? ''}</span>}
+                    {editOn ? <input placeholder='Type your username' type="text" id="usernameinp" name="username" autoComplete="on" onChange={formik.handleChange} value={formik.values.username} /> : <span>{user.username ?? ''}</span>}
                     <label id="password">Password:</label>
-                    {editOn ? <input placeholder='Type your password' type='password' id='passwordinp' name='password' /> : <span>{user.username ?? ''}</span>}
+                    {editOn ? <input placeholder='Leave blank to leave unchanged' type='password' id='passwordinp' name='password' onChange={formik.handleChange} value={formik.values.password} /> : <span>{'**********'}</span>}
                     <label id="email">E-mail:</label>
-                    {editOn ? <input placeholder='Type your email' type='password' id='emailinp' name='email' /> : <span>{user.email ?? ''}</span>}
+                    {editOn ? <input placeholder='Type your email' type='text' id='emailinp' name='email' onChange={formik.handleChange} value={formik.values.email} /> : <span>{user.email ?? ''}</span>}
+                    <label id="phone">Phone Number:</label>
+                    {editOn ? <input placeholder='Type your phone number' type='text' id='phoneinp' name='phone' onChange={formik.handleChange} value={formik.values.phone} /> : <span>{user.phone ?? ''}</span>}
                     <label id="profile">Profile Picture:</label>
-                    {editOn ? <input type="file" id="profileinp" name="profile" accept="image/*" /> : <span>{user.profile_pic ?? ''}</span>}
+                    {editOn ? <input type="file" id="profileinp" name="profile" accept="image/*" onChange={handleFileChange} /> : <span>{user.profile_pic ?? ''}</span>}
                     <label id="banner">Banner Picture:</label>
-                    {editOn ? <input type="file" id="bannerinp" name="banner" accept="image/*" /> : <span>{user.banner_pic ?? ''}</span>}
+                    {editOn ? <input type="file" id="bannerinp" name="banner" accept="image/*" onChange={handleFileChange} /> : <span>{user.banner_pic ?? ''}</span>}
                     <label id="city">City:</label>
-                    {editOn ? <input placeholder="Type your city" type="text" id="cityinp" name="city" autoComplete="on" /> : <span>{user.city ?? ''}</span>}
+                    {editOn ? <input placeholder="Type your city" type="text" id="cityinp" name="city" autoComplete="on" onChange={formik.handleChange} value={formik.values.city} /> : <span>{user.city ?? ''}</span>}
                     <label id="state">State:</label>
-                    {editOn ? <input placeholder="Type your state" type="text" id="stateinp" name="state" autoComplete="on" /> : <span>{user.state ?? ''}</span>}
+                    {editOn ? <input placeholder="Type your state" type="text" id="stateinp" name="state" autoComplete="on" onChange={formik.handleChange} value={formik.values.state} /> : <span>{user.state ?? ''}</span>}
                     <label id="country">Country:</label>
-                    {editOn ? <input placeholder="Type your country" type="text" id="countryinp" name="country" autoComplete="on" /> : <span>{user.country ?? ''}</span>}
+                    {editOn ? <input placeholder="Type your country" type="text" id="countryinp" name="country" autoComplete="on" onChange={formik.handleChange} value={formik.values.country} /> : <span>{user.country ?? ''}</span>}
                     {editOn ? <button type='submit'>SAVE</button> : null}
                 </form>
             </div>
         </div>
-
     )
 }
 
