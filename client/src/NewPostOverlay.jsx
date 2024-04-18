@@ -29,7 +29,7 @@ function NewPostOverlay() {
                     <div></div>
                 </div>
                 <form>
-                    <img src={user.profile_pic ? user.profile_pic : no_pic} className="profile-pic" alt="profile pic" />
+                    <img src={user.profile_pic ? `http://localhost:5555/${user.profile_pic}` : no_pic} className="profile-pic" alt="profile pic" />
                     <input type='text' name="queryTerm" placeholder='Search Barter Hive' />
                     <div className='image-drop' type='image' name="queryTerm" placeholder='Search Barter Hive'>
                         <img src={upload} alt='add' />

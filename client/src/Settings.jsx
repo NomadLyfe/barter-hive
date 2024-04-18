@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"
+import { useContext } from "react"
 import { Context } from './Context';
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -79,7 +79,7 @@ function Settings() {
             </div>
             <div className="settings">
                 <div className="picInfo">
-                    <img src={user.profile_pic} />
+                    <img src={user.profile_pic ? `http://localhost:5555/${user.profile_pic}` : no_pic} alt="user-pic" />
                 </div>
                 <form className="loginForm" onSubmit={formik.handleSubmit}>
                     <label id="username">Username:</label>

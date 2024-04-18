@@ -139,7 +139,7 @@ function Home() {
                     return (
                         <div className="text comment_obj" key={j}>
                             <div className="user_and_comment">
-                                <NavLink to={`/${comment.user.username}`}><img src={comment.user.profile_pic ? comment.user.profile_pic : no_pic} className="profile-pic" alt="user-pic" /></NavLink>
+                                <NavLink to={`/${comment.user.username}`}><img src={comment.user.profile_pic ? `http://localhost:5555/${comment.user.profile_pic}` : no_pic} className="profile-pic" alt="user-pic" /></NavLink>
                                 <div className="comment">{comment.content}</div>
                             </div>
                             <div className="comment_likes"><button>like</button>{comment.likes} likes</div>
@@ -151,7 +151,7 @@ function Home() {
             return (
                 <div id={post.id} className="card" key={i}>
                     <div className="user_and_post_owner">
-                        <NavLink to={`/${post.user.username}`}><img src={post.user.profile_pic ? post.user.profile_pic : no_pic} className="profile-pic" alt="user-pic" /></NavLink>
+                        <NavLink to={`/${post.user.username}`}><img src={post.user.profile_pic ? `http://localhost:5555/${post.user.profile_pic}` : no_pic} className="profile-pic" alt="user-pic" /></NavLink>
                         <h2 className="text">{post.user.username}</h2>
                     </div>
                     <div className="media">
@@ -191,7 +191,7 @@ function Home() {
                 <div className="center">
                     <div className="text">filters?</div>
                     <div className="card createPostDiv">
-                        <NavLink to={`/${user.username}`}><img src={user.profile_pic ? user.profile_pic : no_pic} className="profile-pic" alt="profile pic" /></NavLink>
+                        <NavLink to={`/${user.username}`}><img src={user.profile_pic ? `http://localhost:5555/${user.profile_pic}` : no_pic} className="profile-pic" alt="profile pic" /></NavLink>
                         <button onClick={handlePostFormClick} className="creatPostButton">{user.username.charAt(0).toUpperCase() + user.username.slice(1)}, create a post!</button>
                     </div>
                     <div className="feed">

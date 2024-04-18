@@ -88,7 +88,7 @@ function UserProfile() {
                     return (
                         <div className="text comment_obj" key={j}>
                             <div className="user_and_comment">
-                                <NavLink to={`/${comment.user.username}`}><img src={comment.user.profile_pic ? comment.user.profile_pic : no_pic} className="profile-pic" alt="user-pic" /></NavLink>
+                                <NavLink to={`/${comment.user.username}`}><img src={comment.user.profile_pic ? `http://localhost:5555/${comment.user.profile_pic}` : no_pic} className="profile-pic" alt="user-pic" /></NavLink>
                                 <div className="comment">{comment.content}</div>
                             </div>
                             <div className="comment_likes"><button>like</button>{comment.likes} likes</div>
@@ -99,7 +99,7 @@ function UserProfile() {
             return (
                 <div id={post.id} className="card" key={i}>
                     <div className="user_and_post_owner">
-                        <NavLink to={`/${userpage.username}`}><img src={userpage.profile_pic ? userpage.profile_pic : no_pic} className="profile-pic" alt="user-pic" /></NavLink>
+                        <NavLink to={`/${userpage.username}`}><img src={userpage.profile_pic ? `http://localhost:5555/${userpage.profile_pic}` : no_pic} className="profile-pic" alt="user-pic" /></NavLink>
                         <h2 className="text">{userpage.username}</h2>
                     </div>
                     <div className="media">
@@ -126,11 +126,11 @@ function UserProfile() {
     return (
         <>
             <div className="banner text">
-                {userpage ? <img src={userpage.banner_pic} /> : null}
+                {userpage ? <img src={`http://localhost:5555/${userpage.banner_pic}`} /> : null}
             </div>
             <div className="about text">
                 <div className="basic_info">
-                    {userpage ? <img src={userpage.profile_pic ? userpage.profile_pic : no_pic} /> : null}
+                    {userpage ? <img src={userpage.profile_pic ? `http://localhost:5555/${userpage.profile_pic}` : no_pic} /> : null}
                     {userpage ? <h1>{userpage.username}</h1> : null}
                 </div>
                 <div className="extra_info">
@@ -157,7 +157,7 @@ function UserProfile() {
                 <div className="center">
                     {userpage && user.username === userpage.username ? 
                     <div className="card createPostDiv">
-                        <NavLink to={`/${user.username}`}><img src={user.profile_pic ? user.profile_pic : no_pic} className="profile-pic" alt="profile pic" /></NavLink>
+                        <NavLink to={`/${user.username}`}><img src={user.profile_pic ? `http://localhost:5555/${user.profile_pic}` : no_pic} className="profile-pic" alt="profile pic" /></NavLink>
                         <button onClick={handlePostFormClick} className="creatPostButton">{user.username.charAt(0).toUpperCase() + user.username.slice(1)}, create a post!</button>
                     </div> : null}
                     <div className="feed">

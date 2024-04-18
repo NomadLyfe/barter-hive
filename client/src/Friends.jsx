@@ -15,7 +15,7 @@ function Friends() {
         renderedFriendList = friends.map((friend, i) => {
             return (
                 <NavLink className="friend" key={i} to={`/${friend.username}`}>
-                    <img src={friend.profile_pic ? friend.profile_pic : no_pic} className="profile-pic" alt="profile pic" />
+                    <img src={friend.profile_pic ?`http://localhost:5555/${friend.profile_pic}` : no_pic} className="profile-pic" alt="profile pic" />
                     <div>{friend.username}</div>
                 </NavLink>
             )

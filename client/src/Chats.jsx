@@ -64,7 +64,7 @@ function Chats() {
         renderedchats = chats.map((chatUser, i) => {
             return (
                 <a className="friend" key={i} onClick={openChat}>
-                    <img src={chatUser.profile_pic ? chatUser.profile_pic : no_pic} className="profile-pic" alt="profile pic" />
+                    <img src={chatUser.profile_pic ? `http://localhost:5555/${chatUser.profile_pic}` : no_pic} className="profile-pic" alt="profile pic" />
                     <div>{chatUser.username}</div>
                 </a>
             )
