@@ -92,6 +92,11 @@ class Users(Resource):
                 with open(f'images/{user.id}profile.jpg', 'wb') as file:
                     file.write(base64.b64decode(profile_pic))
                 user.profile_pic = f'/images/{user.id}profile.jpg'
+            if request.get_json().get("banner"):
+                banner_pic = request.get_json().get("banner")
+                with open(f'images/{user.id}banner.jpg', 'wb') as file:
+                    file.write(base64.b64decode(banner_pic))
+                user.banner_pic = f'/images/{user.id}banner.jpg'
             db.session.add(user)
             db.session.commit()
             session["user_id"] = user.id
@@ -229,6 +234,80 @@ class Passes(Resource):
         return {"error": "Invalid information submitted"}, 422
 
 
+class Friends(Resource):
+    def post(self):
+        new_friendship = Friendship(
+            status='friend',
+            user1_id=request.get_json().get("user1_id"),
+            user2_id=request.get_json().get("user2_id")
+        )
+        db.session.add(new_friendship)
+        db.session.commit()
+        u = User.query.filter_by(id=request.get_json().get("user1_id")).first()
+        if new_friendship:
+            return u.to_dict(), 200
+        return {}, 204
+
+
+class Chats(Resource):
+    def post(self):
+        new_chat = Chat(
+            theme='normal',
+            font='normal',
+            font_size='12',
+            user1_id=request.get_json().get("user1_id"),
+            user2_id=request.get_json().get("user2_id")
+        )
+        if new_chat:
+            db.session.add(new_chat)
+            db.session.commit()
+            u = User.query.filter_by(
+                id=request.get_json().get("user1_id")
+            ).first()
+            response = {
+                'u': u.to_dict(),
+                'new_chat': new_chat.to_dict()
+            }
+            return response, 200
+        return {}, 204
+
+
+class Comments(Resource):
+    def post(self):
+        new_comment = Comment(
+            content=request.get_json().get("comment"),
+            likes=0,
+            user_id=request.get_json().get("user_id"),
+            post_id=request.get_json().get("post_id")
+        )
+        if new_comment:
+            print('hi')
+            db.session.add(new_comment)
+            db.session.commit()
+            posts = [
+                post.to_dict() for post in Post.query.limit(
+                    request.get_json().get("posts")
+                ).all()
+            ]
+            return posts, 200
+        return {}, 404
+    
+    def patch(self):
+        comment = Comment.query.filter_by(id=request.get_json().get("id")).first()
+        if comment:
+            comment.likes += 1
+            db.session.add(comment)
+            db.session.commit()
+            posts = [
+                post.to_dict() for post in Post.query.limit(
+                    request.get_json().get("posts")
+                ).all()
+            ]
+            return posts, 200
+        return {}, 404
+
+
+
 api.add_resource(Login, "/api/login", endpoint="login")
 api.add_resource(CheckSession, "/api/check_session", endpoint="check_session")
 api.add_resource(Users, "/api/users", endpoint="users")
@@ -242,6 +321,9 @@ api.add_resource(
 api.add_resource(SearchChats, "/api/search_chats", endpoint="search_chats")
 api.add_resource(Wants, "/api/wants", endpoint="wants")
 api.add_resource(Passes, "/api/passes", endpoint="passes")
+api.add_resource(Friends, "/api/friends", endpoint="friends")
+api.add_resource(Chats, "/api/chats", endpoint="chats")
+api.add_resource(Comments, "/api/comments", endpoint="comments")
 
 if __name__ == "__main__":
     socketio.run(app, port=5555, debug=True)

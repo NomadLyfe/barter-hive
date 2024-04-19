@@ -36,6 +36,10 @@ function App() {
     }, [])
 
     useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [navigate])
+
+    useEffect(() => {
         const interval = setInterval(() => {
             setInactivityCount(inactivityCount + 1)
         }, 1000);

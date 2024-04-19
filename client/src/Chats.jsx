@@ -50,7 +50,7 @@ function Chats() {
                 resp.json().then((chat) => {
                     setChat(chat)
                     setMessages([...chat.messages])
-                    console.log([...chat.messages])
+                    document.querySelector('.messages').scroll(top)
                 })
             }
         })
@@ -73,11 +73,15 @@ function Chats() {
 
     let renderedmessages = null
     if (messages) {
-        renderedmessages = messages.toReversed().map((message, i) => (
-            <div key={i} className={`message ${message.user.username}`}>
-                {message.user.username}: {message.content}
-            </div>
-        ))
+        if (messages[0]) {
+            renderedmessages = messages.toReversed().map((message, i) => (
+                <div key={i} className={`message ${message.user.username}`}>
+                    {message.user.username}: {message.content}
+                </div>
+            ))
+        } else {
+            renderedmessages = [<p key={1}>No messages yet</p>]
+        }
     }
 
 

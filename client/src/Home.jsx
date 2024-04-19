@@ -2,6 +2,8 @@
 import { useContext, useEffect } from "react"
 import { Context } from './Context';
 import { NavLink } from "react-router-dom";
+import { useFormik } from "formik";
+import * as yup from "yup";
 import './css files/Home.css'
 import no_pic from './images/no-profile-pic.png'
 import Friends from "./Friends";
@@ -112,6 +114,15 @@ function Home() {
         })
     }
 
+    function handleCommentClick(e) {
+        e.preventDefault();
+        if (e.target.parentNode.parentNode.children[6].style.display === '') {
+            e.target.parentNode.parentNode.children[6].style.display = 'flex';
+        } else {
+            e.target.parentNode.parentNode.children[6].style.display = '';
+        }
+    }
+
     function handlePassClick(e) {
         const post_id = e.target.parentNode.parentNode.id
         const passes = e.target.parentNode.parentNode.children[3].children[1].firstChild.textContent
@@ -130,6 +141,61 @@ function Home() {
         })
     }
 
+    const formSchema = yup.object().shape({
+        comment: yup.string().max(200)
+    });
+
+    const formik = useFormik({
+        initialValues: {
+            comment: '',
+            user_id: user.id,
+            post_id: null,
+            posts: null
+        },
+        validationSchema: formSchema,
+        onSubmit: (values) => {
+            console.log(values)
+            fetch('/api/comments', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(values)
+            }).then((resp) => {
+                if (resp.ok) {
+                    resp.json().then((posts) => {
+                        setPosts(posts)
+                    });
+                }
+            });
+            formik.resetForm();
+        }
+    });
+
+    function handleCommentSubmit(e) {
+        e.preventDefault()
+        formik.setFieldValue('post_id', parseInt(e.target.parentNode.id))
+        formik.setFieldValue('posts', e.target.parentNode.parentNode.children.length - 1)
+        formik.handleSubmit()
+    }
+
+    function handleLikeClick(e) {
+        const id = parseInt(e.target.parentNode.id)
+        fetch('/api/comments', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({'id': id, 'posts': (e.target.parentNode.parentNode.parentNode.parentNode.parentNode.children.length - 1)})
+        }).then((resp) => {
+            if (resp.ok) {
+                resp.json().then((posts) => {
+                    setPosts(posts)
+                });
+            }
+        });
+    }
+
     let renderedPostList = null
     if (posts[0]) {
         renderedPostList = posts.map((post, i) => {
@@ -142,7 +208,7 @@ function Home() {
                                 <NavLink to={`/${comment.user.username}`}><img src={comment.user.profile_pic ? `http://localhost:5555/${comment.user.profile_pic}` : no_pic} className="profile-pic" alt="user-pic" /></NavLink>
                                 <div className="comment">{comment.content}</div>
                             </div>
-                            <div className="comment_likes"><button>like</button>{comment.likes} likes</div>
+                            <div id={comment.id} className="comment_likes"><button onClick={handleLikeClick}>like</button><span>{comment.likes}</span> likes</div>
                         </div>
                     )
                 })
@@ -166,10 +232,16 @@ function Home() {
                     <div className="buttons text">
                         <button onClick={handleWantClick}>Want</button>
                         <button onClick={handlePassClick}>Pass</button>
-                        <button>Comment</button>
-                        <button>Share</button>
+                        <button onClick={handleCommentClick}>Comment</button>
+                        {/* <button>Share</button> */}
                     </div>
                     <div className="comments">{post.comments.at(0) ? renderedCommentList : <span className="no_comments text">No comments</span>}</div>
+                    <form className="newCommentFormWrapper" onSubmit={handleCommentSubmit}>
+                        <img src={user.profile_pic ? `http://localhost:5555/${user.profile_pic}` : no_pic} className="profile-pic" alt="user-pic" />
+                        <input placeholder="White a comment..." name="comment" onChange={formik.handleChange} value={formik.values.comment} />
+                        <button type="submit">Send</button>
+                        <button onClick={handleCommentClick}>x</button>
+                    </form>
                 </div>
             )
         })
@@ -189,7 +261,7 @@ function Home() {
                     </div>
                 </div>
                 <div className="center">
-                    <div className="text">filters?</div>
+                    {/* <div className="text">filters?</div> */}
                     <div className="card createPostDiv">
                         <NavLink to={`/${user.username}`}><img src={user.profile_pic ? `http://localhost:5555/${user.profile_pic}` : no_pic} className="profile-pic" alt="profile pic" /></NavLink>
                         <button onClick={handlePostFormClick} className="creatPostButton">{user.username.charAt(0).toUpperCase() + user.username.slice(1)}, create a post!</button>

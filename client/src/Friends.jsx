@@ -23,9 +23,9 @@ function Friends() {
     }
 
     return (
-        <>
+        <div className="friends_wrapper">
             {renderedFriendList}
-        </>
+        </div>
     )
 }
 

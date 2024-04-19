@@ -9,6 +9,10 @@
     margin: 1rem;
 }
 
+.center {
+    margin-top: 0px;
+}
+
 .leftPanel {
     visibility: visible;
     position: sticky;
@@ -27,6 +31,7 @@
     top: 90px;
     width: 20%;
     margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .card {
@@ -148,6 +153,7 @@
 
 .comments {
     margin: 0px 25px;
+    padding: 10px 0px;
 }
 
 .comments a {
@@ -406,4 +412,80 @@
 
 .wants-num span, .passes-num span, .comments-num span {
     margin: 0px;
+}
+
+.newCommentFormWrapper{
+    display: none;
+    margin: 0px 25px 5px;
+    padding: 10px 0px 0px;
+    border-top: #3B4131 1px solid;
+    align-items: center;
+}
+
+.newCommentFormWrapper input {
+    outline: none;
+    text-align: start;
+    background-color: #dbd0b2;
+    border: 0px;
+    transition: 0.25s;
+    color: #3B4131;
+    margin: 0px 0px 0px 10px;
+    height: 35px;
+    padding: 0px 10px;
+    width: 79%;
+    border-radius: 10px;
+}
+
+.newCommentFormWrapper input::placeholder {
+    transition: 0.25s;
+    color: #3B413190;
+}
+
+.newCommentFormWrapper input:-webkit-autofill, .newCommentFormWrapper input:-webkit-autofill:focus {
+    transition: all 0s 600000s !important;
+}
+
+.newCommentFormWrapper button {
+    margin: 0px 0px 0px 10px;
+    text-align: center;
+    text-justify: center;
+}
+
+.newCommentFormWrapper input:focus {
+    background-color: #cec3a4;
+}
+
+.name_and_buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+
+.name_and_buttons button {
+    margin: 8px auto 8px 40px;
+    background-color: #dbd0b2;
+}
+
+.comment_likes span {
+    margin: 0px;
+}
+
+.friends_wrapper {
+    min-height: 72vh;
+    max-height: 72vh;
+    overflow-y: auto;
+    padding-bottom: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    transition: 0.25s;
+    direction: rtl;
+}
+
+.friends_wrapper .friend {
+    direction: ltr;
+}
+
+.friends_wrapper:hover {
+    scrollbar-color: #3B4131 transparent;
 }
