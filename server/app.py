@@ -291,9 +291,11 @@ class Comments(Resource):
             ]
             return posts, 200
         return {}, 404
-    
+
     def patch(self):
-        comment = Comment.query.filter_by(id=request.get_json().get("id")).first()
+        comment = Comment.query.filter_by(
+            id=request.get_json().get("id")
+        ).first()
         if comment:
             comment.likes += 1
             db.session.add(comment)
@@ -305,7 +307,6 @@ class Comments(Resource):
             ]
             return posts, 200
         return {}, 404
-
 
 
 api.add_resource(Login, "/api/login", endpoint="login")
