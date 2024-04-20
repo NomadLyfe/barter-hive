@@ -7,7 +7,7 @@
   display: grid;
   border-radius: 15px;
   background-color: #FFF6DB;
-  padding: 50px;
+  padding: 50px 15px;
   margin: 8vh 0px;
 }
   
@@ -212,4 +212,15 @@ input:checked + .slider:before {
 
 header {
   margin: 24px;
+}
+
+.loginForm .delete_account {
+  background-color: rgb(77, 0, 0);
+  color: #FFF6DB;
+  transition: 0.25s;
+}
+
+.loginForm .delete_account:hover {
+  background-color: rgb(139, 0, 0);
+  color: #FFF6DB;
 }

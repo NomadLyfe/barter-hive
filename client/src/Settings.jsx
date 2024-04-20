@@ -4,9 +4,10 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import './css files/Login.css'
 import no_pic from './images/no-profile-pic.png'
+import { Navigate } from "react-router-dom";
 
 function Settings() {
-    const { user, setUser, editOn, setEditOn } = useContext(Context)
+    const { user, setUser, editOn, setEditOn, navigate } = useContext(Context)
     
     // {`settings ${darkMode ? 'dark' : 'light'}`}
 
@@ -65,6 +66,26 @@ function Settings() {
         reader.readAsDataURL(file);
     };
 
+    function handleDeleteAccount() {
+        const result = window.confirm(`${user.username}, are you sure you want to delete your account?`);
+        if (result) {
+            fetch(`/api/user/${user.id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then((resp) => {
+                if (resp.ok) {
+                    resp.json().then((data) => {
+                        console.log(data)
+                        setUser(null)
+                        navigate('/login')
+                    })
+                }
+            })
+        }
+    }
+
     return (
         <div className="settings-wrapper text">
             <header><h1>Settings</h1></header>
@@ -101,6 +122,7 @@ function Settings() {
                     <label id="country">Country:</label>
                     {editOn ? <input placeholder="Type your country" type="text" id="countryinp" name="country" autoComplete="on" onChange={formik.handleChange} value={formik.values.country} /> : <span>{user.country ?? ''}</span>}
                     {editOn ? <button type='submit'>SAVE</button> : null}
+                    <button className="delete_account" onClick={handleDeleteAccount}>Delete Account</button>
                 </form>
             </div>
         </div>

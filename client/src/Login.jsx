@@ -31,23 +31,6 @@ function Login() {
                 if (resp.ok) {
                     resp.json().then((user) => {
                         setUser(() => {
-                            // fetch('/api/posts', {
-                            //     method: 'POST',
-                            //     headers: {
-                            //         'Content-Type': 'application/json'
-                            //     },
-                            //     body: JSON.stringify({offset: offset})
-                            // }).then((resp) => {
-                            //     if (resp.status === 200) {
-                            //         resp.json().then((postList) => {
-                            //             setPosts(postList)
-                            //             setShowingposts(postList)
-                            //             setNumposts(postList.length)
-                            //             setMaxposts(25)
-                            //             setOffset(offset + 5)
-                            //         })
-                            //     }
-                            // });
                             return user
                         });
                         navigate(`/`)

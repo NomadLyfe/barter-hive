@@ -41,7 +41,7 @@ function NavBar() {
         //         },
         //         body: JSON.stringify(values, null, 2)
         //     }).then(resp => resp.json()).then(() => {
-        //         navigate('/');
+        //         navigate(`/results?q={values.queryTerm}`);
         //     })
         //     formik.resetForm();
         // }

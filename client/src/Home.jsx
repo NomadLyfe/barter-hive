@@ -58,7 +58,6 @@ function Home() {
 
     useEffect(() => {
         if (window.scrollY + window.innerHeight >= document.body.scrollHeight) {
-            console.log(offset)
             let controller = new AbortController()
             let signal = controller.signal
             fetch('/api/posts', {
@@ -150,7 +149,8 @@ function Home() {
             comment: '',
             user_id: user.id,
             post_id: null,
-            posts: null
+            posts: null,
+            userpage: false
         },
         validationSchema: formSchema,
         onSubmit: (values) => {
@@ -186,7 +186,7 @@ function Home() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({'id': id, 'posts': (e.target.parentNode.parentNode.parentNode.parentNode.parentNode.children.length - 1)})
+            body: JSON.stringify({'id': id, 'posts': (e.target.parentNode.parentNode.parentNode.parentNode.parentNode.children.length - 1), 'userpage': false})
         }).then((resp) => {
             if (resp.ok) {
                 resp.json().then((posts) => {
@@ -207,6 +207,7 @@ function Home() {
                             <div className="user_and_comment">
                                 <NavLink to={`/${comment.user.username}`}><img src={comment.user.profile_pic ? `http://localhost:5555/${comment.user.profile_pic}` : no_pic} className="profile-pic" alt="user-pic" /></NavLink>
                                 <div className="comment">{comment.content}</div>
+                                <div className="comment_button"><button>{'\u2715'}</button><button>{'\u270e'}</button></div>
                             </div>
                             <div id={comment.id} className="comment_likes"><button onClick={handleLikeClick}>like</button><span>{comment.likes}</span> likes</div>
                         </div>
@@ -240,7 +241,7 @@ function Home() {
                         <img src={user.profile_pic ? `http://localhost:5555/${user.profile_pic}` : no_pic} className="profile-pic" alt="user-pic" />
                         <input placeholder="White a comment..." name="comment" onChange={formik.handleChange} value={formik.values.comment} />
                         <button type="submit">Send</button>
-                        <button onClick={handleCommentClick}>x</button>
+                        <button type="reset" onClick={handleCommentClick}>{'\u2715'}</button>
                     </form>
                 </div>
             )

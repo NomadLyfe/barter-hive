@@ -254,7 +254,7 @@ class Chats(Resource):
         new_chat = Chat(
             theme='normal',
             font='normal',
-            font_size='12',
+            font_size=12,
             user1_id=request.get_json().get("user1_id"),
             user2_id=request.get_json().get("user2_id")
         )
@@ -284,11 +284,19 @@ class Comments(Resource):
             print('hi')
             db.session.add(new_comment)
             db.session.commit()
-            posts = [
-                post.to_dict() for post in Post.query.limit(
-                    request.get_json().get("posts")
-                ).all()
-            ]
+            posts = None
+            if request.get_json().get("userpage"):
+                posts = [
+                    post.to_dict() for post in Post.query.filter_by(
+                        user_id=request.get_json().get("userpage_id")
+                    ).all()
+                ]
+            else:
+                posts = [
+                    post.to_dict() for post in Post.query.limit(
+                        request.get_json().get("posts")
+                    ).all()
+                ]
             return posts, 200
         return {}, 404
 
@@ -300,13 +308,83 @@ class Comments(Resource):
             comment.likes += 1
             db.session.add(comment)
             db.session.commit()
-            posts = [
-                post.to_dict() for post in Post.query.limit(
-                    request.get_json().get("posts")
-                ).all()
-            ]
+            posts = None
+            if request.get_json().get("userpage"):
+                posts = [
+                    post.to_dict() for post in Post.query.filter_by(
+                        user_id=request.get_json().get("userpage_id")
+                    ).all()
+                ]
+            else:
+                posts = [
+                    post.to_dict() for post in Post.query.limit(
+                        request.get_json().get("posts")
+                    ).all()
+                ]
             return posts, 200
         return {}, 404
+    
+
+class DeleteFriend(Resource):
+    def delete(self, friend_id, user_id):
+        friend_id = int(friend_id[6:])
+        friendship1 = Friendship.query.filter(Friendship.user1_id == user_id, Friendship.user2_id == friend_id).first()
+        friendship2 = Friendship.query.filter(Friendship.user1_id == friend_id, Friendship.user2_id == user_id).first()
+        user = User.query.filter_by(id=user_id).first()
+        if friendship1:
+            friendship1 = Friendship.query.filter(Friendship.user1_id == user_id, Friendship.user2_id == friend_id)
+            friendship1.delete()
+            db.session.commit()
+            return user.to_dict(), 200
+        elif friendship2:
+            friendship2 = Friendship.query.filter(Friendship.user1_id == friend_id, Friendship.user2_id == user_id)
+            friendship2.delete()
+            db.session.commit()
+            return user.to_dict(), 200
+        return {'error': 'No friend found'}, 404
+    
+
+class DeleteChat(Resource):
+    def delete(self, friend_id, user_id):
+        friend_id = int(friend_id[4:])
+        print(friend_id, user_id)
+        chat1 = Chat.query.filter(Chat.user1_id == user_id, Chat.user2_id == friend_id).first()
+        chat2 = Chat.query.filter(Chat.user1_id == friend_id, Chat.user2_id == user_id).first()
+        user = User.query.filter_by(id=user_id).first()
+        if chat1:
+            chat_id = chat1.id
+            chat1 = Chat.query.filter(Chat.user1_id == user_id, Chat.user2_id == friend_id)
+            chat1.delete()
+            db.session.commit()
+            response = {
+                'u': user.to_dict(),
+                'chat_id': chat_id
+            }
+            return response, 200
+        elif chat2:
+            chat_id = chat2.id
+            chat2 = Chat.query.filter(Chat.user1_id == friend_id, Chat.user2_id == user_id)
+            chat2.delete()
+            db.session.commit()
+            response = {
+                'u': user.to_dict(),
+                'chat_id': chat_id
+            }
+            return response, 200
+        return {'error': 'No friend found'}, 404
+    
+
+class DeleteUser(Resource):
+    def delete(self, user_id):
+        print(user_id)
+        user = User.query.filter_by(id=user_id).first()
+        if user:
+            id = user.id
+            user = User.query.filter_by(id=user_id)
+            user.delete()
+            db.session.commit()
+            return {'success': f'user {id} has been deleted'}, 200
+        return {'error': 'No friend found'}, 404
 
 
 api.add_resource(Login, "/api/login", endpoint="login")
@@ -325,6 +403,9 @@ api.add_resource(Passes, "/api/passes", endpoint="passes")
 api.add_resource(Friends, "/api/friends", endpoint="friends")
 api.add_resource(Chats, "/api/chats", endpoint="chats")
 api.add_resource(Comments, "/api/comments", endpoint="comments")
+api.add_resource(DeleteFriend, '/api/friend/<string:friend_id>/<int:user_id>')
+api.add_resource(DeleteChat, '/api/chat/<string:friend_id>/<int:user_id>')
+api.add_resource(DeleteUser, '/api/user/<int:user_id>')
 
 if __name__ == "__main__":
     socketio.run(app, port=5555, debug=True)

@@ -277,6 +277,12 @@
     margin: 0px 10px 0px 0px;
 }
 
+.friend button {
+    display: none;
+    margin: 0 0 0 auto;
+    padding: 4px 10px 5px;
+}
+
 #loadingcard, #loadingcard * {
     animation: blinker 2s linear infinite;
 }
@@ -485,4 +491,22 @@
 
 .friends_wrapper:hover {
     scrollbar-color: #3B4131 transparent;
+}
+
+.comment_button {
+    display: flex;
+    margin: 0px;
+    flex-direction: column;
+    height: 55px;
+    justify-content: space-between;
+    position: relative;
+    left: -10px;
+}
+
+.comment_button button {
+    margin: 0px;
+    padding: 0px 2px;
+    text-align: center;
+    font-size: 8pt;
+    background-color: #c2b494;
 }
