@@ -305,7 +305,10 @@ class Comments(Resource):
             id=request.get_json().get("id")
         ).first()
         if comment:
-            comment.likes += 1
+            if request.get_json().get("new_content"):
+                comment.content = request.get_json().get("new_content")
+            else:
+                comment.likes += 1
             db.session.add(comment)
             db.session.commit()
             posts = None
@@ -323,37 +326,54 @@ class Comments(Resource):
                 ]
             return posts, 200
         return {}, 404
-    
+
 
 class DeleteFriend(Resource):
     def delete(self, friend_id, user_id):
         friend_id = int(friend_id[6:])
-        friendship1 = Friendship.query.filter(Friendship.user1_id == user_id, Friendship.user2_id == friend_id).first()
-        friendship2 = Friendship.query.filter(Friendship.user1_id == friend_id, Friendship.user2_id == user_id).first()
+        friendship1 = Friendship.query.filter(
+            Friendship.user1_id == user_id,
+            Friendship.user2_id == friend_id
+        ).first()
+        friendship2 = Friendship.query.filter(
+            Friendship.user1_id == friend_id,
+            Friendship.user2_id == user_id
+        ).first()
         user = User.query.filter_by(id=user_id).first()
         if friendship1:
-            friendship1 = Friendship.query.filter(Friendship.user1_id == user_id, Friendship.user2_id == friend_id)
+            friendship1 = Friendship.query.filter(
+                Friendship.user1_id == user_id,
+                Friendship.user2_id == friend_id
+            )
             friendship1.delete()
             db.session.commit()
             return user.to_dict(), 200
         elif friendship2:
-            friendship2 = Friendship.query.filter(Friendship.user1_id == friend_id, Friendship.user2_id == user_id)
+            friendship2 = Friendship.query.filter(
+                Friendship.user1_id == friend_id,
+                Friendship.user2_id == user_id
+            )
             friendship2.delete()
             db.session.commit()
             return user.to_dict(), 200
         return {'error': 'No friend found'}, 404
-    
+
 
 class DeleteChat(Resource):
     def delete(self, friend_id, user_id):
         friend_id = int(friend_id[4:])
-        print(friend_id, user_id)
-        chat1 = Chat.query.filter(Chat.user1_id == user_id, Chat.user2_id == friend_id).first()
-        chat2 = Chat.query.filter(Chat.user1_id == friend_id, Chat.user2_id == user_id).first()
+        chat1 = Chat.query.filter(
+            Chat.user1_id == user_id, Chat.user2_id == friend_id
+        ).first()
+        chat2 = Chat.query.filter(
+            Chat.user1_id == friend_id, Chat.user2_id == user_id
+        ).first()
         user = User.query.filter_by(id=user_id).first()
         if chat1:
             chat_id = chat1.id
-            chat1 = Chat.query.filter(Chat.user1_id == user_id, Chat.user2_id == friend_id)
+            chat1 = Chat.query.filter(
+                Chat.user1_id == user_id, Chat.user2_id == friend_id
+            )
             chat1.delete()
             db.session.commit()
             response = {
@@ -363,7 +383,9 @@ class DeleteChat(Resource):
             return response, 200
         elif chat2:
             chat_id = chat2.id
-            chat2 = Chat.query.filter(Chat.user1_id == friend_id, Chat.user2_id == user_id)
+            chat2 = Chat.query.filter(
+                Chat.user1_id == friend_id, Chat.user2_id == user_id
+            )
             chat2.delete()
             db.session.commit()
             response = {
@@ -372,11 +394,10 @@ class DeleteChat(Resource):
             }
             return response, 200
         return {'error': 'No friend found'}, 404
-    
+
 
 class DeleteUser(Resource):
     def delete(self, user_id):
-        print(user_id)
         user = User.query.filter_by(id=user_id).first()
         if user:
             id = user.id
@@ -387,15 +408,59 @@ class DeleteUser(Resource):
         return {'error': 'No friend found'}, 404
 
 
+class DeleteComment(Resource):
+    def delete(self, comment_id, user_id, post_num):
+        comment = Comment.query.filter_by(id=comment_id).first()
+        if comment:
+            comment = Comment.query.filter_by(id=comment_id)
+            comment.delete()
+            db.session.commit()
+            posts = None
+            if user_id != 0:
+                posts = [
+                    post.to_dict() for post in Post.query.filter_by(
+                        user_id=user_id
+                    ).all()
+                ]
+            elif post_num != 0:
+                posts = [
+                    post.to_dict() for post in Post.query.limit(post_num).all()
+                ]
+            return posts, 200
+        return {'error': 'No friend found'}, 404
+
+    def patch(self, comment_id, user_id, post_num):
+        comment = Comment.query.filter_by(id=comment_id).first()
+        if comment:
+            comment.content = request.get_json().get('comment_content')
+            db.session.commit()
+            if user_id != 0:
+                posts = [
+                    post.to_dict() for post in Post.query.filter_by(
+                        user_id=user_id
+                    ).all()
+                ]
+            elif post_num != 0:
+                posts = [
+                    post.to_dict() for post in Post.query.limit(post_num).all()
+                ]
+            return posts, 200
+        return {'error': 'No friend found'}, 404
+
+
 api.add_resource(Login, "/api/login", endpoint="login")
 api.add_resource(CheckSession, "/api/check_session", endpoint="check_session")
 api.add_resource(Users, "/api/users", endpoint="users")
 api.add_resource(Posts, "/api/posts", endpoint="posts")
 api.add_resource(
-    SearchUsers, "/api/search_users/<string:term>", endpoint="search_users"
+    SearchUsers,
+    "/api/search_users/<string:term>",
+    endpoint="search_users"
 )
 api.add_resource(
-    SearchPosts, "/api/search_posts/<string:username>", endpoint="search_posts"
+    SearchPosts,
+    "/api/search_posts/<string:username>",
+    endpoint="search_posts"
 )
 api.add_resource(SearchChats, "/api/search_chats", endpoint="search_chats")
 api.add_resource(Wants, "/api/wants", endpoint="wants")
@@ -406,6 +471,11 @@ api.add_resource(Comments, "/api/comments", endpoint="comments")
 api.add_resource(DeleteFriend, '/api/friend/<string:friend_id>/<int:user_id>')
 api.add_resource(DeleteChat, '/api/chat/<string:friend_id>/<int:user_id>')
 api.add_resource(DeleteUser, '/api/user/<int:user_id>')
+api.add_resource(
+    DeleteComment,
+    '/api/comment/<int:comment_id>/<int:user_id>/<int:post_num>',
+    endpoint="comment"
+)
 
 if __name__ == "__main__":
     socketio.run(app, port=5555, debug=True)

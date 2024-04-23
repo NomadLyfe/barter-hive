@@ -4,7 +4,6 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import './css files/Login.css'
 import no_pic from './images/no-profile-pic.png'
-import { Navigate } from "react-router-dom";
 
 function Settings() {
     const { user, setUser, editOn, setEditOn, navigate } = useContext(Context)

@@ -1,6 +1,5 @@
 import { useContext } from "react"
 import { Context } from './Context';
-import { NavLink, Navigate } from "react-router-dom";
 import './css files/Home.css'
 import no_pic from './images/no-profile-pic.png'
 
