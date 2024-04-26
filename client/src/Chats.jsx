@@ -22,6 +22,10 @@ function Chats() {
             setMessages([...ms])
         })
 
+        socket.on('chat_error', (error) => {
+            console.error('Chat error:', error);
+        });
+
         return (() => {
             socket.disconnect();
         })

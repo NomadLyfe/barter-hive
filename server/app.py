@@ -5,8 +5,6 @@ from models import Comment, Message, Want, Pass, Pic
 from flask import request, session, render_template, send_from_directory
 from flask_restful import Resource
 import base64
-# import requests
-# import ipdb
 
 
 @app.route("/")
@@ -22,35 +20,36 @@ def images(filename):
 
 @socketio.on("json")
 def handle_chat(data):
-    message_text = data.get('message')
-    chat = Chat.query.filter_by(id=data.get('chat_id')).first()
-    user = User.query.filter_by(id=data.get('user_id')).first()
-    message = Message(
-        content=message_text,
-        reactions=None,
-        chat=chat,
-        user=user
-    )
-    db.session.add(message)
-    db.session.commit()
-    messages = [
-        m.to_dict() for m in Message.query.filter_by(
-            chat_id=data.get('chat_id')
-        )
-    ]
-    emit("chat_result", messages, broadcast=True)
+    try:
+        message_text = data.get('message')
+        chat_id = data.get('chat_id')
+        user_id = data.get('user_id')
+        chat = Chat.query.get(chat_id)
+        user = User.query.get(user_id)
+        if chat and user:
+            message = Message(
+                content=message_text,
+                chat=chat,
+                user=user
+            )
+            db.session.add(message)
+            db.session.commit()
+            messages = [m.to_dict() for m in chat.messages]
+            emit("chat_result", messages, broadcast=True)
+        else:
+            emit("chat_error", "Invalid chat or user", broadcast=False)
+    except Exception:
+        emit("chat_error", str(Exception), broadcast=False)
 
 
 class Login(Resource):
     def post(self):
-        username = request.get_json()["username"]
+        username = request.get_json().get("username")
         user = User.query.filter_by(username=username).first()
-        password = request.get_json()["password"]
+        password = request.get_json().get("password")
         if user and user.authenticate(password):
             session["user_id"] = user.id
             session.modified = True
-            print("You logged in!")
-            # ipdb.set_trace()
             return user.to_dict(), 201
         return {"error": "Invalid username or password"}, 401
 
@@ -63,98 +62,80 @@ class Login(Resource):
 
 class CheckSession(Resource):
     def get(self):
-        if session.get("user_id"):
-            user = User.query.filter_by(id=session["user_id"]).first()
+        user_id = session.get("user_id")
+        if user_id:
+            user = User.query.get(user_id)
             return user.to_dict(), 200
         return {}, 204
 
 
 class Users(Resource):
-    def get(self):
-        users = [user.to_dict() for user in User.query.all()]
-        if users:
-            return users, 200
-        return {}, 204
-
     def patch(self):
-        try:
-            user = User.query.filter_by(id=session["user_id"]).first()
-            user.username = request.get_json().get("username")
-            if request.get_json().get("password"):
-                user.password_hash = request.get_json().get("password")
-            user.email = request.get_json().get("email")
-            user.phone = request.get_json().get("phone")
-            user.city = request.get_json().get("city")
-            user.state = request.get_json().get("state")
-            user.country = request.get_json().get("country")
-            if request.get_json().get("profile"):
-                profile_pic = request.get_json().get("profile")
-                with open(f'images/{user.id}profile.jpg', 'wb') as file:
-                    file.write(base64.b64decode(profile_pic))
-                user.profile_pic = f'/images/{user.id}profile.jpg'
-            if request.get_json().get("banner"):
-                banner_pic = request.get_json().get("banner")
-                with open(f'images/{user.id}banner.jpg', 'wb') as file:
-                    file.write(base64.b64decode(banner_pic))
-                user.banner_pic = f'/images/{user.id}banner.jpg'
+        user_id = session.get("user_id")
+        if not user_id:
+            return {"error": "Not logged in"}, 401
+        user = User.query.get(user_id)
+        user.username = request.get_json().get("username")
+        user.email = request.get_json().get("email")
+        user.phone = request.get_json().get("phone")
+        user.city = request.get_json().get("city")
+        user.state = request.get_json().get("state")
+        user.country = request.get_json().get("country")
+        if request.get_json().get("password"):
+            user.password_hash = request.get_json().get("password")
+        if request.get_json().get("profile"):
+            profile_pic = request.get_json().get("profile")
+            with open(f'images/{user.id}profile.jpg', 'wb') as file:
+                file.write(base64.b64decode(profile_pic))
+            user.profile_pic = f'/images/{user.id}profile.jpg'
+        if request.get_json().get("banner"):
+            banner_pic = request.get_json().get("banner")
+            with open(f'images/{user.id}banner.jpg', 'wb') as file:
+                file.write(base64.b64decode(banner_pic))
+            user.banner_pic = f'/images/{user.id}banner.jpg'
+        db.session.commit()
+        return user.to_dict(), 201
+
+    def post(self):
+        username = request.get_json().get("username")
+        email = request.get_json().get("email")
+        bday = request.get_json().get("bday")
+        phone = request.get_json().get("phone")
+        country = request.get_json().get("country")
+        state = request.get_json().get("state")
+        city = request.get_json().get("city")
+        user = User(
+            username=username,
+            email=email,
+            bday=bday,
+            phone=phone,
+            country=country,
+            state=state,
+            city=city,
+        )
+        user.password_hash = request.get_json().get("password")
+        if user:
             db.session.add(user)
             db.session.commit()
             session["user_id"] = user.id
             return user.to_dict(), 201
-        except Exception:
-            return {"error": "Invalid user information"}, 422
-
-    def post(self):
-        try:
-            username = request.get_json().get("username")
-            email = request.get_json().get("email")
-            bday = request.get_json().get("bday")
-            phone = request.get_json().get("phone")
-            country = request.get_json().get("country")
-            state = request.get_json().get("state")
-            city = request.get_json().get("city")
-            user = User(
-                username=username,
-                email=email,
-                bday=bday,
-                phone=phone,
-                country=country,
-                state=state,
-                city=city,
-            )
-            user.password_hash = request.get_json().get("password")
-            if user:
-                db.session.add(user)
-                db.session.commit()
-                session["user_id"] = user.id
-                return user.to_dict(), 201
-            return {"error": "Invalid information submitted"}, 422
-        except Exception:
-            return {"error": "Invalid user information"}, 422
+        return {"error": "Invalid information submitted"}, 422
 
 
 class Posts(Resource):
-    def get(self):
-        pass
-        # posts = [post.to_dict() for post in Post.query.limit(5).all()]
-        # ipdb.set_trace()
-        # if posts:
-        #     return posts, 200
-        # return {}, 204
-
     def post(self):
         offset = request.get_json().get("offset")
-        allposts = Post.query.count()
-        posts = None
-        if offset <= allposts - 5:
-            posts = [
-                post.to_dict() for post in Post.query.offset(
-                    offset
-                ).limit(5).all()
-            ]
+        # allposts = Post.query.count()
+        # posts = None
+        # if offset <= allposts - 5:
+        posts = [
+            post.to_dict() for post in Post.query.offset(
+                offset
+            ).limit(5).all()
+        ]
         if posts:
             return posts, 200
-        return {}, 204
+        return {}, 404
 
 
 class SearchUsers(Resource):
@@ -204,12 +185,10 @@ class SearchChats(Resource):
 
 class Wants(Resource):
     def post(self):
-        user = User.query.filter_by(
-            id=request.get_json().get('user_id')
-        ).first()
-        post = Post.query.filter_by(
-            id=request.get_json().get('post_id')
-        ).first()
+        user_id = request.get_json().get('user_id')
+        user = User.query.get(user_id)
+        post_id = request.get_json().get('post_id')
+        post = Post.query.get(post_id)
         want = Want(user=user, post=post)
         if want:
             db.session.add(want)
@@ -220,12 +199,10 @@ class Wants(Resource):
 
 class Passes(Resource):
     def post(self):
-        user = User.query.filter_by(
-            id=request.get_json().get('user_id')
-        ).first()
-        post = Post.query.filter_by(
-            id=request.get_json().get('post_id')
-        ).first()
+        user_id = request.get_json().get('user_id')
+        user = User.query.get(user_id)
+        post_id = request.get_json().get('post_id')
+        post = Post.query.get(post_id)
         p = Pass(user=user, post=post)
         if p:
             db.session.add(p)
@@ -243,7 +220,8 @@ class Friends(Resource):
         )
         db.session.add(new_friendship)
         db.session.commit()
-        u = User.query.filter_by(id=request.get_json().get("user1_id")).first()
+        u_id = request.get_json().get("user1_id")
+        u = User.query.get(u_id)
         if new_friendship:
             return u.to_dict(), 200
         return {}, 204
@@ -261,9 +239,8 @@ class Chats(Resource):
         if new_chat:
             db.session.add(new_chat)
             db.session.commit()
-            u = User.query.filter_by(
-                id=request.get_json().get("user1_id")
-            ).first()
+            u_id = request.get_json().get("user1_id")
+            u = User.query.get(u_id)
             response = {
                 'u': u.to_dict(),
                 'new_chat': new_chat.to_dict()
@@ -301,9 +278,8 @@ class Comments(Resource):
         return {}, 404
 
     def patch(self):
-        comment = Comment.query.filter_by(
-            id=request.get_json().get("id")
-        ).first()
+        comment_id = request.get_json().get("id")
+        comment = Comment.query.get(comment_id)
         if comment:
             if request.get_json().get("new_content"):
                 comment.content = request.get_json().get("new_content")
@@ -339,7 +315,7 @@ class EditFriend(Resource):
             Friendship.user1_id == friend_id,
             Friendship.user2_id == user_id
         ).first()
-        user = User.query.filter_by(id=user_id).first()
+        user = User.query.get(user_id)
         if friendship1:
             friendship1 = Friendship.query.filter(
                 Friendship.user1_id == user_id,
@@ -368,7 +344,7 @@ class EditChat(Resource):
         chat2 = Chat.query.filter(
             Chat.user1_id == friend_id, Chat.user2_id == user_id
         ).first()
-        user = User.query.filter_by(id=user_id).first()
+        user = User.query.get(user_id)
         if chat1:
             chat_id = chat1.id
             chat1 = Chat.query.filter(
@@ -398,10 +374,10 @@ class EditChat(Resource):
 
 class EditUser(Resource):
     def delete(self, user_id):
-        user = User.query.filter_by(id=user_id).first()
+        user = User.query.get(user_id)
         if user:
             id = user.id
-            user = User.query.filter_by(id=user_id)
+            # user = User.query.filter_by(id=user_id)
             user.delete()
             db.session.commit()
             return {'success': f'user {id} has been deleted'}, 200
@@ -410,9 +386,9 @@ class EditUser(Resource):
 
 class EditComment(Resource):
     def delete(self, comment_id, user_id, post_num):
-        comment = Comment.query.filter_by(id=comment_id).first()
+        comment = Comment.query.get(comment_id)
         if comment:
-            comment = Comment.query.filter_by(id=comment_id)
+            # comment = Comment.query.filter_by(id=comment_id)
             comment.delete()
             db.session.commit()
             posts = None
@@ -430,7 +406,7 @@ class EditComment(Resource):
         return {'error': 'No friend found'}, 404
 
     def patch(self, comment_id, user_id, post_num):
-        comment = Comment.query.filter_by(id=comment_id).first()
+        comment = Comment.query.get(comment_id)
         if comment:
             comment.content = request.get_json().get('comment_content')
             db.session.commit()

@@ -75,8 +75,9 @@ class User(db.Model, SerializerMixin):
         '-posts.wants',
         '-posts.passes',
         '-posts.pics',
-        '-comments.user',
-        '-comments.post',
+        '-comments',
+        # '-comments.user',
+        # '-comments.post',
         '-wants',
         # '-wants.user',
         # '-wants.post',
@@ -85,8 +86,18 @@ class User(db.Model, SerializerMixin):
         # '-passes.post',
         '-friendships.friendships',
         '-friendships.chats',
+        '-friendships.posts',
+        '-friendships.comments',
+        '-friendships.wants',
+        '-friendships.passes',
+        '-friendships.messages',
         '-chats.chats',
         '-chats.friendships',
+        '-chats.posts',
+        '-chats.comments',
+        '-chats.wants',
+        '-chats.passes',
+        '-chats.messages',
         '-messages'
     )
 
@@ -291,7 +302,7 @@ class Post(db.Model, SerializerMixin):
 class Pic(db.Model, SerializerMixin):
     __tablename__ = 'pics'
 
-    serialize_rules = ('-post.pics',)
+    serialize_rules = ('-post.pics', '-post.user')
 
     id = db.Column(db.Integer, primary_key=True)
     media = db.Column(db.String, nullable=False)
@@ -304,7 +315,7 @@ class Pic(db.Model, SerializerMixin):
 class Comment(db.Model, SerializerMixin):
     __tablename__ = 'comments'
 
-    serialize_rules = ('-post.comments', '-user.comments',)
+    serialize_rules = ('-post.comments', '-user.comments', '-user.posts')
 
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String, nullable=False)
@@ -323,7 +334,7 @@ class Comment(db.Model, SerializerMixin):
 class Want(db.Model, SerializerMixin):
     __tablename__ = 'wants'
 
-    serialize_rules = ('-post.wants', '-user.wants',)
+    serialize_rules = ('-post.wants', '-user.wants', '-user.posts')
 
     id = db.Column(db.Integer, primary_key=True)
 
@@ -340,7 +351,7 @@ class Want(db.Model, SerializerMixin):
 class Pass(db.Model, SerializerMixin):
     __tablename__ = 'passes'
 
-    serialize_rules = ('-post.passes', '-user.passes',)
+    serialize_rules = ('-post.passes', '-user.passes', '-user.posts')
 
     id = db.Column(db.Integer, primary_key=True)
 
@@ -357,7 +368,7 @@ class Pass(db.Model, SerializerMixin):
 class Message(db.Model, SerializerMixin):
     __tablename__ = 'messages'
 
-    serialize_rules = ('-chat.messages', '-user.messages')
+    serialize_rules = ('-chat.messages', '-user.messages', '-user.chats', '-user.friendships', '-user.posts', '-user.wants', '-user.passes', '-user.posts')
 
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String)
