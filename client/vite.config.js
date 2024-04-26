@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
    proxy: {
     '/api': {
-      target: 'https://barter-hive.onrender.com/login',
+      target: 'https://barter-hive.onrender.com',
       changeOrigin: true
     },
    },

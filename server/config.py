@@ -17,10 +17,10 @@ if os.environ.get('FLASK_ENV') == 'production':
         'http://actual-app-url.herokuapp.com',
         'https://actual-app-url.herokuapp.com',
         'http://127.0.0.1:8000',
-        'https://barter-hive.onrender.com/login'
+        'https://barter-hive.onrender.com'
     ]
 else:
-    origins = ["http://127.0.0.1:5173", 'http://127.0.0.1:8000', 'https://barter-hive.onrender.com/login']
+    origins = ["http://127.0.0.1:5173", 'http://127.0.0.1:8000', 'https://barter-hive.onrender.com']
 
 naming_convention = {
     "ix": "ix_%(column_0_label)s",
