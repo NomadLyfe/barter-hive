@@ -94,7 +94,7 @@ function HomeComments({ comment }) {
     return (
         <div className="text comment_obj">
             <div className="user_and_comment">
-                <NavLink to={`/${comment.user.username}`}><img src={comment.user.profile_pic ? `http://localhost:5555/${comment.user.profile_pic}` : no_pic} className="profile-pic" alt="user-pic" /></NavLink>
+                <NavLink to={`/${comment.user.username}`}><img src={comment.user.profile_pic ? `/api${comment.user.profile_pic}` : no_pic} className="profile-pic" alt="user-pic" /></NavLink>
                 {editMode ? <input name="comment" className="comment text" value={formik.values.comment} onChange={formik.handleChange} onKeyDown={handleKeyPress} /> : <div className="comment">{comment.content}</div>}
                 {comment.user.id === user.id ? <div className="comment_button"><button onClick={handleDeleteComment}>{'\u2715'}</button><button onClick={handleEditButton}>{'\u270e'}</button></div> : null}
             </div>

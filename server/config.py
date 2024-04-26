@@ -15,10 +15,11 @@ origins = None
 if os.environ.get('FLASK_ENV') == 'production':
     origins = [
         'http://actual-app-url.herokuapp.com',
-        'https://actual-app-url.herokuapp.com'
+        'https://actual-app-url.herokuapp.com',
+        'http://127.0.0.1:8000'
     ]
 else:
-    origins = "*"
+    origins = ["http://127.0.0.1:5173", 'http://127.0.0.1:8000']
 
 naming_convention = {
     "ix": "ix_%(column_0_label)s",
@@ -30,7 +31,12 @@ naming_convention = {
 
 metadata = MetaData(naming_convention=naming_convention)
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    static_url_path='',
+    static_folder='../client/dist',
+    template_folder='../client/dist'
+)
 app.secret_key = os.getenv("FLASK_SECRET_KEY")
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URI")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False

@@ -89,7 +89,7 @@ function NavBar() {
             return (
                 <div className="result" key={index} onMouseDown={() => handleMouseDown(u.username)}>
                     <NavLink to={`/${u.username}`}>
-                        <img src={u.profile_pic ? `http://localhost:5555/${u.profile_pic}` : no_pic} className="profile-pic" alt="user-pic" />
+                        <img src={u.profile_pic ? `/api/${u.profile_pic}` : no_pic} className="profile-pic" alt="user-pic" />
                         <div className="user_info">
                             <span>{u.username}</span>
                             {user.friendships.map((friend) => friend.id).includes(u.id) ? (u.id === user.id ? <span>you</span> : <span>friend</span>) : <span>x mutual friends</span>}
@@ -126,7 +126,7 @@ function NavBar() {
                 <div className="notifications">
                     {!user ? <NavLink to="/login">Login</NavLink> : null}
                     {!user ? <NavLink to='/signup'>Signup</NavLink> : null}
-                    <img id="user_pic" src={user.profile_pic ? `http://localhost:5555/${user.profile_pic}` : no_pic} className="profile-pic" alt="user-pic" />
+                    <img id="user_pic" src={user.profile_pic ? `/api${user.profile_pic}` : no_pic} className="profile-pic" alt="user-pic" />
                     <div className="status"><img src={isActive ? active : inactive} alt="status" /></div>
                     <div className="user_dropdown">
                         <div></div>

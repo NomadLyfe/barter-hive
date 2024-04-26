@@ -14,7 +14,7 @@ function Chats() {
     const { user, setUser, chat, setChat, messages, setMessages } = useContext(Context)
 
     useEffect(() => {
-        const URL = process.env.NODE_ENV === 'production' ? undefined : 'http://localhost:5555';
+        const URL = process.env.NODE_ENV === 'production' ? 'http://127.0.0.1:8000' : '/api';
         socket = io(URL);
 
         socket.on('chat_result', (ms) => {
@@ -91,7 +91,7 @@ function Chats() {
         renderedchats = chats.map((chatUser, i) => {
             return (
                 <a id={`chat${chatUser.id}`} className="friend" key={i} onClick={openChat} onMouseOver={handleHover} onMouseOut={handleHover}>
-                    <img src={chatUser.profile_pic ? `http://localhost:5555/${chatUser.profile_pic}` : no_pic} className="profile-pic" alt="profile pic" />
+                    <img src={chatUser.profile_pic ? `/api${chatUser.profile_pic}` : no_pic} className="profile-pic" alt="profile pic" />
                     <div>{chatUser.username}</div>
                     <button onClick={handleDeleteChat}>{'\u2715'}</button>
                 </a>

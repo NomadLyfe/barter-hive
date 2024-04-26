@@ -81,11 +81,11 @@ function UserProfile() {
         return (
             <>
                 <div className="banner text">
-                    {userpage ? <img src={`http://localhost:5555/${userpage.banner_pic}`} /> : null}
+                    {userpage ? <img src={`/api${userpage.banner_pic}`} /> : null}
                 </div>
                 <div className="about text">
                     <div className="basic_info">
-                        {userpage ? <img src={userpage.profile_pic ? `http://localhost:5555/${userpage.profile_pic}` : no_pic} /> : null}
+                        {userpage ? <img src={userpage.profile_pic ? `/api${userpage.profile_pic}` : no_pic} /> : null}
                         <div className="name_and_buttons">
                             {userpage ? <h1>{userpage.username}</h1> : null}
                             {user.friendships.map((u) => u.id).includes(userpage.id) ? null : <button onClick={handleAddFriend}>Add Friend</button>}
@@ -116,7 +116,7 @@ function UserProfile() {
                     <div className="center">
                         {userpage && user.username === userpage.username ? 
                         <div className="card createPostDiv">
-                            <NavLink to={`/${user.username}`}><img src={user.profile_pic ? `http://localhost:5555/${user.profile_pic}` : no_pic} className="profile-pic" alt="profile pic" /></NavLink>
+                            <NavLink to={`/${user.username}`}><img src={user.profile_pic ? `/api${user.profile_pic}` : no_pic} className="profile-pic" alt="profile pic" /></NavLink>
                             <button onClick={handlePostFormClick} className="creatPostButton">{user.username.charAt(0).toUpperCase() + user.username.slice(1)}, create a post!</button>
                         </div> : null}
                         <div className="feed">

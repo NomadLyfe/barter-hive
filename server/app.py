@@ -15,7 +15,7 @@ def index(id=0):
     return render_template("index.html")
 
 
-@app.route('/images/<path:filename>')
+@app.route('/api/images/<path:filename>')
 def images(filename):
     return send_from_directory('images', filename)
 
@@ -471,7 +471,7 @@ class CreatePost(Resource):
             print(new_post_id)
             if pic_content:
                 for i, pic in enumerate(pic_content):
-                    url = f'images/{new_post_id}{i}media.jpg'
+                    url = f'/images/{new_post_id}{i}media.jpg'
                     with open(url, 'wb') as file:
                         file.write(base64.b64decode(pic))
                     new_pic = Pic(media=url, post_id=new_post_id)

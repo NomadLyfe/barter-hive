@@ -112,7 +112,7 @@ function PostCard() {
             return (
                 <div id={post.id} className="card" key={i}>
                     <div className="user_and_post_owner">
-                        <NavLink to={`/${userpage.username}`}><img src={userpage.profile_pic ? `http://localhost:5555/${userpage.profile_pic}` : no_pic} className="profile-pic" alt="user-pic" /></NavLink>
+                        <NavLink to={`/${userpage.username}`}><img src={userpage.profile_pic ? `/api${userpage.profile_pic}` : no_pic} className="profile-pic" alt="user-pic" /></NavLink>
                         <h2 className="text">{userpage.username}</h2>
                     </div>
                     <PostMedia post={post} />
@@ -130,7 +130,7 @@ function PostCard() {
                     </div>
                     <div className="comments">{post.comments.at(0) ? renderedCommentList : <span className="no_comments text">No comments</span>}</div>
                     <form className="newCommentFormWrapper" onSubmit={handleCommentSubmit}>
-                        <img src={user.profile_pic ? `http://localhost:5555/${user.profile_pic}` : no_pic} className="profile-pic" alt="user-pic" />
+                        <img src={user.profile_pic ? `/api${user.profile_pic}` : no_pic} className="profile-pic" alt="user-pic" />
                         <input placeholder="White a comment..." name="comment" onChange={formik.handleChange} value={formik.values.comment} />
                         <button type="submit">Send</button>
                         <button type="reset" onClick={handleCommentClick}>{'\u2715'}</button>

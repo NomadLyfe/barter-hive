@@ -99,7 +99,7 @@ function Settings() {
             </div>
             <div className="settings">
                 <div className="picInfo">
-                    <img src={user.profile_pic ? `http://localhost:5555/${user.profile_pic}` : no_pic} alt="user-pic" />
+                    <img src={user.profile_pic ? `/api${user.profile_pic}` : no_pic} alt="user-pic" />
                 </div>
                 <form className="loginForm" onSubmit={formik.handleSubmit}>
                     <label id="username">Username:</label>

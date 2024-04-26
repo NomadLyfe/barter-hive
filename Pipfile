@@ -18,6 +18,8 @@ requests = "*"
 faker = "*"
 ipdb = "*"
 flask-socketio = "*"
+honcho = "*"
+gevent = "*"
 
 [dev-packages]
 

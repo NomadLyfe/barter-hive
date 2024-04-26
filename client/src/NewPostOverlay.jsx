@@ -138,7 +138,7 @@ function NewPostOverlay() {
                     <div></div>
                 </div>
                 <form onSubmit={formik.handleSubmit}>
-                    <img src={user.profile_pic ? `http://localhost:5555/${user.profile_pic}` : no_pic} className="profile-pic" alt="profile pic" />
+                    <img src={user.profile_pic ? `/api${user.profile_pic}` : no_pic} className="profile-pic" alt="profile pic" />
                     <select id="type" name="type" onChange={handleTypeChange} value={formik.values.type} >
                         <option value="Social">Social</option>
                         <option value="Sale">Sale</option>
