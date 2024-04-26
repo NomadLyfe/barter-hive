@@ -1,6 +1,7 @@
 from flask_socketio import emit
 from config import app, db, api, socketio
-from models import User, Friendship, Post, Chat, Comment, Message, Want, Pass
+from models import User, Friendship, Post, Chat
+from models import Comment, Message, Want, Pass, Pic
 from flask import request, session, render_template, send_from_directory
 from flask_restful import Resource
 import base64
@@ -86,7 +87,6 @@ class Users(Resource):
             user.city = request.get_json().get("city")
             user.state = request.get_json().get("state")
             user.country = request.get_json().get("country")
-            profile_pic = request.get_json().get("profile")
             if request.get_json().get("profile"):
                 profile_pic = request.get_json().get("profile")
                 with open(f'images/{user.id}profile.jpg', 'wb') as file:
@@ -176,7 +176,7 @@ class SearchPosts(Resource):
         posts = [
             post.to_dict() for post in Post.query.filter_by(
                 user_id=user.id
-            ).all()
+            ).order_by(Post.id.desc()).all()
         ]
         if posts:
             return posts, 200
@@ -328,7 +328,7 @@ class Comments(Resource):
         return {}, 404
 
 
-class DeleteFriend(Resource):
+class EditFriend(Resource):
     def delete(self, friend_id, user_id):
         friend_id = int(friend_id[6:])
         friendship1 = Friendship.query.filter(
@@ -359,7 +359,7 @@ class DeleteFriend(Resource):
         return {'error': 'No friend found'}, 404
 
 
-class DeleteChat(Resource):
+class EditChat(Resource):
     def delete(self, friend_id, user_id):
         friend_id = int(friend_id[4:])
         chat1 = Chat.query.filter(
@@ -396,7 +396,7 @@ class DeleteChat(Resource):
         return {'error': 'No friend found'}, 404
 
 
-class DeleteUser(Resource):
+class EditUser(Resource):
     def delete(self, user_id):
         user = User.query.filter_by(id=user_id).first()
         if user:
@@ -408,7 +408,7 @@ class DeleteUser(Resource):
         return {'error': 'No friend found'}, 404
 
 
-class DeleteComment(Resource):
+class EditComment(Resource):
     def delete(self, comment_id, user_id, post_num):
         comment = Comment.query.filter_by(id=comment_id).first()
         if comment:
@@ -448,6 +448,53 @@ class DeleteComment(Resource):
         return {'error': 'No friend found'}, 404
 
 
+class CreatePost(Resource):
+    def post(self):
+        try:
+            type = request.get_json().get('type')
+            str_content = request.get_json().get('str_content')
+            user = User.query.filter_by(id=session["user_id"]).first()
+            pic_content = request.get_json().get('pic_content')
+            new_post_id = Post.query.order_by(Post.id.desc()).first().id + 1
+            new_post = Post(
+                str_content=str_content,
+                type=type,
+                is_sold=False,
+                user=user
+            )
+            if type == 'sale':
+                new_post.price = request.get_json().get('price')
+            else:
+                new_post.price = 0
+            db.session.add(new_post)
+            db.session.commit()
+            print(new_post_id)
+            if pic_content:
+                for i, pic in enumerate(pic_content):
+                    url = f'images/{new_post_id}{i}media.jpg'
+                    with open(url, 'wb') as file:
+                        file.write(base64.b64decode(pic))
+                    new_pic = Pic(media=url, post_id=new_post_id)
+                    db.session.add(new_pic)
+                    db.session.commit()
+            if request.get_json().get('userpage'):
+                userpage_id = request.get_json().get('userpage_id')
+                posts = [
+                    post.to_dict() for post in Post.query.filter_by(
+                        user_id=userpage_id
+                    ).order_by(Post.id.desc()).all()
+                ]
+                return posts, 200
+            else:
+                post_num = request.get_json().get('post_num')
+                posts = [
+                    post.to_dict() for post in Post.query.limit(post_num).all()
+                ]
+                return posts, 200
+        except Exception:
+            return {'error': 'improper form'}, 404
+
+
 api.add_resource(Login, "/api/login", endpoint="login")
 api.add_resource(CheckSession, "/api/check_session", endpoint="check_session")
 api.add_resource(Users, "/api/users", endpoint="users")
@@ -468,14 +515,15 @@ api.add_resource(Passes, "/api/passes", endpoint="passes")
 api.add_resource(Friends, "/api/friends", endpoint="friends")
 api.add_resource(Chats, "/api/chats", endpoint="chats")
 api.add_resource(Comments, "/api/comments", endpoint="comments")
-api.add_resource(DeleteFriend, '/api/friend/<string:friend_id>/<int:user_id>')
-api.add_resource(DeleteChat, '/api/chat/<string:friend_id>/<int:user_id>')
-api.add_resource(DeleteUser, '/api/user/<int:user_id>')
+api.add_resource(EditFriend, '/api/friend/<string:friend_id>/<int:user_id>')
+api.add_resource(EditChat, '/api/chat/<string:friend_id>/<int:user_id>')
+api.add_resource(EditUser, '/api/user/<int:user_id>')
 api.add_resource(
-    DeleteComment,
+    EditComment,
     '/api/comment/<int:comment_id>/<int:user_id>/<int:post_num>',
     endpoint="comment"
 )
+api.add_resource(CreatePost, '/api/createpost', endpoint='createpost')
 
 if __name__ == "__main__":
     socketio.run(app, port=5555, debug=True)

@@ -7,6 +7,7 @@ import * as yup from "yup";
 import './css files/Home.css'
 import no_pic from './images/no-profile-pic.png'
 import Comments from "./Comments.jsx";
+import PostMedia from "./PostMedia.jsx";
 
 function PostCard() {
     const { user, userpage, userposts, setUserposts } = useContext(Context);
@@ -107,15 +108,14 @@ function PostCard() {
                     )
                 })
             }
+
             return (
                 <div id={post.id} className="card" key={i}>
                     <div className="user_and_post_owner">
                         <NavLink to={`/${userpage.username}`}><img src={userpage.profile_pic ? `http://localhost:5555/${userpage.profile_pic}` : no_pic} className="profile-pic" alt="user-pic" /></NavLink>
                         <h2 className="text">{userpage.username}</h2>
                     </div>
-                    <div className="media">
-
-                    </div>
+                    <PostMedia post={post} />
                     <p className="text post_str">{post.str_content}</p>
                     <div className="stats text">
                         <div className="wants-num"><span>{post.wants.length}</span> wants</div>

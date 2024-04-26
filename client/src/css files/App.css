@@ -52,40 +52,6 @@ main {
     cursor: pointer;
 }
 
-.post-form {
-    display: none;
-    position: fixed;
-    background-color: #ebe0c1;
-    box-shadow: 10px 10px 20px rgb(14, 14, 14);
-    align-self: center;
-    z-index: 1;
-    border-radius: 15px;
-}
-
-.post-form form {
-    display: flex;
-    flex-direction: column;
-}
-
-.post-form form * {
-    margin: 20px;
-    background-color: #3B4131;
-    color: #9C9A40;
-}
-
-.image-drop {
-    border: 1px sold #3B4131;
-    width: 410px;
-    height: 181px;
-    border-radius: 15px;
-    padding: 40px 20px;
-}
-
-.image-drop img {
-    height: 40px;
-    margin-bottom: 0px;
-}
-
 .overlay {
     display: none;
     position: fixed;
@@ -95,8 +61,87 @@ main {
     justify-content: center;
 }
 
+.post-form {
+    display: none;
+    position: relative;
+    background-color: #ebe0c1;
+    box-shadow: 10px 10px 20px rgb(14, 14, 14);
+    align-self: center;
+    z-index: 1;
+    border-radius: 15px;
+    overflow-y: auto;
+    max-height: 85vh;
+    padding: 5px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.post-form::-webkit-scrollbar {
+    display: none;
+}
+
+.post-form form {
+    display: flex;
+    flex-direction: column;
+    margin: 20px 0px;
+}
+
+.post-form form * {
+    margin: 10px 20px;
+    background-color: #3B4131;
+    color: #9C9A40;
+}
+
+.image-drop {
+    border: 1px sold #3B4131;
+    width: 400px;
+    height: 130px;
+    border-radius: 15px;
+    padding: 20px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-drop h2, .image-drop p {
+    margin: 10px;
+}
+
+.image-drop label {
+    margin: 0px;
+    width: 100%;
+}
+
+.image-drop img {
+    margin: 0px;
+    height: 40px;
+    margin-bottom: 0px;
+}
+
 .createPostTitle {
     color: #9C9A40;
     border-bottom: 1px solid #3B4131;
     margin: 20px;
+}
+
+.file-preview-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 15px;
+}
+
+.file-preview-wrapper div, .file-preview-wrapper button {
+    margin: 10px
+    
+}
+
+.file-preview {
+    display: flex;
+    flex-direction: row;
+}
+
+.file-preview-wrapper img {
+    height: 50px;
+    margin: 10px;
 }

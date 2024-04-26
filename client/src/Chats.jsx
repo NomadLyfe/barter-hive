@@ -38,7 +38,6 @@ function Chats() {
             } else {
                 user1 = e.target.parentNode.children[1].innerHTML
             }
-            console.log(user1)
             fetch('/api/search_chats', {
                 method: 'POST',
                 headers: {

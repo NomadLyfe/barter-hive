@@ -1,5 +1,6 @@
 from config import app, db
-from models import User, Friendship, Post, Chat, Comment, Message, Want, Pass
+from models import User, Friendship, Post, Chat
+from models import Comment, Message, Want, Pass, Pic
 from faker import Faker
 from random import choice
 # import ipdb
@@ -93,6 +94,7 @@ if __name__ == "__main__":
         Message.query.delete()
         Want.query.delete()
         Pass.query.delete()
+        Pic.query.delete()
         db.session.commit()
         print("Creating records...")
         users = [
@@ -138,7 +140,6 @@ if __name__ == "__main__":
         posts = [
             Post(
                 str_content=fake.paragraph(nb_sentences=5),
-                pic_content=image,
                 price=choice(range(200)),
                 is_sold=False,
                 type="sale",
@@ -146,7 +147,14 @@ if __name__ == "__main__":
             )
             for i in range(100)
         ]
-        db.session.add_all(users + posts)
+        pics = [
+            Pic(
+                media=image,
+                post_id=int(i)
+            )
+            for i in range(1, 101)
+        ]
+        db.session.add_all(users + posts + pics)
         db.session.commit()
         pulled_users = User.query.all()
         pulled_posts = Post.query.all()

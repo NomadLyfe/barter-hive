@@ -74,6 +74,7 @@ class User(db.Model, SerializerMixin):
         '-posts.comments',
         '-posts.wants',
         '-posts.passes',
+        '-posts.pics',
         '-comments.user',
         '-comments.post',
         '-wants',
@@ -227,11 +228,11 @@ class Post(db.Model, SerializerMixin):
         '-passes.post',
         '-passes.user',
         '-comments.post',
+        '-pics.post'
     )
 
     id = db.Column(db.Integer, primary_key=True)
     str_content = db.Column(db.String)
-    pic_content = db.Column(db.String)
     price = db.Column(db.Float, nullable=False)
     is_sold = db.Column(db.Boolean, nullable=False)
     type = db.Column(db.String, nullable=False)
@@ -239,6 +240,13 @@ class Post(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     user = db.relationship('User', back_populates='posts')
+
+    pics = db.relationship(
+        'Pic',
+        back_populates='post',
+        cascade='all, delete-orphan',
+        lazy='select'
+    )
 
     comments = db.relationship(
         'Comment',
@@ -278,6 +286,19 @@ class Post(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'Post ID {self.id}'
+
+
+class Pic(db.Model, SerializerMixin):
+    __tablename__ = 'pics'
+
+    serialize_rules = ('-post.pics',)
+
+    id = db.Column(db.Integer, primary_key=True)
+    media = db.Column(db.String, nullable=False)
+
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+
+    post = db.relationship('Post', back_populates='pics', lazy='select')
 
 
 class Comment(db.Model, SerializerMixin):
