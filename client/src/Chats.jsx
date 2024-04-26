@@ -14,7 +14,7 @@ function Chats() {
     const { user, setUser, chat, setChat, messages, setMessages } = useContext(Context)
 
     useEffect(() => {
-        const URL = process.env.NODE_ENV === 'production' ? 'http://127.0.0.1:8000' : '/api';
+        const URL = process.env.NODE_ENV === 'production' ? 'https://barter-hive.onrender.com/login' : '/api';
         socket = io(URL);
 
         socket.on('chat_result', (ms) => {
