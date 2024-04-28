@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { Context } from './Context';
@@ -8,6 +8,7 @@ import logoNoBack from './images/logo-no-background.svg';
 function Login() {
     // const { user, setUser, navigate, setPosts, offset, setOffset, setShowingposts, setNumposts, setMaxposts } = useContext(Context)
     const { setUser, navigate } = useContext(Context)
+    const [loginError, setLoginError] = useState(false);
 
     const formSchema = yup.object().shape({
         username: yup.string().required('Must enter username').max(20),
@@ -35,6 +36,8 @@ function Login() {
                         });
                         navigate(`/`)
                     });
+                } else if (resp.status === 401) {
+                    setLoginError(true);
                 }
             });
             formik.resetForm();
@@ -54,6 +57,7 @@ function Login() {
                 <input placeholder='Type your username' type='text' id='usernameinp' name='username' autoComplete="on" onChange={formik.handleChange} value={formik.values.username} />
                 <label id='password'>Password</label>
                 <input placeholder='Type your password' type='password' id='passwordinp' name='password' onChange={formik.handleChange} value={formik.values.password} />
+                {loginError && <p className="error-message">Invalid username or password. Please try again.</p>}
                 <a>Forgot Password?</a>
                 <button type='submit'>LOGIN</button>
                 <a onClick={handleSignUpClick}>Or Sign Up</a>

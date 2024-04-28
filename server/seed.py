@@ -86,15 +86,9 @@ if __name__ == "__main__":
         prof_pic_2 = "/images/profile2.jpg"
         print("Starting seed...")
         print("Deleting all records...")
-        User.query.delete()
-        Friendship.query.delete()
-        Post.query.delete()
-        Chat.query.delete()
-        Comment.query.delete()
-        Message.query.delete()
-        Want.query.delete()
-        Pass.query.delete()
-        Pic.query.delete()
+        db.drop_all()
+        db.session.commit()
+        db.create_all()
         db.session.commit()
         print("Creating records...")
         users = [
@@ -108,7 +102,9 @@ if __name__ == "__main__":
                 country=fake.country(),
                 state=choice(states),
                 profile_pic=mike_pic,
-                banner_pic=banner
+                banner_pic=banner,
+                bio=fake.paragraph(nb_sentences=5),
+                status=choice(['Single', 'Married', 'Engaged', 'Taken'])
             ) for i in range(50)
         ]
         one_user = User(
@@ -121,7 +117,9 @@ if __name__ == "__main__":
             country="united states",
             state="va",
             profile_pic=prof_pic_1,
-            banner_pic=banner
+            banner_pic=banner,
+            bio=fake.paragraph(nb_sentences=5),
+            status=choice(['Single', 'Married', 'Engaged', 'Taken'])
         )
         two_user = User(
             username="def",
@@ -133,7 +131,9 @@ if __name__ == "__main__":
             country="united states",
             state="va",
             profile_pic=prof_pic_2,
-            banner_pic=banner
+            banner_pic=banner,
+            bio=fake.paragraph(nb_sentences=5),
+            status=choice(['Single', 'Married', 'Engaged', 'Taken'])
         )
         users.append(one_user)
         users.append(two_user)
@@ -142,7 +142,7 @@ if __name__ == "__main__":
                 str_content=fake.paragraph(nb_sentences=5),
                 price=choice(range(200)),
                 is_sold=False,
-                type="sale",
+                type="Sale",
                 user=choice(users),
             )
             for i in range(100)

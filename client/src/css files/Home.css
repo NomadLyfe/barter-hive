@@ -49,7 +49,7 @@
         max-width: 680px;
     }
     .basic_info h1, .extra_info {
-        margin-right: 100px;
+        margin-right: 50px;
     }
   }
 
@@ -314,6 +314,7 @@
 .basic_info {
     display: flex;
     flex-direction: row;
+    width: 40vw;
 }
 .basic_info h1 {
     margin: 10px 200px 20px 40px;
@@ -328,12 +329,14 @@
 .extra_info {
     display: flex;
     flex-direction: column;
-    align-items: start;
-    margin: 10px 200px 0px 0px;
+    margin: 10px 0px 0px 0px;
+    width: 20vw;
 }
 
 .extra_info * {
+    text-align: left;
     margin: 10px;
+    width: max-content;
 }
 
 .about_me {
@@ -341,6 +344,7 @@
     flex-direction: column;
     align-items: start;
     justify-content: start;
+    width: 30vw;
 }
 
 .about_me h2 {
@@ -464,6 +468,9 @@
     align-items: start;
 }
 
+.name_and_buttons h1 {
+    margin-right: 40px;
+}
 
 .name_and_buttons button {
     margin: 8px auto 8px 40px;
@@ -516,10 +523,15 @@
     max-width: 100%;
     overflow: hidden;
     margin-top: 20px;
+    margin: 0px;
 }
 
 .mySlides {
     display: none;
+}
+
+.mySlides img {
+    width: 100%;
 }
 
 .prev,
@@ -556,9 +568,9 @@
 .dots {
     text-align: center;
     margin-top: 20px;
-  }
+}
   
-  .dot {
+.dot {
     height: 10px;
     width: 10px;
     margin: 0 5px;
@@ -567,8 +579,16 @@
     display: inline-block;
     transition: background-color 0.3s;
     cursor: pointer;
-  }
+}
   
-  .dot.active {
+.dot.active {
     background-color: #333;
   }
+
+.pricetag {
+    margin: 0px 25px 25px 25px;
+}
+
+#emptyDiv {
+    margin: 12.5px;
+}

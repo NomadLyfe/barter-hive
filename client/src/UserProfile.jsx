@@ -10,7 +10,7 @@ import Friends from "./Friends";
 import PostCard from "./PostCard";
 
 function UserProfile() {
-    const { user, setUser, userpage, setUserpage, setUserposts, setChat, setMessages, navigate } = useContext(Context);
+    const { user, setUser, userpage, setUserpage, setUserposts, setChat, setMessages, navigate, userposts } = useContext(Context);
     let { username } = useParams();
     
     useEffect(() => {
@@ -30,6 +30,8 @@ function UserProfile() {
                 resp.json().then((postList) => {
                     setUserposts(postList)
                 })
+            } else {
+                setUserposts(null)
             }
         })
     }, [username, navigate])
@@ -77,6 +79,15 @@ function UserProfile() {
         })
     }
 
+    let renderedPostList = null
+    if (userposts && userpage) {
+        renderedPostList = userposts.map((post, i) => {
+            return (
+                <PostCard key={i} post={post} />
+            )
+        })
+    }
+
     if (userpage) {
         return (
             <>
@@ -93,13 +104,13 @@ function UserProfile() {
                         </div>
                     </div>
                     <div className="extra_info">
-                        <p>Joined: {}</p>
+                        <p>Joined: {userpage ? userpage.creation_date : 'NaN'}</p>
                         <p>Friends: {userpage ? userpage.friendships.length - 1 : null}</p>
-                        <p>Posts: {userpage ? userpage.posts.length : null}</p>
-                        <p>Relationship: {}</p>
+                        <p>Posts: {userpage ? userpage.posts.length : 0}</p>
+                        <p>Relationship: {userpage ? userpage.status : 'single'}</p>
                     </div>
                     <div className="about_me">
-                        {userpage ? <div><h2>About me:</h2><p>Hi, asjdkflsdkfjskdlfksdjfklsdkfjsdklfjksdjf  sdjfk sdfjsdklf jsdkfls dksdjkfsdjkf sdkfjks dfrsd fksdlfksdkfsl dsjkld sdj fsjdkfskd sjd fklsd fjskdf skdlf sdkfls dkfls dfj sdkfjksd fjskdlfsjdfk sdkf skdjf ksdjfksldf s dfk sdklf sdklfj skldj fkls dlkf skldfjskd flksd klfjsdklfj skldfjl</p></div> : null}
+                        {userpage ? <div><h2>About me:</h2><p>{userpage.bio ? userpage.bio : 'No bio yet.'}</p></div> : null}
                     </div>
                 </div>
                 <div className="mainPage">
@@ -120,7 +131,9 @@ function UserProfile() {
                             <button onClick={handlePostFormClick} className="creatPostButton">{user.username.charAt(0).toUpperCase() + user.username.slice(1)}, create a post!</button>
                         </div> : null}
                         <div className="feed">
-                            <PostCard />
+
+                            {/* <PostCard /> */}
+                            {renderedPostList ? renderedPostList : <h2 className="text"><br /><br />{userpage.id === user.id ? "You don't" : userpage.username.charAt(0).toUpperCase() + userpage.username.slice(1) + " doesn't"} have any posts!</h2>}
                         </div>
                     </div>
                     <div className="rightPanel">

@@ -145,3 +145,7 @@ main {
     height: 50px;
     margin: 10px;
 }
+
+#file-upload {
+    display: none;
+}

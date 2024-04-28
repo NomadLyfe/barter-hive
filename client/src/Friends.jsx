@@ -24,7 +24,6 @@ function Friends() {
             }).then((resp) => {
                 if (resp.ok) {
                     resp.json().then((data) => {
-                        console.log(data)
                         setUser(data)
                     })
                 }

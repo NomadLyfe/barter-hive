@@ -7,7 +7,7 @@ import no_pic from './images/no-profile-pic.png'
 import Friends from "./Friends";
 import Bdays from "./Bdays";
 import Chats from "./Chats";
-import HomePostCard from "./HomePostCard";
+import HomePostCard from "./PostCard";
 
 function Home() {
     const {
@@ -71,7 +71,6 @@ function Home() {
                     resp.json().then((postList) => {
                             setPosts(posts.concat(postList))
                             setOffset(offset + 5)
-                            // console.log('5 more posts')
                     })
                 }
             }).catch(err => {
@@ -94,6 +93,16 @@ function Home() {
         main.style.filter = 'brightness(40%)'
     }
 
+    let renderedPostList = null
+    if (posts[0]) {
+        renderedPostList = posts.map((post, i) => {
+            return (
+                <HomePostCard key={i} post={post} />
+            )
+        })
+    }
+
+
     return (
         <>
             <div className="mainPage">
@@ -114,7 +123,7 @@ function Home() {
                         <button onClick={handlePostFormClick} className="creatPostButton">{user.username.charAt(0).toUpperCase() + user.username.slice(1)}, create a post!</button>
                     </div>
                     <div className="feed">
-                        <HomePostCard />
+                        {renderedPostList}
                         <div id="loadingcard" className="card">
                             <div className="user_and_post_owner">
                                 <img src={no_pic} className="profile-pic" alt="user-pic" />

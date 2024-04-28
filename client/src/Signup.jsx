@@ -1,13 +1,22 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { Context } from './Context';
 import * as yup from "yup";
 import './css files/Login.css';
 import logoNoBack from './images/logo-no-background.svg';
+import { Country, State, City }  from 'country-state-city';
 
 function Signup() {
-    // const { user, setUser, navigate, setPosts, offset, setOffset, setShowingposts, setNumposts, setMaxposts } = useContext(Context)
     const { setUser, navigate } = useContext(Context)
+    const c = Country.getAllCountries()
+    const countries = c.map((country, i) => {
+        return (
+            <option className={country.name.split(' ').join('_')} value={country.name} key={i} id={country.isoCode}>{country.name}</option>
+        )
+    })
+    const [countryCode, setCountryCode] = useState(null)
+    const [states, setStates] = useState(null)
+    const [cities, setCities] = useState(null)
 
     const formSchema = yup.object().shape({
         username: yup.string().required('Must enter username').max(20),
@@ -46,23 +55,6 @@ function Signup() {
                     if (resp.ok) {
                         resp.json().then((user) => {
                             setUser(() => {
-                                // fetch('/api/posts', {
-                                //     method: 'POST',
-                                //     headers: {
-                                //         'Content-Type': 'application/json'
-                                //     },
-                                //     body: JSON.stringify({offset: offset})
-                                // }).then((resp) => {
-                                //     if (resp.status === 200) {
-                                //         resp.json().then((postList) => {
-                                //             setPosts(postList)
-                                //             setShowingposts(postList)
-                                //             setNumposts(postList.length)
-                                //             setMaxposts(25)
-                                //             setOffset(offset + 5)
-                                //         })
-                                //     }
-                                // });
                                 return user
                             });
                             navigate(`/`)
@@ -78,29 +70,82 @@ function Signup() {
         navigate('/login')
     }
 
+    function handleAsteriskToggle(e) {
+        const { name, value } = e.target;
+        const label = e.target.parentNode.querySelector(`#${name}`);
+        if (label) {
+            if (value !== '') {
+                label.classList.add('input-filled');
+            } else {
+                label.classList.remove('input-filled');
+            }
+        }
+    }
+
+    function handleCountrySelection(e) {
+        formik.handleChange(e)
+        formik.setFieldValue('state', '')
+        formik.setFieldValue('city', '')
+        const countryName = e.target.value
+        setCountryCode(e.target.querySelector(`.${countryName.split(' ').join('_')}`).id)
+        const s = State.getStatesOfCountry(e.target.querySelector(`.${countryName.split(' ').join('_')}`).id)
+        setStates(s.map((state, i) => {
+            return (
+                <option className={state.name.split(' ').join('_')} value={state.name} key={i} id={state.isoCode}>{state.name}</option>
+            )
+        }))
+    }
+
+    function handleStateSelection(e) {
+        formik.handleChange(e)
+        formik.setFieldValue('city', '')
+        const stateName = e.target.value
+        const stateCode = e.target.querySelector(`.${stateName.split(' ').join('_')}`).id
+        const ci = City.getCitiesOfState(countryCode, stateCode)
+        setCities(ci.map((city, i) => {
+            return (
+                <option className={city.name.split(' ').join('_')} value={city.name} key={i} id={city.isoCode}>{city.name}</option>
+            )
+        }))
+    }
+
+    function restrictCharacters(e) {
+        const value = e.target.value.replace(/\D/g, '');
+        formik.setFieldValue('phone', value);
+    }
+
     return (
         <>
             <form className="loginForm" onSubmit={formik.handleSubmit}>
                 <img src={logoNoBack} className="logo" alt="logo-no-back" />
                 <h1>Sign Up</h1>
-                <label id='username'>Username</label>
-                <input placeholder='Type your username' type='text' id='usernameinp' name='username' autoComplete="on" onChange={formik.handleChange} value={formik.values.username} />
-                <label id='password'>Password</label>
-                <input placeholder='Type your password' type='password' id='passwordinp' name='password' onChange={formik.handleChange} value={formik.values.password} />
-                <label id='passwordconf'>Confirm Password</label>
-                <input placeholder='Type your password' type='password' id='passwordconfinp' name='passwordconf' onChange={formik.handleChange} value={formik.values.passwordconf} />
-                <label id='email'>E-mail</label>
-                <input placeholder='Type your email' type='email' id='emailinp' name='email' onChange={formik.handleChange} value={formik.values.email} />
-                <label id='bday'>Birthday</label>
-                <input placeholder='Type your birthday' type='date' id='bdayinp' name='bday' onChange={formik.handleChange} value={formik.values.bday} />
-                <label id='phone'>Phone Number</label>
-                <input placeholder='Type your phone number' type='tel' id='phoneinp' name='phone' onChange={formik.handleChange} value={formik.values.phone} />
-                <label id='country'>Country</label>
-                <input placeholder='Type your country' type='text' id='countryinp' name='country' onChange={formik.handleChange} value={formik.values.country} />
-                <label id='state'>State</label>
-                <input placeholder='Type your state' type='text' id='stateinp' name='state' onChange={formik.handleChange} value={formik.values.state} />
-                <label id='city'>City</label>
-                <input placeholder='Type your city' type='text' id='cityinp' name='city' onChange={formik.handleChange} value={formik.values.city} />
+                <label id='username' className="required input-label">Username</label>
+                <input placeholder='Type your username' type='text' id='usernameinp' name='username' autoComplete="on" onChange={formik.handleChange} value={formik.values.username} onFocus={handleAsteriskToggle} onBlur={handleAsteriskToggle} required />
+                <label id='password' className="required input-label">Password</label>
+                <input placeholder='Type your password' type='password' id='passwordinp' name='password' onChange={formik.handleChange} value={formik.values.password} onFocus={handleAsteriskToggle} onBlur={handleAsteriskToggle} required />
+                <label id='passwordconf' className="required input-label">Confirm Password</label>
+                <input placeholder='Type your password' type='password' id='passwordconfinp' name='passwordconf' onChange={formik.handleChange} value={formik.values.passwordconf} onFocus={handleAsteriskToggle} onBlur={handleAsteriskToggle} required />
+                <label id='email' className="required input-label">E-mail</label>
+                <input placeholder='Type your email' type='email' id='emailinp' name='email' onChange={formik.handleChange} value={formik.values.email} onFocus={handleAsteriskToggle} onBlur={handleAsteriskToggle} required />
+                <label id='bday' className="required input-label">Birthday</label>
+                <input placeholder='Type your birthday' type='date' id='bdayinp' name='bday' onChange={formik.handleChange} value={formik.values.bday} onFocus={handleAsteriskToggle} onBlur={handleAsteriskToggle} required />
+                <label id='phone' className="required input-label">Phone Number</label>
+                <input placeholder='Type your phone number' type='tel' id='phoneinp' name='phone' onChange={restrictCharacters} value={formik.values.phone} onFocus={handleAsteriskToggle} onBlur={handleAsteriskToggle} required minLength={7} maxLength={20} />
+                <label id='country' className="required input-label">Country</label>
+                <select id='countryinp' name='country' onChange={handleCountrySelection} value={formik.values.country}  onFocus={handleAsteriskToggle} onBlur={handleAsteriskToggle} required>
+                    <option></option>
+                    {countries}
+                </select>
+                <label id='state' className="required input-label">State</label>
+                <select id='stateinp' name='state' onChange={handleStateSelection} value={formik.values.state} onFocus={handleAsteriskToggle} onBlur={handleAsteriskToggle} required>
+                    <option></option>
+                    {states}
+                </select>
+                <label id='city' className="required input-label">City</label>
+                <select id='cityinp' name='city' onChange={formik.handleChange} value={formik.values.city} onFocus={handleAsteriskToggle} onBlur={handleAsteriskToggle} required>
+                    <option></option>
+                    {cities}
+                </select>
                 <button type='submit'>SIGN UP</button>
                 <a onClick={handleClick}>Or Login</a>
             </form>

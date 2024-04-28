@@ -54,7 +54,6 @@ function NewPostOverlay() {
         onSubmit: (values) => {
             values.userpage = window.location.pathname != '/'
             values.userpage_id = values.userpage ? userpage.id : null
-            console.log(values)
             fetch('/api/createpost', {
                 method: 'POST',
                 headers: {
@@ -72,10 +71,8 @@ function NewPostOverlay() {
                         overlay.style.display = ''
                         main.style.filter = ''
                         if (values.userpage) {
-                            console.log('userpage', posts)
                             setUserposts(posts)
                         } else {
-                            console.log('home', posts)
                             setPosts(posts)
                         }
                     });
@@ -144,14 +141,13 @@ function NewPostOverlay() {
                         <option value="Sale">Sale</option>
                     </select>
                     {showExtraInput ? <input type='number' name='price' step='0.01' placeholder='Enter price' onChange={formik.handleChange} value={formik.values.price} /> : null}
-                    {/* <input name='title' type='text' placeholder='Title' onChange={formik.handleChange} value={formik.values.title} /> */}
                     <div className='image-drop' onDragOver={handleDragOver} onDrop={handleDrop}>
                         <label htmlFor='file-upload'>
                             <img src={upload} alt='add' />
                             {filePreview ? <h2>Add More Media</h2> : <h2>Add Media</h2>}
                             <p>or drag and drop</p>
                         </label>
-                        <input id='file-upload' type='file' style={{ display: 'none' }} onChange={handleFileChange} multiple />
+                        <input id='file-upload' type='file' onChange={handleFileChange} multiple />
                     </div>
                     <div className='file-preview-wrapper'>
                         {filePreview}

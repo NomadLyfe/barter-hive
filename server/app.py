@@ -4,6 +4,7 @@ from models import User, Friendship, Post, Chat
 from models import Comment, Message, Want, Pass, Pic
 from flask import request, session, render_template, send_from_directory
 from flask_restful import Resource
+from sqlalchemy import or_, and_
 import base64
 
 
@@ -24,8 +25,8 @@ def handle_chat(data):
         message_text = data.get('message')
         chat_id = data.get('chat_id')
         user_id = data.get('user_id')
-        chat = Chat.query.get(chat_id)
-        user = User.query.get(user_id)
+        chat = db.session.get(Chat, chat_id)
+        user = db.session.get(User, user_id)
         if chat and user:
             message = Message(
                 content=message_text,
@@ -64,7 +65,7 @@ class CheckSession(Resource):
     def get(self):
         user_id = session.get("user_id")
         if user_id:
-            user = User.query.get(user_id)
+            user = db.session.get(User, user_id)
             return user.to_dict(), 200
         return {}, 204
 
@@ -74,13 +75,15 @@ class Users(Resource):
         user_id = session.get("user_id")
         if not user_id:
             return {"error": "Not logged in"}, 401
-        user = User.query.get(user_id)
+        user = db.session.get(User, user_id)
         user.username = request.get_json().get("username")
         user.email = request.get_json().get("email")
         user.phone = request.get_json().get("phone")
         user.city = request.get_json().get("city")
         user.state = request.get_json().get("state")
         user.country = request.get_json().get("country")
+        user.bio = request.get_json().get("bio")
+        user.status = request.get_json().get("status")
         if request.get_json().get("password"):
             user.password_hash = request.get_json().get("password")
         if request.get_json().get("profile"):
@@ -170,58 +173,53 @@ class SearchChats(Resource):
         username2 = request.get_json().get("user2")
         user1 = User.query.filter_by(username=username1).first()
         user2 = User.query.filter_by(username=username2).first()
-        chat1 = Chat.query.filter(
-            Chat.user1_id == user1.id, Chat.user2_id == user2.id
-        ).first()
-        chat2 = Chat.query.filter(
-            Chat.user1_id == user2.id, Chat.user2_id == user1.id
-        ).first()
-        if chat1:
-            return chat1.to_dict(), 200
-        elif chat2:
-            return chat2.to_dict(), 200
+        chat = Chat.query.filter(or_(
+                and_(Chat.user1_id == user1.id, Chat.user2_id == user2.id),
+                and_(Chat.user1_id == user2.id, Chat.user2_id == user1.id)
+        )).first()
+        if chat:
+            return chat.to_dict(), 200
         return {}, 204
 
 
 class Wants(Resource):
     def post(self):
         user_id = request.get_json().get('user_id')
-        user = User.query.get(user_id)
         post_id = request.get_json().get('post_id')
-        post = Post.query.get(post_id)
-        want = Want(user=user, post=post)
+        want = Want(user_id=user_id, post_id=post_id)
         if want:
             db.session.add(want)
             db.session.commit()
-            return want.to_dict(), 200
+            post = db.session.get(Post, post_id)
+            return post.to_dict(), 200
         return {"error": "Invalid information submitted"}, 422
 
 
 class Passes(Resource):
     def post(self):
         user_id = request.get_json().get('user_id')
-        user = User.query.get(user_id)
         post_id = request.get_json().get('post_id')
-        post = Post.query.get(post_id)
-        p = Pass(user=user, post=post)
+        p = Pass(user_id=user_id, post_id=post_id)
         if p:
             db.session.add(p)
             db.session.commit()
-            return p.to_dict(), 200
+            post = db.session.get(Post, post_id)
+            return post.to_dict(), 200
         return {"error": "Invalid information submitted"}, 422
 
 
 class Friends(Resource):
     def post(self):
+        user1_id = request.get_json().get("user1_id")
+        user2_id = request.get_json().get("user2_id")
         new_friendship = Friendship(
             status='friend',
-            user1_id=request.get_json().get("user1_id"),
-            user2_id=request.get_json().get("user2_id")
+            user1_id=user1_id,
+            user2_id=user2_id
         )
         db.session.add(new_friendship)
         db.session.commit()
-        u_id = request.get_json().get("user1_id")
-        u = User.query.get(u_id)
+        u = db.session.get(User, user1_id)
         if new_friendship:
             return u.to_dict(), 200
         return {}, 204
@@ -229,18 +227,19 @@ class Friends(Resource):
 
 class Chats(Resource):
     def post(self):
+        user1_id = request.get_json().get("user1_id")
+        user2_id = request.get_json().get("user2_id")
         new_chat = Chat(
             theme='normal',
             font='normal',
             font_size=12,
-            user1_id=request.get_json().get("user1_id"),
-            user2_id=request.get_json().get("user2_id")
+            user1_id=user1_id,
+            user2_id=user2_id
         )
         if new_chat:
             db.session.add(new_chat)
             db.session.commit()
-            u_id = request.get_json().get("user1_id")
-            u = User.query.get(u_id)
+            u = db.session.get(User, user1_id)
             response = {
                 'u': u.to_dict(),
                 'new_chat': new_chat.to_dict()
@@ -258,112 +257,61 @@ class Comments(Resource):
             post_id=request.get_json().get("post_id")
         )
         if new_comment:
-            print('hi')
             db.session.add(new_comment)
             db.session.commit()
-            posts = None
-            if request.get_json().get("userpage"):
-                posts = [
-                    post.to_dict() for post in Post.query.filter_by(
-                        user_id=request.get_json().get("userpage_id")
-                    ).all()
-                ]
-            else:
-                posts = [
-                    post.to_dict() for post in Post.query.limit(
-                        request.get_json().get("posts")
-                    ).all()
-                ]
-            return posts, 200
+            # posts = None
+            # if request.get_json().get("userpage"):
+            #     userpage_id = request.get_json().get("userpage_id")
+            #     posts = Post.query.filter_by(user_id=userpage_id).all()
+            # else:
+            #     post_num = request.get_json().get("posts")
+            #     posts = Post.query.limit(post_num).all()
+            # return [post.to_dict() for post in posts], 200
+            post = db.session.get(Post, request.get_json().get("post_id"))
+            return post.to_dict(), 200
         return {}, 404
 
-    def patch(self):
-        comment_id = request.get_json().get("id")
-        comment = Comment.query.get(comment_id)
+    def patch(self):  # ****
+        comment_id = request.get_json().get("id")  #
+        comment = db.session.get(Comment, comment_id)
         if comment:
             if request.get_json().get("new_content"):
-                comment.content = request.get_json().get("new_content")
+                comment.content = request.get_json().get("new_content")  #
             else:
                 comment.likes += 1
             db.session.add(comment)
             db.session.commit()
-            posts = None
-            if request.get_json().get("userpage"):
-                posts = [
-                    post.to_dict() for post in Post.query.filter_by(
-                        user_id=request.get_json().get("userpage_id")
-                    ).all()
-                ]
-            else:
-                posts = [
-                    post.to_dict() for post in Post.query.limit(
-                        request.get_json().get("posts")
-                    ).all()
-                ]
-            return posts, 200
+            return comment.to_dict(), 200
         return {}, 404
 
 
-class EditFriend(Resource):
+class DeleteFriend(Resource):
     def delete(self, friend_id, user_id):
-        friend_id = int(friend_id[6:])
-        friendship1 = Friendship.query.filter(
-            Friendship.user1_id == user_id,
-            Friendship.user2_id == friend_id
-        ).first()
-        friendship2 = Friendship.query.filter(
-            Friendship.user1_id == friend_id,
-            Friendship.user2_id == user_id
-        ).first()
-        user = User.query.get(user_id)
-        if friendship1:
-            friendship1 = Friendship.query.filter(
-                Friendship.user1_id == user_id,
-                Friendship.user2_id == friend_id
-            )
-            friendship1.delete()
+        f_id = int(friend_id[6:])
+        friendship = Friendship.query.filter(or_(
+            and_(Friendship.user1_id == user_id, Friendship.user2_id == f_id),
+            and_(Friendship.user1_id == f_id, Friendship.user2_id == user_id)
+        )).first()
+        if friendship:
+            db.session.delete(friendship)
             db.session.commit()
-            return user.to_dict(), 200
-        elif friendship2:
-            friendship2 = Friendship.query.filter(
-                Friendship.user1_id == friend_id,
-                Friendship.user2_id == user_id
-            )
-            friendship2.delete()
-            db.session.commit()
+            user = db.session.get(User, user_id)
             return user.to_dict(), 200
         return {'error': 'No friend found'}, 404
 
 
-class EditChat(Resource):
+class DeleteChat(Resource):
     def delete(self, friend_id, user_id):
         friend_id = int(friend_id[4:])
-        chat1 = Chat.query.filter(
-            Chat.user1_id == user_id, Chat.user2_id == friend_id
-        ).first()
-        chat2 = Chat.query.filter(
-            Chat.user1_id == friend_id, Chat.user2_id == user_id
-        ).first()
-        user = User.query.get(user_id)
-        if chat1:
-            chat_id = chat1.id
-            chat1 = Chat.query.filter(
-                Chat.user1_id == user_id, Chat.user2_id == friend_id
-            )
-            chat1.delete()
+        chat = Chat.query.filter(or_(
+            and_(Chat.user1_id == user_id, Chat.user2_id == friend_id),
+            and_(Chat.user1_id == friend_id, Chat.user2_id == user_id)
+        )).first()
+        if chat:
+            chat_id = chat.id
+            db.session.delete(chat)
             db.session.commit()
-            response = {
-                'u': user.to_dict(),
-                'chat_id': chat_id
-            }
-            return response, 200
-        elif chat2:
-            chat_id = chat2.id
-            chat2 = Chat.query.filter(
-                Chat.user1_id == friend_id, Chat.user2_id == user_id
-            )
-            chat2.delete()
-            db.session.commit()
+            user = db.session.get(User, user_id)
             response = {
                 'u': user.to_dict(),
                 'chat_id': chat_id
@@ -372,56 +320,25 @@ class EditChat(Resource):
         return {'error': 'No friend found'}, 404
 
 
-class EditUser(Resource):
+class DeleteUser(Resource):
     def delete(self, user_id):
-        user = User.query.get(user_id)
+        user = db.session.get(User, user_id)
         if user:
-            id = user.id
-            # user = User.query.filter_by(id=user_id)
-            user.delete()
+            user.delete(user)
             db.session.commit()
-            return {'success': f'user {id} has been deleted'}, 200
+            return {'success': f'user {user_id} has been deleted'}, 200
         return {'error': 'No friend found'}, 404
 
 
-class EditComment(Resource):
-    def delete(self, comment_id, user_id, post_num):
-        comment = Comment.query.get(comment_id)
+class DeleteComment(Resource):
+    def delete(self, comment_id, post_id):
+        comment = db.session.get(Comment, comment_id)
         if comment:
-            # comment = Comment.query.filter_by(id=comment_id)
-            comment.delete()
+            db.session.delete(comment)
             db.session.commit()
-            posts = None
-            if user_id != 0:
-                posts = [
-                    post.to_dict() for post in Post.query.filter_by(
-                        user_id=user_id
-                    ).all()
-                ]
-            elif post_num != 0:
-                posts = [
-                    post.to_dict() for post in Post.query.limit(post_num).all()
-                ]
-            return posts, 200
-        return {'error': 'No friend found'}, 404
-
-    def patch(self, comment_id, user_id, post_num):
-        comment = Comment.query.get(comment_id)
-        if comment:
-            comment.content = request.get_json().get('comment_content')
-            db.session.commit()
-            if user_id != 0:
-                posts = [
-                    post.to_dict() for post in Post.query.filter_by(
-                        user_id=user_id
-                    ).all()
-                ]
-            elif post_num != 0:
-                posts = [
-                    post.to_dict() for post in Post.query.limit(post_num).all()
-                ]
-            return posts, 200
-        return {'error': 'No friend found'}, 404
+            post = db.session.get(Post, post_id)
+            return post.to_dict(), 200
+        return {'error': 'No comment found'}, 404
 
 
 class CreatePost(Resource):
@@ -431,7 +348,7 @@ class CreatePost(Resource):
             str_content = request.get_json().get('str_content')
             user = User.query.filter_by(id=session["user_id"]).first()
             pic_content = request.get_json().get('pic_content')
-            new_post_id = Post.query.order_by(Post.id.desc()).first().id + 1
+            # new_post_id = Post.query.order_by(Post.id.desc()).first().id + 1
             new_post = Post(
                 str_content=str_content,
                 type=type,
@@ -439,20 +356,18 @@ class CreatePost(Resource):
                 user=user
             )
             if type == 'sale':
-                new_post.price = request.get_json().get('price')
-            else:
-                new_post.price = 0
+                new_post.price = request.get_json().get('price', 0)
             db.session.add(new_post)
             db.session.commit()
-            print(new_post_id)
             if pic_content:
                 for i, pic in enumerate(pic_content):
-                    url = f'/images/{new_post_id}{i}media.jpg'
+                    url = f'/images/{new_post.id}{i}media.jpg'
                     with open(url, 'wb') as file:
                         file.write(base64.b64decode(pic))
-                    new_pic = Pic(media=url, post_id=new_post_id)
+                    new_pic = Pic(media=url, post_id=new_post.id)
                     db.session.add(new_pic)
                     db.session.commit()
+            posts = []
             if request.get_json().get('userpage'):
                 userpage_id = request.get_json().get('userpage_id')
                 posts = [
@@ -460,13 +375,12 @@ class CreatePost(Resource):
                         user_id=userpage_id
                     ).order_by(Post.id.desc()).all()
                 ]
-                return posts, 200
             else:
                 post_num = request.get_json().get('post_num')
                 posts = [
                     post.to_dict() for post in Post.query.limit(post_num).all()
                 ]
-                return posts, 200
+            return posts, 200
         except Exception:
             return {'error': 'improper form'}, 404
 
@@ -475,32 +389,20 @@ api.add_resource(Login, "/api/login", endpoint="login")
 api.add_resource(CheckSession, "/api/check_session", endpoint="check_session")
 api.add_resource(Users, "/api/users", endpoint="users")
 api.add_resource(Posts, "/api/posts", endpoint="posts")
-api.add_resource(
-    SearchUsers,
-    "/api/search_users/<string:term>",
-    endpoint="search_users"
-)
-api.add_resource(
-    SearchPosts,
-    "/api/search_posts/<string:username>",
-    endpoint="search_posts"
-)
+api.add_resource(SearchUsers, "/api/search_users/<string:term>")
+api.add_resource(SearchPosts, "/api/search_posts/<string:username>")
 api.add_resource(SearchChats, "/api/search_chats", endpoint="search_chats")
 api.add_resource(Wants, "/api/wants", endpoint="wants")
 api.add_resource(Passes, "/api/passes", endpoint="passes")
 api.add_resource(Friends, "/api/friends", endpoint="friends")
 api.add_resource(Chats, "/api/chats", endpoint="chats")
 api.add_resource(Comments, "/api/comments", endpoint="comments")
-api.add_resource(EditFriend, '/api/friend/<string:friend_id>/<int:user_id>')
-api.add_resource(EditChat, '/api/chat/<string:friend_id>/<int:user_id>')
-api.add_resource(EditUser, '/api/user/<int:user_id>')
-api.add_resource(
-    EditComment,
-    '/api/comment/<int:comment_id>/<int:user_id>/<int:post_num>',
-    endpoint="comment"
-)
+api.add_resource(DeleteFriend, '/api/friend/<string:friend_id>/<int:user_id>')
+api.add_resource(DeleteChat, '/api/chat/<string:friend_id>/<int:user_id>')
+api.add_resource(DeleteUser, '/api/user/<int:user_id>')
+api.add_resource(DeleteComment, '/api/comment/<int:comment_id>/<int:post_id>')
 api.add_resource(CreatePost, '/api/createpost', endpoint='createpost')
 
 if __name__ == "__main__":
-    socketio.run(app, port=5555, debug=True)
+    socketio.run(app, port=8000, debug=True)
     # app.run(port=5555, debug=True)

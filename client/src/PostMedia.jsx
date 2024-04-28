@@ -22,11 +22,11 @@ function PostMedia({ post }) {
 
     return (
         <>
-            {post.pics && post.pics.length > 0 && (
+            {post.pics && post.pics.length > 0 ? (
                 <div className="slideshow-container">
                     {post.pics.map((pic, index) => (
                         <div className="mySlides fade" key={index} style={{ display: index === slideIndex ? 'block' : 'none' }}>
-                            <img src={`/api${pic.media}`} alt={`Slide ${index + 1}`} style={{ width: '100%' }} />
+                            <img src={`/api${pic.media}`} alt={`Slide ${index + 1}`} />
                         </div>
                     ))}
                     {post.pics.length > 1 && (
@@ -41,7 +41,7 @@ function PostMedia({ post }) {
                         ))}
                     </div>)}
                 </div>
-            )}
+            ) : <div id="emptyDiv"></div>}
         </>
     );
 }

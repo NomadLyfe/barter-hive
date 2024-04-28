@@ -3,6 +3,7 @@ from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import validates
+from datetime import date, datetime
 import re
 
 
@@ -113,6 +114,10 @@ class User(db.Model, SerializerMixin):
     city = db.Column(db.String, nullable=False)
     country = db.Column(db.String, nullable=False)
     state = db.Column(db.String)
+    bio = db.Column(db.String)
+    status = db.Column(db.String)
+    creation_date = db.Column(db.String, default=date.today().strftime("%d/%m/%Y"))
+    creation_datetime = db.Column(db.String, default=datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 
     friendships = db.relationship(
         'User',
@@ -368,7 +373,16 @@ class Pass(db.Model, SerializerMixin):
 class Message(db.Model, SerializerMixin):
     __tablename__ = 'messages'
 
-    serialize_rules = ('-chat.messages', '-user.messages', '-user.chats', '-user.friendships', '-user.posts', '-user.wants', '-user.passes', '-user.posts')
+    serialize_rules = (
+        '-chat.messages',
+        '-user.messages',
+        '-user.chats',
+        '-user.friendships',
+        '-user.posts',
+        '-user.wants',
+        '-user.passes',
+        '-user.posts'
+    )
 
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String)

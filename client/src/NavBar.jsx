@@ -56,6 +56,8 @@ function NavBar() {
                     resp.json().then((userList) => {
                         setUsers(userList)
                     })
+                } else {
+                    setUsers(null)
                 }
             });
         } else {
@@ -81,6 +83,10 @@ function NavBar() {
 
     function handleMouseDown(u) {
         navigate(`/${u}`)
+    }
+
+    function handleSubmit(e) {
+        e.preventDefault()
     }
 
     let renderedDynamicSearch = null
@@ -111,7 +117,7 @@ function NavBar() {
                         </a>
                     </div>
                     <div className="searchbar">
-                        <form onFocus={handleSearchFocus} onBlur={handleSearchBlur}>
+                        <form onFocus={handleSearchFocus} onBlur={handleSearchBlur} onSubmit={handleSubmit}>
                             <input type='text'name="queryTerm" value={formik.values.queryTerm} onChange={handleSearchChange} placeholder='Search Barter Hive' autoComplete="off" />
                         </form>
                         <div className="dynamicResults text">

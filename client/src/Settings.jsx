@@ -1,14 +1,22 @@
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { Context } from './Context';
 import { useFormik } from "formik";
 import * as yup from "yup";
 import './css files/Login.css'
 import no_pic from './images/no-profile-pic.png'
+import { Country, State, City }  from 'country-state-city';
 
 function Settings() {
     const { user, setUser, editOn, setEditOn, navigate } = useContext(Context)
-    
-    // {`settings ${darkMode ? 'dark' : 'light'}`}
+    const c = Country.getAllCountries()
+    const countries = c.map((country, i) => {
+        return (
+            <option className={country.name.split(' ').join('_')} value={country.name} key={i} id={country.isoCode}>{country.name}</option>
+        )
+    })
+    const [countryCode, setCountryCode] = useState(null)
+    const [states, setStates] = useState(null)
+    const [cities, setCities] = useState(null)
 
     const formSchema = yup.object().shape({
         username: yup.string().max(20),
@@ -30,6 +38,8 @@ function Settings() {
             phone: user.phone,
             profile: '',
             banner: '',
+            status: user.status,
+            bio: user.bio,
             city: user.city,
             state: user.state,
             country: user.country
@@ -76,13 +86,39 @@ function Settings() {
             }).then((resp) => {
                 if (resp.ok) {
                     resp.json().then((data) => {
-                        console.log(data)
                         setUser(null)
                         navigate('/login')
                     })
                 }
             })
         }
+    }
+
+    function handleCountrySelection(e) {
+        formik.handleChange(e)
+        formik.setFieldValue('state', '')
+        formik.setFieldValue('city', '')
+        const countryName = e.target.value
+        setCountryCode(e.target.querySelector(`.${countryName.split(' ').join('_')}`).id)
+        const s = State.getStatesOfCountry(e.target.querySelector(`.${countryName.split(' ').join('_')}`).id)
+        setStates(s.map((state, i) => {
+            return (
+                <option className={state.name.split(' ').join('_')} value={state.name} key={i} id={state.isoCode}>{state.name}</option>
+            )
+        }))
+    }
+
+    function handleStateSelection(e) {
+        formik.handleChange(e)
+        formik.setFieldValue('city', '')
+        const stateName = e.target.value
+        const stateCode = e.target.querySelector(`.${stateName.split(' ').join('_')}`).id
+        const ci = City.getCitiesOfState(countryCode, stateCode)
+        setCities(ci.map((city, i) => {
+            return (
+                <option className={city.name.split(' ').join('_')} value={city.name} key={i} id={city.isoCode}>{city.name}</option>
+            )
+        }))
     }
 
     return (
@@ -100,6 +136,7 @@ function Settings() {
             <div className="settings">
                 <div className="picInfo">
                     <img src={user.profile_pic ? `/api${user.profile_pic}` : no_pic} alt="user-pic" />
+                    {user.banner_pic ? <img className="banner-preview" src={`/api${user.banner_pic}`} alt="banner-pic" /> : null}
                 </div>
                 <form className="loginForm" onSubmit={formik.handleSubmit}>
                     <label id="username">Username:</label>
@@ -114,12 +151,31 @@ function Settings() {
                     {editOn ? <input type="file" id="profileinp" name="profile" accept="image/*" onChange={handleFileChange} /> : <span>{user.profile_pic ?? ''}</span>}
                     <label id="banner">Banner Picture:</label>
                     {editOn ? <input type="file" id="bannerinp" name="banner" accept="image/*" onChange={handleFileChange} /> : <span>{user.banner_pic ?? ''}</span>}
-                    <label id="city">City:</label>
-                    {editOn ? <input placeholder="Type your city" type="text" id="cityinp" name="city" autoComplete="on" onChange={formik.handleChange} value={formik.values.city} /> : <span>{user.city ?? ''}</span>}
-                    <label id="state">State:</label>
-                    {editOn ? <input placeholder="Type your state" type="text" id="stateinp" name="state" autoComplete="on" onChange={formik.handleChange} value={formik.values.state} /> : <span>{user.state ?? ''}</span>}
+                    <label id="status">Status:</label>
+                    {editOn ? <select placeholder='Type your status' type="text" id="statusinp" name="status" autoComplete="on" onChange={formik.handleChange} value={formik.values.status}>
+                        <option value='Single'>Single</option>
+                        <option value='Engaged'>Engaged</option>
+                        <option value='Married'>Married</option>
+                        <option value='Divorced'>Divorced</option>
+                        <option value='Taken'>Taken</option>
+                    </select> : <span>{user.status ?? ''}</span>}
+                    <label id="bio">Bio:</label>
+                    {editOn ? <textarea placeholder='Type your bio' type="text" id="bioinp" name="bio" autoComplete="on" onChange={formik.handleChange} value={formik.values.bio} /> : <span id="bioarea">{user.bio ?? ''}</span>}
                     <label id="country">Country:</label>
-                    {editOn ? <input placeholder="Type your country" type="text" id="countryinp" name="country" autoComplete="on" onChange={formik.handleChange} value={formik.values.country} /> : <span>{user.country ?? ''}</span>}
+                    {editOn ? <select placeholder="Type your country" type="text" id="countryinp" name="country" autoComplete="on" onChange={handleCountrySelection} value={formik.values.country}>
+                        <option>{formik.values.country}</option>
+                        {countries}
+                    </select> : <span>{user.country ?? ''}</span>}
+                    <label id="state">State:</label>
+                    {editOn ? <select placeholder="Type your state" type="text" id="stateinp" name="state" autoComplete="on" onChange={handleStateSelection} value={formik.values.state}>
+                        <option>{formik.values.state}</option>
+                        {states}
+                    </select> : <span>{user.state ?? ''}</span>}
+                    <label id="city">City:</label>
+                    {editOn ? <select placeholder="Type your city" type="text" id="cityinp" name="city" autoComplete="on" onChange={formik.handleChange} value={formik.values.city}>
+                        <option>{formik.values.city}</option>
+                        {cities}
+                    </select> : <span>{user.city ?? ''}</span>}
                     {editOn ? <button type='submit'>SAVE</button> : null}
                     <button className="delete_account" onClick={handleDeleteAccount}>Delete Account</button>
                 </form>
