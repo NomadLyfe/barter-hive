@@ -4,14 +4,14 @@ aniso8601==9.0.1
 asttokens==2.4.1
 bcrypt==4.1.2; python_version >= '3.7'
 bidict==0.23.1; python_version >= '3.8'
-blinker==1.7.0; python_version >= '3.8'
+blinker==1.8.1; python_version >= '3.8'
 certifi==2024.2.2; python_version >= '3.6'
 charset-normalizer==3.3.2; python_full_version >= '3.7.0'
 click==8.1.7; python_version >= '3.7'
 decorator==5.1.1; python_version < '3.11' and python_version >= '3.7'
 exceptiongroup==1.2.1; python_version < '3.11'
 executing==2.0.1; python_version >= '3.5'
-faker==24.14.0
+faker==24.14.1
 flask==3.0.3
 flask-bcrypt==1.0.1
 flask-cors==4.0.0
@@ -20,6 +20,7 @@ flask-restful==0.3.10
 flask-socketio==5.3.6
 flask-sqlalchemy==3.1.1
 gevent==24.2.1
+gevent-websocket==0.10.1
 greenlet==3.0.3; python_version < '3.11' and platform_python_implementation == 'CPython'
 gunicorn==22.0.0
 h11==0.14.0; python_version >= '3.7'
@@ -37,6 +38,7 @@ matplotlib-inline==0.1.7; python_version >= '3.8'
 packaging==24.0; python_version >= '3.7'
 parso==0.8.4; python_version >= '3.6'
 pexpect==4.9.0; sys_platform != 'win32'
+pillow==10.3.0
 prompt-toolkit==3.0.43; python_full_version >= '3.7.0'
 psycopg2-binary==2.9.9
 ptyprocess==0.7.0
