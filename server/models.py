@@ -116,8 +116,12 @@ class User(db.Model, SerializerMixin):
     state = db.Column(db.String)
     bio = db.Column(db.String)
     status = db.Column(db.String)
-    creation_date = db.Column(db.String, default=date.today().strftime("%d/%m/%Y"))
-    creation_datetime = db.Column(db.String, default=datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+    creation_date = db.Column(
+        db.String, default=date.today().strftime("%d/%m/%Y")
+    )
+    creation_datetime = db.Column(
+        db.String, default=datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    )
 
     friendships = db.relationship(
         'User',

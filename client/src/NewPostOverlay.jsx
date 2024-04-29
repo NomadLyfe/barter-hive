@@ -76,8 +76,14 @@ function NewPostOverlay() {
                             setPosts(posts)
                         }
                     });
+                } else {
+                    resp.json().then((error) => {
+                        alert(error.error)
+                    });
                 }
-            });
+            }).catch((error) => {
+                console.error('error:', error)
+            })
             formik.resetForm();
         }
     });
@@ -147,7 +153,7 @@ function NewPostOverlay() {
                             {filePreview ? <h2>Add More Media</h2> : <h2>Add Media</h2>}
                             <p>or drag and drop</p>
                         </label>
-                        <input id='file-upload' type='file' onChange={handleFileChange} multiple />
+                        <input id='file-upload' type='file' accept="image/*" onChange={handleFileChange} multiple />
                     </div>
                     <div className='file-preview-wrapper'>
                         {filePreview}

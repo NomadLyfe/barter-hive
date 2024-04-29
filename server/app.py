@@ -5,6 +5,8 @@ from models import Comment, Message, Want, Pass, Pic
 from flask import request, session, render_template, send_from_directory
 from flask_restful import Resource
 from sqlalchemy import or_, and_
+from PIL import Image
+from io import BytesIO
 import base64
 
 
@@ -88,11 +90,19 @@ class Users(Resource):
             user.password_hash = request.get_json().get("password")
         if request.get_json().get("profile"):
             profile_pic = request.get_json().get("profile")
+            try:
+                Image.open(BytesIO(base64.b64decode(profile_pic)))
+            except Exception:
+                return {'error': 'Invalid image file'}, 400
             with open(f'images/{user.id}profile.jpg', 'wb') as file:
                 file.write(base64.b64decode(profile_pic))
             user.profile_pic = f'/images/{user.id}profile.jpg'
         if request.get_json().get("banner"):
             banner_pic = request.get_json().get("banner")
+            try:
+                Image.open(BytesIO(base64.b64decode(banner_pic)))
+            except Exception:
+                return {'error': 'Invalid image file'}, 400
             with open(f'images/{user.id}banner.jpg', 'wb') as file:
                 file.write(base64.b64decode(banner_pic))
             user.banner_pic = f'/images/{user.id}banner.jpg'
@@ -348,7 +358,6 @@ class CreatePost(Resource):
             str_content = request.get_json().get('str_content')
             user = User.query.filter_by(id=session["user_id"]).first()
             pic_content = request.get_json().get('pic_content')
-            # new_post_id = Post.query.order_by(Post.id.desc()).first().id + 1
             new_post = Post(
                 str_content=str_content,
                 type=type,
@@ -361,6 +370,10 @@ class CreatePost(Resource):
             db.session.commit()
             if pic_content:
                 for i, pic in enumerate(pic_content):
+                    try:
+                        Image.open(BytesIO(base64.b64decode(pic)))
+                    except Exception:
+                        return {'error': 'Invalid image file'}, 400
                     url = f'/images/{new_post.id}{i}media.jpg'
                     with open(url, 'wb') as file:
                         file.write(base64.b64decode(pic))

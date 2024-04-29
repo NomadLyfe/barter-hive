@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useFormik } from "formik";
 import { Context } from './Context';
 import * as yup from "yup";
@@ -17,14 +17,18 @@ function Signup() {
     const [countryCode, setCountryCode] = useState(null)
     const [states, setStates] = useState(null)
     const [cities, setCities] = useState(null)
+    const phoneRegEx = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/
+    const emailRegEx = /^[\w.]+@([\w-]+\.)+[\w-]{2,4}$/
+    const passRegEx = /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$/
+    const userRegEx = /^[A-Za-z][A-Za-z0-9_]{5,25}$/
 
     const formSchema = yup.object().shape({
-        username: yup.string().required('Must enter username').max(20),
-        password: yup.string().required('Must enter password').max(20),
-        passwordconf: yup.string().required(),
-        email: yup.string().required(),
-        bday: yup.string().required(),
-        phone: yup.string().required(),
+        username: yup.string().required('Must enter username').max(25).matches(userRegEx, 'You are using illegal characters for username'),
+        password: yup.string().required('Must enter password').min(8).max(25).matches(passRegEx, 'You are not meeing password requirements'),
+        passwordconf: yup.string().required().min(8).max(25).matches(passRegEx, 'You are not meeing password requirements'),
+        email: yup.string().required().max(50).matches(emailRegEx, 'Email is not valid'),
+        bday: yup.date().required(),
+        phone: yup.string().required().max(20).min(7).matches(phoneRegEx, 'Phone number is not valid'),
         country: yup.string().required(),
         state: yup.string().required(),
         city: yup.string().required()

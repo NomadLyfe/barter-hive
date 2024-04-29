@@ -21,6 +21,7 @@ flask-socketio = "*"
 honcho = "*"
 gevent = "*"
 gevent-websocket = "*"
+pillow = "*"
 
 [dev-packages]
 

@@ -17,14 +17,20 @@ function Settings() {
     const [countryCode, setCountryCode] = useState(null)
     const [states, setStates] = useState(null)
     const [cities, setCities] = useState(null)
+    const phoneRegEx = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/
+    const emailRegEx = /^[\w.]+@([\w-]+\.)+[\w-]{2,4}$/
+    const passRegEx = /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$/
+    const userRegEx = /^[A-Za-z][A-Za-z0-9_]{5,25}$/
 
     const formSchema = yup.object().shape({
-        username: yup.string().max(20),
-        password: yup.string().max(20),
-        email: yup.string().max(50),
-        phone: yup.string().max(20),
+        username: yup.string().min(5).max(25).matches(userRegEx, 'You are using illegal characters for username'),
+        password: yup.string().max(25).matches(passRegEx, 'You are not meeing password requirements'),
+        email: yup.string().max(50).matches(emailRegEx, 'Email is not valid'),
+        phone: yup.string().max(20).matches(phoneRegEx, 'Phone number is not valid'),
         profile: yup.mixed(),
         banner: yup.mixed(),
+        status: yup.string(),
+        bio: yup.string().max(1500),
         city: yup.string().max(20),
         state: yup.string().max(20),
         country: yup.string().max(20)
@@ -53,7 +59,13 @@ function Settings() {
                 },
                 body: JSON.stringify(values)
             }).then((resp) => {
-                if (resp.ok) {
+                if (resp.status === 401) {
+                    alert('Not logged in');
+                } else if (resp.status === 400) {
+                    resp.json().then((error) => {
+                        alert(error.error);
+                    });
+                } else if (resp.ok) {
                     resp.json().then((updatedUser) => {
                         setUser(updatedUser);
                         setEditOn(false)
@@ -61,6 +73,8 @@ function Settings() {
                         check_box.checked = false;
                     });
                 }
+            }).catch((error) => {
+                console.error('Error:', error);
             });
         }
     });
@@ -85,7 +99,7 @@ function Settings() {
                 }
             }).then((resp) => {
                 if (resp.ok) {
-                    resp.json().then((data) => {
+                    resp.json().then(() => {
                         setUser(null)
                         navigate('/login')
                     })
