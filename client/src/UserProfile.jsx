@@ -92,20 +92,20 @@ function UserProfile() {
         return (
             <>
                 <div className="banner text">
-                    {userpage ? <img src={`/api${userpage.banner_pic}`} /> : null}
+                    {userpage['banner_pic'] ? <img src={`/api${userpage.banner_pic}`} /> : null}
                 </div>
                 <div className="about text">
                     <div className="basic_info">
                         {userpage ? <img src={userpage.profile_pic ? `/api${userpage.profile_pic}` : no_pic} /> : null}
                         <div className="name_and_buttons">
                             {userpage ? <h1>{userpage.username}</h1> : null}
-                            {user.friendships.map((u) => u.id).includes(userpage.id) ? null : <button onClick={handleAddFriend}>Add Friend</button>}
-                            {user.chats.map((u) => u.id).includes(userpage.id) ? null : <button onClick={handleAddChat}>Start Chat</button>}
+                            {user.friendships.map((u) => u.id).includes(userpage.id) || user.id === userpage.id ? null : <button onClick={handleAddFriend}>Add Friend</button>}
+                            {user.chats.map((u) => u.id).includes(userpage.id) || user.id === userpage.id ? null : <button onClick={handleAddChat}>Start Chat</button>}
                         </div>
                     </div>
                     <div className="extra_info">
                         <p>Joined: {userpage ? userpage.creation_date : 'NaN'}</p>
-                        <p>Friends: {userpage ? userpage.friendships.length - 1 : null}</p>
+                        <p>Friends: {userpage.friendships.length ? userpage.friendships.length - 1 : userpage.friendships.length}</p>
                         <p>Posts: {userpage ? userpage.posts.length : 0}</p>
                         <p>Relationship: {userpage ? userpage.status : 'single'}</p>
                     </div>
@@ -131,8 +131,6 @@ function UserProfile() {
                             <button onClick={handlePostFormClick} className="creatPostButton">{user.username.charAt(0).toUpperCase() + user.username.slice(1)}, create a post!</button>
                         </div> : null}
                         <div className="feed">
-
-                            {/* <PostCard /> */}
                             {renderedPostList ? renderedPostList : <h2 className="text"><br /><br />{userpage.id === user.id ? "You don't" : userpage.username.charAt(0).toUpperCase() + userpage.username.slice(1) + " doesn't"} have any posts!</h2>}
                         </div>
                     </div>

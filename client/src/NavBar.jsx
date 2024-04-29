@@ -89,6 +89,10 @@ function NavBar() {
         e.preventDefault()
     }
 
+    function handleLogoClick() {
+        navigate('/')
+    }
+
     let renderedDynamicSearch = null
     if (users) {
         renderedDynamicSearch = users.map((u, index) => {
@@ -112,7 +116,7 @@ function NavBar() {
             <div className="navigation">
                 <div className="logo-search">
                     <div>
-                        <a>
+                        <a onClick={handleLogoClick}>
                             <img src={logoNoTitle} className="logo" alt="logo-no-title" />
                         </a>
                     </div>

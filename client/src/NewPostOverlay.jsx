@@ -35,7 +35,6 @@ function NewPostOverlay() {
 
     const formSchema = yup.object().shape({
         type: yup.string(),
-        title: yup.string(),
         str_content: yup.string(),
         price: yup.number()
     });
@@ -54,6 +53,7 @@ function NewPostOverlay() {
         onSubmit: (values) => {
             values.userpage = window.location.pathname != '/'
             values.userpage_id = values.userpage ? userpage.id : null
+            values.post_num = values.userpage ? 0 : posts.length
             fetch('/api/createpost', {
                 method: 'POST',
                 headers: {
@@ -63,6 +63,7 @@ function NewPostOverlay() {
             }).then((resp) => {
                 if (resp.ok) {
                     resp.json().then((posts) => {
+                        console.log(posts)
                         setSelectedFiles([])
                         const overlay = document.querySelector('.overlay')
                         const main = document.querySelector('main')
@@ -75,6 +76,7 @@ function NewPostOverlay() {
                         } else {
                             setPosts(posts)
                         }
+                        setShowExtraInput(false)
                     });
                 } else {
                     resp.json().then((error) => {

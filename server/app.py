@@ -353,19 +353,19 @@ class DeleteComment(Resource):
 
 class CreatePost(Resource):
     def post(self):
-        try:
+        # try:
             type = request.get_json().get('type')
             str_content = request.get_json().get('str_content')
             user = User.query.filter_by(id=session["user_id"]).first()
             pic_content = request.get_json().get('pic_content')
+            price = request.get_json().get('price', 0)
             new_post = Post(
                 str_content=str_content,
                 type=type,
                 is_sold=False,
-                user=user
+                user=user,
+                price=price
             )
-            if type == 'sale':
-                new_post.price = request.get_json().get('price', 0)
             db.session.add(new_post)
             db.session.commit()
             if pic_content:
@@ -374,10 +374,10 @@ class CreatePost(Resource):
                         Image.open(BytesIO(base64.b64decode(pic)))
                     except Exception:
                         return {'error': 'Invalid image file'}, 400
-                    url = f'/images/{new_post.id}{i}media.jpg'
+                    url = f'images/{new_post.id}{i}media.jpg'
                     with open(url, 'wb') as file:
                         file.write(base64.b64decode(pic))
-                    new_pic = Pic(media=url, post_id=new_post.id)
+                    new_pic = Pic(media=f'/{url}', post_id=new_post.id)
                     db.session.add(new_pic)
                     db.session.commit()
             posts = []
@@ -394,8 +394,8 @@ class CreatePost(Resource):
                     post.to_dict() for post in Post.query.limit(post_num).all()
                 ]
             return posts, 200
-        except Exception:
-            return {'error': 'improper form'}, 404
+        # except Exception as e:
+        #     return {'error': str(e)}, 404
 
 
 api.add_resource(Login, "/api/login", endpoint="login")

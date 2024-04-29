@@ -105,6 +105,7 @@ function PostCard({ post }) {
                 <h2 className="text">{currentPost.user.username}</h2>
             </div>
             <PostMedia post={currentPost} />
+            {currentPost.type === 'Sale' ? <p className="text price_str">${currentPost.price.toFixed(2)}</p> : null}
             <p className="text post_str">{currentPost.str_content}</p>
             <div className="stats text">
                 <div className="wants-num"><span>{currentPost.wants.length}</span> wants</div>

@@ -19,11 +19,11 @@ function Signup() {
     const [cities, setCities] = useState(null)
     const phoneRegEx = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/
     const emailRegEx = /^[\w.]+@([\w-]+\.)+[\w-]{2,4}$/
-    const passRegEx = /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$/
-    const userRegEx = /^[A-Za-z][A-Za-z0-9_]{5,25}$/
+    const passRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,25}$/
+    const userRegEx = /^[A-Za-z][A-Za-z0-9_]{4,24}$/
 
     const formSchema = yup.object().shape({
-        username: yup.string().required('Must enter username').max(25).matches(userRegEx, 'You are using illegal characters for username'),
+        username: yup.string().required('Must enter username').min(5).max(25).matches(userRegEx, 'You are using illegal characters for username'),
         password: yup.string().required('Must enter password').min(8).max(25).matches(passRegEx, 'You are not meeing password requirements'),
         passwordconf: yup.string().required().min(8).max(25).matches(passRegEx, 'You are not meeing password requirements'),
         email: yup.string().required().max(50).matches(emailRegEx, 'Email is not valid'),

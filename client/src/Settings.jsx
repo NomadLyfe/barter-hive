@@ -19,8 +19,8 @@ function Settings() {
     const [cities, setCities] = useState(null)
     const phoneRegEx = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/
     const emailRegEx = /^[\w.]+@([\w-]+\.)+[\w-]{2,4}$/
-    const passRegEx = /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$/
-    const userRegEx = /^[A-Za-z][A-Za-z0-9_]{5,25}$/
+    const passRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,25}$/
+    const userRegEx = /^[A-Za-z][A-Za-z0-9_]{4,24}$/
 
     const formSchema = yup.object().shape({
         username: yup.string().min(5).max(25).matches(userRegEx, 'You are using illegal characters for username'),
@@ -31,9 +31,9 @@ function Settings() {
         banner: yup.mixed(),
         status: yup.string(),
         bio: yup.string().max(1500),
-        city: yup.string().max(20),
-        state: yup.string().max(20),
-        country: yup.string().max(20)
+        city: yup.string(),
+        state: yup.string(),
+        country: yup.string()
     })
 
     const formik = useFormik({
@@ -44,14 +44,15 @@ function Settings() {
             phone: user.phone,
             profile: '',
             banner: '',
-            status: user.status,
-            bio: user.bio,
+            status: user['status'] ? user.status : '',
+            bio: user['bio'] ? user.bio : '',
             city: user.city,
             state: user.state,
             country: user.country
         },
         validationSchema: formSchema,
         onSubmit: (values) => {
+            console.log('am i here?')
             fetch('/api/users', {
                 method: 'PATCH',
                 headers: {
@@ -166,7 +167,8 @@ function Settings() {
                     <label id="banner">Banner Picture:</label>
                     {editOn ? <input type="file" id="bannerinp" name="banner" accept="image/*" onChange={handleFileChange} /> : <span>{user.banner_pic ?? ''}</span>}
                     <label id="status">Status:</label>
-                    {editOn ? <select placeholder='Type your status' type="text" id="statusinp" name="status" autoComplete="on" onChange={formik.handleChange} value={formik.values.status}>
+                    {editOn ? <select placeholder='Select your status' type="text" id="statusinp" name="status" autoComplete="on" onChange={formik.handleChange} value={formik.values.status}>
+                        <option value=''></option>
                         <option value='Single'>Single</option>
                         <option value='Engaged'>Engaged</option>
                         <option value='Married'>Married</option>
