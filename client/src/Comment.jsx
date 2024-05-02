@@ -37,9 +37,8 @@ function Comment({ comment, postId, setCurrentPost }) {
     function handleDeleteComment(e) {
         const result = window.confirm(`Are you sure you want to delete your comment?`);
         const comment_id = parseInt(e.target.parentNode.parentNode.parentNode.children[1].id)
-        const posts = parseInt(e.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.children.length - 1)
         if (result) {
-            fetch(`/api/comment/${comment_id}/${postId}/${posts}`, {
+            fetch(`/api/comment/${comment_id}/${postId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
@@ -89,7 +88,6 @@ function Comment({ comment, postId, setCurrentPost }) {
         if (e.key === 'Enter') {
             e.preventDefault()
             formik.setFieldValue('id', parseInt(e.target.parentNode.parentNode.children[1].id))
-            formik.setFieldValue('posts', e.target.parentNode.parentNode.parentNode.parentNode.parentNode.children.length - 1)
             formik.handleSubmit()
             setEditMode(false)
         }
