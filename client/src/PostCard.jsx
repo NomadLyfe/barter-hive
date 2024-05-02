@@ -52,10 +52,10 @@ function PostCard({ post }) {
 
     function handleCommentClick(e) {
         e.preventDefault();
-        if (e.target.parentNode.parentNode.children[6].style.display === '') {
-            e.target.parentNode.parentNode.children[6].style.display = 'flex';
+        if (e.target.parentNode.parentNode.lastChild.style.display === '') {
+            e.target.parentNode.parentNode.lastChild.style.display = 'flex';
         } else {
-            e.target.parentNode.parentNode.children[6].style.display = '';
+            e.target.parentNode.parentNode.lastChild.style.display = '';
         }
     }
 

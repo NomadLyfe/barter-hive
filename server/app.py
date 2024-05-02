@@ -353,7 +353,7 @@ class DeleteComment(Resource):
 
 class CreatePost(Resource):
     def post(self):
-        # try:
+        try:
             type = request.get_json().get('type')
             str_content = request.get_json().get('str_content')
             user = User.query.filter_by(id=session["user_id"]).first()
@@ -394,8 +394,8 @@ class CreatePost(Resource):
                     post.to_dict() for post in Post.query.limit(post_num).all()
                 ]
             return posts, 200
-        # except Exception as e:
-        #     return {'error': str(e)}, 404
+        except Exception as e:
+            return {'error': str(e)}, 404
 
 
 api.add_resource(Login, "/api/login", endpoint="login")
