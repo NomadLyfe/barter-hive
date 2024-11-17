@@ -41,57 +41,15 @@
     margin: 20px;
     display: flex;
     flex-direction: column;
-  }
-
-  @media (max-width: 1320px) {
-    .card {
-        width: 51.5vw;
-        max-width: 680px;
-    }
-    .basic_info h1, .extra_info {
-        margin-right: 50px;
-    }
-  }
-
-  @media (max-width: 1100px) {
-    .leftPanel {
-        display: none;
-    }
-    .basic_info h1, .extra_info {
-        margin-right: 20px;
-    }
-  }
-
-  @media (max-width: 900px) {
-    .rightPanel {
-        display: none;
-    }
-    .mainPage {
-        justify-content: center;
-    }
-    .card {
-        width: 680px;
-        margin: 20px 0px;
-    }
-  }
-
-  @media (max-width: 712px) {
-    .card {
-        width: 90vw;
-        margin: 20px 0px;
-    }
-    .center {
-        margin: 0px;
-    }
-  }
-
-.center div img {
-    margin: 0px;
 }
 
 .creatPostButton {
     width: 78%;
     border: 1px solid #3B4131;
+}
+
+.center div img {
+    margin: 0px;
 }
 
 .createPostDiv {
@@ -415,6 +373,9 @@
         height: 177px;
         width: 177px;
     }
+    .about_me {
+        width: 90vw;
+    }
 }
 
 .wants-num span, .passes-num span, .comments-num span {
@@ -592,3 +553,53 @@
 #emptyDiv {
     margin: 12.5px;
 }
+
+@media (max-width: 1320px) {
+    .card {
+        width: 51.5vw;
+        max-width: 680px;
+    }
+    .basic_info h1, .extra_info {
+        margin-right: 50px;
+    }
+  }
+
+  @media (max-width: 1100px) {
+    .leftPanel {
+        display: none;
+    }
+    .basic_info h1, .extra_info {
+        margin-right: 20px;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .rightPanel {
+        display: none;
+    }
+    .mainPage {
+        justify-content: center;
+    }
+    .card {
+        width: 680px;
+        margin: 20px 0px;
+    }
+    .creatPostButton {
+        width: 73%;
+        margin-left: 15px;
+    }
+  }
+
+  @media (max-width: 712px) {
+    .card {
+        width: 90vw;
+        margin: 20px 0px;
+    }
+    .center {
+        margin: 0px;
+    }
+    .creatPostButton {
+        width: 68%;
+        margin-left: 10px;
+    }
+  }

@@ -46,6 +46,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   transition: 0.25s;
   font-size: 12pt;
   color: #3B4131;
+  margin-top: 0px;
 }
 
 .loginForm input:hover {
