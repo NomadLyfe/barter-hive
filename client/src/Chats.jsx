@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { NavLink } from "react-router-dom";
-import { useEffect, useContext } from "react"
+import { useEffect, useContext, useState } from "react"
 import { Context } from './Context';
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -13,7 +13,8 @@ let socket;
 
 function Chats() {
     const { user, setUser, chat, setChat, messages, setMessages } = useContext(Context)
-    const {chatUser, setChatUser} = useContext(Context)
+    const [chatUser, setChatUser] = useState(null)
+
     useEffect(() => {
         // const URL = process.env.NODE_ENV === 'production' ? 'http://127.0.0.1:8000' : '/api';
         const URL = 'https://barter-hive.onrender.com/'

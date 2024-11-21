@@ -11,7 +11,7 @@ import Comment from "./Comment";
 import PostMedia from "./PostMedia";
 
 function PostCard({ post }) {
-    const { user, userposts } = useContext(Context)
+    const { user, userposts, tooltip, setTooltip } = useContext(Context)
     const [currentPost, setCurrentPost] = useState(post)
 
     useEffect(() => {
@@ -98,6 +98,20 @@ function PostCard({ post }) {
         })
     }
 
+    const handleMouseEnter = (e, attr) => {
+        const rect = e.target.getBoundingClientRect();
+        setTooltip({
+            jsx: <>{currentPost[attr].slice(0, 5).map(a => <div key={a.id}>{a.user.username}</div>)}{currentPost[attr].length > 5 ? <div>...</div> : null}</>,
+            visible: true,
+            x: rect.left + window.scrollX + rect.width / 2,
+            y: rect.top + window.scrollY - 30,
+        });
+    };
+
+    const handleMouseLeave = () => {
+        setTooltip({ jsx: '', visible: false, x: 0, y: 0 });
+    };
+
     return (
         <div id={currentPost.id} className="card">
             <div className="user_and_post_owner">
@@ -108,9 +122,9 @@ function PostCard({ post }) {
             {currentPost.type === 'Sale' ? <p className="text price_str">${currentPost.price.toFixed(2)}</p> : null}
             <p className="text post_str">{currentPost.str_content}</p>
             <div className="stats text">
-                <div className="wants-num"><span>{currentPost.wants.length}</span> wants</div>
-                <div className="passes-num"><span>{currentPost.passes.length}</span> passes</div>
-                <div className="comments-num"><span>{currentPost.comments.length}</span> comments</div>
+                <div className="wants-num" onMouseEnter={(e) => handleMouseEnter(e, "wants")} onMouseLeave={handleMouseLeave}><span>{currentPost.wants.length}</span> wants</div>
+                <div className="passes-num" onMouseEnter={(e) => handleMouseEnter(e, "passes")} onMouseLeave={handleMouseLeave}><span>{currentPost.passes.length}</span> passes</div>
+                <div className="comments-num" onMouseEnter={(e) => handleMouseEnter(e, "comments")} onMouseLeave={handleMouseLeave}><span>{currentPost.comments.length}</span> comments</div>
             </div>
             <div className="buttons text">
                 <button onClick={handleWantClick}>Want</button>
@@ -125,6 +139,26 @@ function PostCard({ post }) {
                 <button type="submit">Send</button>
                 <button type="reset" onClick={handleCommentClick}>{'\u2715'}</button>
             </form>
+            {tooltip.visible && (
+                <div
+                    className="tooltip"
+                    style={{
+                        position: 'absolute',
+                        top: tooltip.y,
+                        left: tooltip.x,
+                        transform: 'translate(-50%, 30px)',
+                        backgroundColor: '#333',
+                        color: '#fff',
+                        padding: '5px 10px',
+                        borderRadius: '5px',
+                        whiteSpace: 'nowrap',
+                        zIndex: 1000,
+                        fontSize: '9pt'
+                    }}
+                >
+                    {tooltip.jsx}
+                </div>
+            )}
         </div>
     )
 }

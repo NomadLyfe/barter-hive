@@ -244,9 +244,7 @@ class Post(db.Model, SerializerMixin):
         '-user.chats',
         '-user.messages',
         '-wants.post',
-        '-wants.user',
         '-passes.post',
-        '-passes.user',
         '-comments.post',
         '-pics.post'
     )

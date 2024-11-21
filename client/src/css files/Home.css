@@ -554,6 +554,10 @@
     margin: 12.5px;
 }
 
+.tooltip div {
+    margin: 0px;
+}
+
 @media (max-width: 1320px) {
     .card {
         width: 51.5vw;

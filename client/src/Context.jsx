@@ -18,7 +18,7 @@ function ContextProvider({ children }) {
     const [chat, setChat] = useState(null)
     const [messages, setMessages] = useState(null)
     const [editOn, setEditOn] = useState(false)
-    const [chatUser, setChatUser] = useState(null)
+    const [tooltip, setTooltip] = useState({ text: '', visible: false, x: 0, y: 0 });
     const navigate = useNavigate();
     return (
         <Context.Provider value={{ 
@@ -49,8 +49,8 @@ function ContextProvider({ children }) {
             setMessages,
             editOn,
             setEditOn,
-            chatUser,
-            setChatUser
+            tooltip,
+            setTooltip
         }}>
             {children}
         </Context.Provider>
