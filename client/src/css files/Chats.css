@@ -44,7 +44,6 @@
 }
   
 .chatbox .message {
-    padding: 5px 10px;
     margin: 5px;
     border-radius: 8px;
 }
@@ -109,4 +108,35 @@
 
 .messages p {
     text-align: center;
+}
+
+.message-profile-pic {
+    padding: 0px;
+    border-radius: 25px;
+    height: 23px;
+    width: 23px;
+	transition: 0.25s;
+}
+
+.message {
+    display: flex;
+    flex-direction: row;
+}
+
+.message-text {
+    background-color: #9C9A40;
+    padding: 10px;
+    border-radius: 10px;
+    margin-left: 5px;
+    max-width: 60%;
+    min-height: 9px;
+}
+
+.message-friend img:hover {
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+.message.user-message {
+    justify-content: flex-end;
 }

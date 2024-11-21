@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { NavLink } from "react-router-dom";
 import { useEffect, useContext } from "react"
 import { Context } from './Context';
 import { useFormik } from "formik";
@@ -12,7 +13,7 @@ let socket;
 
 function Chats() {
     const { user, setUser, chat, setChat, messages, setMessages } = useContext(Context)
-
+    const {chatUser, setChatUser} = useContext(Context)
     useEffect(() => {
         // const URL = process.env.NODE_ENV === 'production' ? 'http://127.0.0.1:8000' : '/api';
         const URL = 'https://barter-hive.onrender.com/'
@@ -53,6 +54,8 @@ function Chats() {
                 if (resp.status === 200) {
                     resp.json().then((chat) => {
                         setChat(chat)
+                        console.log(user1)
+                        setChatUser(user1)
                         setMessages([...chat.messages])
                         document.querySelector('.messages').scroll(top)
                     })
@@ -108,8 +111,11 @@ function Chats() {
     if (messages) {
         if (messages[0]) {
             renderedmessages = messages.toReversed().map((message, i) => (
-                <div key={i} className={`message ${message.user.username}`}>
-                    {message.user.username}: {message.content}
+                <div key={i} className={`message ${message.user.username} ${message.user.username === user.username ? 'user-message' : ''}`}>
+                    {message.user.username !== user.username ? <NavLink id={`chat${message.user.id}`} to={`/${message.user.username}`} className="message-friend" key={i} onClick={openChat} onMouseOver={handleHover} onMouseOut={handleHover}>
+                        <img src={user.profile_pic ? `/api${message.user.profile_pic}` : no_pic} className="message-profile-pic" alt="profile pic" />
+                    </NavLink> : null}
+                    <div className="message-text">{message.content}</div>
                 </div>
             ))
         } else {
@@ -137,7 +143,7 @@ function Chats() {
         <>
             <div className="chatusers">{renderedchats}</div>
             <div className="chatboxwrapper">
-                <h3>Chat Box</h3>
+                <h3>{chatUser ? chatUser.charAt(0).toUpperCase() + chatUser.slice(1) : 'No Chat Selected'}</h3>
                 <div className="chatbox">
                     <div className="messages">
                         {renderedmessages ? renderedmessages : <p>Click a chat above</p>}
