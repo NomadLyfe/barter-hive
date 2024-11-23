@@ -228,7 +228,9 @@
     margin: 2px 2px 2px 5px;
     padding: 5px;
     border-radius: 10px;
-    transition: 0.25s;
+    transition: all 0.25s ease;
+    background: linear-gradient(135deg, #FFF6DB, #ebe0c1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .bday, .no_bday {
@@ -238,16 +240,46 @@
 .friend:hover {
     background-color: #ebe0c1;
     cursor: pointer;
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #ebe0c1, #9C9A40);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 
 .friend img {
     margin: 0px 10px 0px 0px;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.25s ease;
+}
+
+.friend img:hover {
+    transform: scale(1.1);
 }
 
 .friend button {
     display: none;
     margin: 0 0 0 auto;
     padding: 4px 10px 5px;
+    border: 1px solid #9c9a40;
+    border-radius: 15px;
+    font-size: 0.85em;
+    background-color: #f5f4e6;
+    color: #3B4131;
+    transition: all 0.25s ease;
+}
+
+.friend:hover button {
+    display: inline-block;
+    transform: scale(1.05); /* Slightly enlarges button on hover */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds depth to the button */
+}
+
+.friend button:hover {
+    background-color: #9c9a40;
+    color: #f5f4e6;
+    border: 1px solid transparent;
+    transform: scale(1.1); /* Further enlarges on button hover */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* Enhances shadow for hover state */
 }
 
 #loadingcard, #loadingcard * {

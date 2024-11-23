@@ -54,13 +54,22 @@ button {
   cursor: pointer;
   color: #3B4131;
   margin: 1.5rem;
-  transition: .25s;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1),
+              0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 button:hover {
-  /* background: linear-gradient(#3B4131d0, #3B4131); */
-  /* background-color: #d1c5a5; */
   background-color: #9C9A40;
+  color: #F5F4E6;
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15),
+              0 3px 6px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
+}
+
+button:active {
+  transform: scale(0.98);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
 }
 
 .text {
