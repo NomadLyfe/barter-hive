@@ -116,6 +116,13 @@
     height: 23px;
     width: 23px;
 	transition: 0.25s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Subtle depth for profile picture */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth scaling and shadow effects */
+}
+
+.message-profile-pic:hover {
+    transform: scale(1.1); /* Enlarges slightly on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
 
 .message {

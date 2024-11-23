@@ -49,27 +49,19 @@
     justify-content: end;
 }
 
-@media (max-width: 900px) {
-    .searchbar {
-        display: none;
-    }
-    .navlinks {
-        margin-right: 0rem;
-    }
-    .logo-search {
-        width: 100px;
-    }
-    .notifications {
-        width: 100px;
-    }
-  }
-
 .profile-pic {
     padding: 0px;
-    border-radius: 25px;
+    border-radius: 50%; /* Ensures perfect circular profile pic */
     height: 44.25px;
     width: 44.25px;
     margin: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Subtle depth for profile picture */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth scaling and shadow effects */
+}
+
+.profile-pic:hover {
+    transform: scale(1.1); /* Enlarges slightly on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
 
 .user_dropdown {
@@ -77,19 +69,38 @@
     position: fixed;
     top: 70px;
     right: 15px;
-    background-color: #ebe0c1;
-    box-shadow: 5px 5px 15px #3B4131;
-    border-radius: 10px;
+    background: linear-gradient(135deg, #FFF6DB, #ebe0c1); /* Subtle beige gradient */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Soft elevated shadow */
+    border-radius: 12px;
+    padding: 10px 0; /* Adds space inside the dropdown */
+    animation: fadeIn 0.3s ease-out; /* Smooth dropdown appearance */
+    z-index: 10;
 }
 
 .dropdown_buttons {
     display: flex;
     flex-direction: column;
-    margin: 10px px;
+    margin: 10px 0;
 }
 
 .dropdown_buttons * {
-    margin: 10px 15px;
+    margin: 8px 15px;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-align: left;
+    background-color: transparent;
+    color: #3B4131;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+}
+
+.dropdown_buttons *:hover {
+    background-color: #9C9A40; /* Mustard yellow for hover state */
+    color: #FFF6DB; /* Contrasting text color */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight hover elevation */
+    transform: translateX(5px); /* Subtle slide animation */
 }
 
 .status img {
@@ -98,7 +109,20 @@
     top: 50px;
     right: 22px;
     background-color: #3B4131;
-    border-radius: 15px;
+    border-radius: 50%; /* Ensures circular status indicator */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Adds slight shadow for pop-out effect */
+}
+
+/* Smooth dropdown animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .dynamicResults {
@@ -140,3 +164,20 @@
 .no_results {
     margin: 5px 10px;
 }
+
+
+
+@media (max-width: 900px) {
+    .searchbar {
+        display: none;
+    }
+    .navlinks {
+        margin-right: 0rem;
+    }
+    .logo-search {
+        width: 100px;
+    }
+    .notifications {
+        width: 100px;
+    }
+  }

@@ -11,7 +11,8 @@ import Comment from "./Comment";
 import PostMedia from "./PostMedia";
 
 function PostCard({ post }) {
-    const { user, userposts, tooltip, setTooltip } = useContext(Context)
+    const { user, userposts } = useContext(Context)
+    const [tooltip, setTooltip] = useState({ jsx: '', visible: false, x: 0, y: 0 });
     const [currentPost, setCurrentPost] = useState(post)
 
     useEffect(() => {
@@ -100,11 +101,12 @@ function PostCard({ post }) {
 
     const handleMouseEnter = (e, attr) => {
         const rect = e.target.getBoundingClientRect();
+        const cardParentRect = e.target.closest(".card").getBoundingClientRect();
         setTooltip({
-            jsx: <>{currentPost[attr].slice(0, 5).map(a => <div key={a.id}>{a.user.username}</div>)}{currentPost[attr].length > 5 ? <div>...</div> : null}</>,
+            jsx: (currentPost[attr].length > 0 ? <>{currentPost[attr].slice(0, 5).map(a => <div key={a.id}>{a.user.username}</div>)}{currentPost[attr].length > 5 ? <div>...</div> : null}</> : <div>None</div>),
             visible: true,
-            x: rect.left + window.scrollX + rect.width / 2,
-            y: rect.top + window.scrollY - 30,
+            x: rect.left - cardParentRect.left + rect.width / 2,
+            y: rect.top - cardParentRect.top,
         });
     };
 
@@ -139,26 +141,18 @@ function PostCard({ post }) {
                 <button type="submit">Send</button>
                 <button type="reset" onClick={handleCommentClick}>{'\u2715'}</button>
             </form>
-            {tooltip.visible && (
+            {tooltip.visible ? (
                 <div
                     className="tooltip"
                     style={{
-                        position: 'absolute',
                         top: tooltip.y,
                         left: tooltip.x,
-                        transform: 'translate(-50%, 30px)',
-                        backgroundColor: '#333',
-                        color: '#fff',
-                        padding: '5px 10px',
-                        borderRadius: '5px',
-                        whiteSpace: 'nowrap',
-                        zIndex: 1000,
-                        fontSize: '9pt'
+                        transform: 'translate(0px, -100%)'
                     }}
                 >
                     {tooltip.jsx}
                 </div>
-            )}
+            ) : null}
         </div>
     )
 }
