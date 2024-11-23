@@ -140,3 +140,7 @@
 .message.user-message {
     justify-content: flex-end;
 }
+
+.user-message > .message-text {
+    background-color: #e0d4b3;
+}
