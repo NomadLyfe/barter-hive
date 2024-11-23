@@ -90,27 +90,60 @@ function UserProfile() {
 
     if (userpage) {
         return (
-            <>
-                <div className="banner text">
-                    {userpage['banner_pic'] ? <img src={`/api${userpage.banner_pic}`} /> : null}
+            <div className="profile-container">
+                <div className="banner">
+                    {userpage.banner_pic ? (
+                    <div className="banner-overlay">
+                        <img src={`/api${userpage.banner_pic}`} alt="User Banner" />
+                        <h2 className="banner-text">{userpage.username}'s Space</h2>
+                    </div>
+                    ) : null}
                 </div>
                 <div className="about text">
                     <div className="basic_info">
-                        {userpage ? <img src={userpage.profile_pic ? `/api${userpage.profile_pic}` : no_pic} /> : null}
+                        {userpage ? (
+                            <div className="profile-pic-container">
+                            <img
+                                src={userpage.profile_pic ? `/api${userpage.profile_pic}` : no_pic}
+                                alt="Profile"
+                                className="profile-pic"
+                            />
+                            <div className="profile-status">
+                                {userpage.status ? userpage.status : 'Single'}
+                            </div>
+                            </div>
+                        ) : null}
+
                         <div className="name_and_buttons">
                             {userpage ? <h1>{userpage.username}</h1> : null}
-                            {user.friendships.map((u) => u.id).includes(userpage.id) || user.id === userpage.id ? null : <button onClick={handleAddFriend}>Add Friend</button>}
-                            {user.chats.map((u) => u.id).includes(userpage.id) || user.id === userpage.id ? null : <button onClick={handleAddChat}>Start Chat</button>}
+                            {user.friendships.map((u) => u.id).includes(userpage.id) ||
+                            user.id === userpage.id ? null : (
+                            <button className="interactive-button" onClick={handleAddFriend}>
+                                🤝 Add Friend
+                            </button>
+                            )}
+                            {user.chats.map((u) => u.id).includes(userpage.id) ||
+                            user.id === userpage.id ? null : (
+                            <button className="interactive-button" onClick={handleAddChat}>
+                                💬 Start Chat
+                            </button>
+                            )}
                         </div>
                     </div>
+
                     <div className="extra_info">
-                        <p>Joined: {userpage ? userpage.creation_date : 'NaN'}</p>
-                        <p>Friends: {userpage.friendships.length ? userpage.friendships.length - 1 : userpage.friendships.length}</p>
-                        <p>Posts: {userpage ? userpage.posts.length : 0}</p>
-                        <p>Relationship: {userpage ? userpage.status : 'single'}</p>
+                    <p>Joined: {userpage ? userpage.creation_date : 'NaN'}</p>
+                    <p>Friends: {userpage.friendships.length - 1}</p>
+                    <p>Posts: {userpage ? userpage.posts.length : 0}</p>
                     </div>
+
                     <div className="about_me">
-                        {userpage ? <div><h2>About me:</h2><p>{userpage.bio ? userpage.bio : 'No bio yet.'}</p></div> : null}
+                    {userpage ? (
+                        <div>
+                        <h2>About Me:</h2>
+                        <p>{userpage.bio ? userpage.bio : 'No bio yet.'}</p>
+                        </div>
+                    ) : null}
                     </div>
                 </div>
                 <div className="mainPage">
@@ -141,7 +174,7 @@ function UserProfile() {
                         </div>
                     </div>
                 </div>
-            </>
+            </div>
         )
     }
 }

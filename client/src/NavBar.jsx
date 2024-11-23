@@ -122,7 +122,7 @@ function NavBar() {
                     </div>
                     <div className="searchbar">
                         <form onFocus={handleSearchFocus} onBlur={handleSearchBlur} onSubmit={handleSubmit}>
-                            <input type='text'name="queryTerm" value={formik.values.queryTerm} onChange={handleSearchChange} placeholder='Search Barter Hive' autoComplete="off" />
+                            <input type='text'name="queryTerm" value={formik.values.queryTerm} onChange={handleSearchChange} placeholder='Search users...' autoComplete="off" />
                         </form>
                         <div className="dynamicResults text">
                             {users ? renderedDynamicSearch : <div className="no_results">No results</div>}
