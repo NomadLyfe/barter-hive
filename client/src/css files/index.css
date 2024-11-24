@@ -1,10 +1,15 @@
 @font-face {
-  font-family: thewire;
-  src: url(../fonts/WireOne-Regular.ttf);
+  font-family: manrope;
+  src: url(../fonts/Manrope-VariableFont_wght.ttf);
+}
+
+@font-face {
+  font-family: poppins;
+  src: url(../fonts/Poppins-Black.ttf);
 }
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: manrope, Arial, sans-serif;
   line-height: 1.5;
 
   color-scheme: light dark;
@@ -19,6 +24,10 @@
   min-height: 100vh;
   
   overflow-y: scroll;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: poppins, Arial, sans-serif;
 }
 
 a {

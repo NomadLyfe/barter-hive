@@ -29,6 +29,10 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   font-size: 12pt;
   margin: 24px;
 }
+
+.settings-wrapper .loginForm {
+  display: flex;
+}
   
 .loginForm label {
   color: #9C9A40;
@@ -47,6 +51,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   font-size: 12pt;
   color: #3B4131;
   margin-top: 0px;
+  font-family: inherit;
 }
 
 .loginForm input:hover {
@@ -84,24 +89,6 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   color: #3B4131;
 }
 
-@media (max-width: 1500px) {
-  .loginForm {
-    width: 38vw;
-  }
-}
-
-@media (max-width: 1024px) {
-  .loginForm {
-    width: 50vw;
-  }
-}
-
-@media (max-width: 700px) {
-  .loginForm {
-    width: 75vw;
-  }
-}
-
 .settings {
   display: flex;
   justify-content: center;
@@ -135,11 +122,13 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   transition: 0.25s;
   color: #3B4131;
   margin: 24px;
-  width: 323.188px;
   padding: 1px 2px;
-  justify-self: center;
   align-self: center;
   overflow: hidden;
+  margin-top: 0px;
+  width: 80%;
+  text-align: start;
+  line-height: 50px;
 }
 
 .switch {
@@ -148,6 +137,12 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   width: 60px;
   height: 24px;
   margin-left: 10px;
+  transition: 0.3s ease-in-out;
+}
+
+.switch:hover {
+  transform: scale(1.1);
+  transition: 0.3s ease-in-out;
 }
 
 .switch input {
@@ -193,8 +188,7 @@ input:checked + .slider:before {
   -ms-transform: translateX(36px);
   transform: translateX(36px);
 }
-  
-  /* Rounded sliders */
+
 .slider.round {
   border-radius: 34px;
 }
@@ -211,14 +205,22 @@ input:checked + .slider:before {
   align-self: flex-end;
 }
 
-.picInfo {
+.picsInfo {
   width: 400px;
   margin-left: 100px;
 }
 
-.picInfo img {
+.picsInfo img {
   width: 400px;
   border-radius: 100px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: 0.3s ease-in-out;
+}
+
+.picsInfo img:hover {
+  transform: scale(1.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+  transition: 0.3s ease-in-out;
 }
 
 header {
@@ -278,6 +280,20 @@ label.input-label.input-filled::after {
   display: none;
 }
 
-.banner-preview {
-  margin-top: 50px;
+@media (max-width: 1500px) {
+  .loginForm {
+    width: 38vw;
+  }
+}
+
+@media (max-width: 1024px) {
+  .loginForm {
+    width: 50vw;
+  }
+}
+
+@media (max-width: 700px) {
+  .loginForm {
+    width: 75vw;
+  }
 }

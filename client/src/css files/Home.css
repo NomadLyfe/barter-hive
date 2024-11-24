@@ -263,16 +263,16 @@
 
 .friend:hover button {
     display: inline-block;
-    transform: scale(1.05); /* Slightly enlarges button on hover */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds depth to the button */
+    transform: scale(1.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .friend button:hover {
     background-color: #9c9a40;
     color: #f5f4e6;
     border: 1px solid transparent;
-    transform: scale(1.1); /* Further enlarges on button hover */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* Enhances shadow for hover state */
+    transform: scale(1.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 
 #loadingcard, #loadingcard * {

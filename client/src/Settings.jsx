@@ -2,7 +2,7 @@ import { useContext, useState } from "react"
 import { Context } from './Context';
 import { useFormik } from "formik";
 import * as yup from "yup";
-import './css files/Login.css'
+import './css files/Login.css';
 import no_pic from './images/no-profile-pic.png'
 import { Country, State, City }  from 'country-state-city';
 
@@ -149,8 +149,10 @@ function Settings() {
                 </label>
             </div>
             <div className="settings">
-                <div className="picInfo">
+                <div className="picsInfo">
+                    <h2>Profile Picture:</h2>
                     <img src={user.profile_pic ? `/api${user.profile_pic}` : no_pic} alt="user-pic" />
+                    <h2>Banner Picture:</h2>
                     {user.banner_pic ? <img className="banner-preview" src={`/api${user.banner_pic}`} alt="banner-pic" /> : null}
                 </div>
                 <form className="loginForm" onSubmit={formik.handleSubmit}>
@@ -163,9 +165,9 @@ function Settings() {
                     <label id="phone">Phone Number:</label>
                     {editOn ? <input placeholder='Type your phone number' type='text' id='phoneinp' name='phone' onChange={formik.handleChange} value={formik.values.phone} /> : <span>{user.phone ?? ''}</span>}
                     <label id="profile">Profile Picture:</label>
-                    {editOn ? <input type="file" id="profileinp" name="profile" accept="image/*" onChange={handleFileChange} /> : <span>{user.profile_pic ?? ''}</span>}
+                    {editOn ? <input type="file" id="profileinp" name="profile" accept="image/*" onChange={handleFileChange} /> : <span>{user.profile_pic ? 'Displayed on the left.' : ''}</span>}
                     <label id="banner">Banner Picture:</label>
-                    {editOn ? <input type="file" id="bannerinp" name="banner" accept="image/*" onChange={handleFileChange} /> : <span>{user.banner_pic ?? ''}</span>}
+                    {editOn ? <input type="file" id="bannerinp" name="banner" accept="image/*" onChange={handleFileChange} /> : <span>{user.banner_pic ? 'Displayed on the left.' : ''}</span>}
                     <label id="status">Status:</label>
                     {editOn ? <select placeholder='Select your status' type="text" id="statusinp" name="status" autoComplete="on" onChange={formik.handleChange} value={formik.values.status}>
                         <option value=''></option>

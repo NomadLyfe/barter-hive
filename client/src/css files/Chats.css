@@ -3,6 +3,7 @@
     display: flex;
     flex-direction: column;
     transition: 0.25s ease-in-out;
+    padding-top: 10px;
 }
 
 .chatusers {
@@ -136,21 +137,23 @@
     margin: 0;
 }
 
+.chat-header, .chat-controls {
+    display: flex;
+    flex-direction: row;
+}
+
 .chat-header {
     padding: 5px;
     border: 1px solid #e0d6ba;
     border-radius: 8px;
     margin: 2px 0px;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.chat-header h3 {
+.chat-header h4 {
     padding: 5px;
     margin: 0px;
-}
-
-.chat-header, .chat-controls {
-    display: flex;
-    flex-direction: row;
 }
 
 .chat-controls button {
@@ -158,10 +161,6 @@
     margin: 5px;
     font-size: 9pt;
     background-color: #dbd0b2;
-}
-
-.chat-header {
-    justify-content: space-between;
 }
 
 .chatbox button:hover {

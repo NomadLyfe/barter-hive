@@ -167,7 +167,7 @@ function Chats() {
             <div className="chatusers">{renderedchats}</div>
             <div className={`chatboxwrapper ${isExpanded ? "expanded" : ""}`}>
                 <div className="chat-header">
-                    <h3>{chatUser ? chatUser.charAt(0).toUpperCase() + chatUser.slice(1) + ' chat' : 'No Chat Selected'}</h3>
+                    <h4>{chatUser ? chatUser.charAt(0).toUpperCase() + chatUser.slice(1) + ' chat' : 'No Chat Selected'}</h4>
                     <div className="chat-controls">
                         <button onClick={toggleExpand}>{isExpanded ? "Collapse" : "Expand"}</button>
                         <button onClick={toggleMinimize}>{isMinimized ? "Open" : "Minimize"}</button>
