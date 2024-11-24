@@ -12,8 +12,11 @@ import './css files/Chats.css';
 let socket;
 
 function Chats() {
-    const { user, setUser, chat, setChat, messages, setMessages } = useContext(Context)
-    const [chatUser, setChatUser] = useState(null)
+    const { user, setUser, chat, setChat, messages, setMessages } = useContext(Context);
+    const [chatUser, setChatUser] = useState(null);
+    const [isMinimized, setIsMinimized] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [typingUser, setTypingUser] = useState(null)
 
     useEffect(() => {
         // const URL = process.env.NODE_ENV === 'production' ? 'http://127.0.0.1:8000' : '/api';
@@ -28,9 +31,19 @@ function Chats() {
             console.error('Chat error:', error);
         });
 
-        return (() => {
-            socket.disconnect();
-        })
+        socket.on("typing", (data) => {
+            if (data && data.user && data.chat_id === chat?.id) {
+                setTypingUser(data.user);
+            }
+        });
+
+        socket.on("stop_typing", (data) => {
+            if (data && data.user && data.chat_id === chat?.id) {
+                setTypingUser(null);
+            }
+        });
+
+        return (() => {socket.disconnect()});
     }, [])
 
     function openChat(e) {
@@ -55,7 +68,6 @@ function Chats() {
                 if (resp.status === 200) {
                     resp.json().then((chat) => {
                         setChat(chat)
-                        console.log(user1)
                         setChatUser(user1)
                         setMessages([...chat.messages])
                         document.querySelector('.messages').scroll(top)
@@ -140,26 +152,49 @@ function Chats() {
         }
     });
 
+    function toggleMinimize() {
+        setIsMinimized(!isMinimized);
+    }
+
+    function toggleExpand() {
+        setIsExpanded(!isExpanded);
+        const chat = document.querySelector('.chatbox')
+        chat.style.maxHeight = chat.style.maxHeight === '35vh' || !chat.style.maxHeight ? '80vh' : '35vh';
+    }
+
     return(
         <>
             <div className="chatusers">{renderedchats}</div>
-            <div className="chatboxwrapper">
-                <h3>{chatUser ? chatUser.charAt(0).toUpperCase() + chatUser.slice(1) : 'No Chat Selected'}</h3>
-                <div className="chatbox">
-                    <div className="messages">
-                        {renderedmessages ? renderedmessages : <p>Click a chat above</p>}
+            <div className={`chatboxwrapper ${isExpanded ? "expanded" : ""}`}>
+                <div className="chat-header">
+                    <h3>{chatUser ? chatUser.charAt(0).toUpperCase() + chatUser.slice(1) + ' chat' : 'No Chat Selected'}</h3>
+                    <div className="chat-controls">
+                        <button onClick={toggleExpand}>{isExpanded ? "Collapse" : "Expand"}</button>
+                        <button onClick={toggleMinimize}>{isMinimized ? "Open" : "Minimize"}</button>
                     </div>
-                    <form className="input" onSubmit={formik.handleSubmit}>
-                        <input
-                        type="text"
-                        placeholder="Type your message..."
-                        name="message"
-                        value={formik.values.message}
-                        onChange={formik.handleChange}
-                        />
-                        <button type="submit">Send</button>
-                    </form>
                 </div>
+                {!isMinimized && (
+                    <div className="chatbox">
+                        <div className="messages">
+                            {renderedmessages ? renderedmessages : <p>Click a chat above</p>}
+                        </div>
+                        <div className="typing-indicator">
+                            {typingUser && (`${typingUser} is typing...`)}
+                        </div>
+                        <form className="input" onSubmit={formik.handleSubmit}>
+                            <input
+                            type="text"
+                            placeholder="Type your message..."
+                            name="message"
+                            value={formik.values.message}
+                            onChange={formik.handleChange}
+                            onFocus={() => socket.emit("start_typing")}
+                            onBlur={() => socket.emit("stop_typing")}
+                            />
+                            <button type="submit">Send</button>
+                        </form>
+                    </div>
+                )}
             </div>
         </>
     )

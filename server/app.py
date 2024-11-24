@@ -44,6 +44,42 @@ def handle_chat(data):
     except Exception:
         emit("chat_error", str(Exception), broadcast=False)
 
+@socketio.on("start_typing")
+def handle_start_typing(data):
+    try:
+        chat_id = data.get('chat_id')
+        user_id = data.get('user_id')
+        user = db.session.get(User, user_id)
+
+        if user and chat_id:
+            emit(
+                "typing",
+                {"chat_id": chat_id, "user": user.username},
+                broadcast=True
+            )
+        else:
+            emit("chat_error", "Invalid user or chat ID", broadcast=False)
+    except Exception as e:
+        emit("chat_error", str(e), broadcast=False)
+
+@socketio.on("stop_typing")
+def handle_stop_typing(data):
+    try:
+        chat_id = data.get('chat_id')
+        user_id = data.get('user_id')
+        user = db.session.get(User, user_id)
+
+        if user and chat_id:
+            emit(
+                "stop_typing",
+                {"chat_id": chat_id, "user": user.username},
+                broadcast=True
+            )
+        else:
+            emit("chat_error", "Invalid user or chat ID", broadcast=False)
+    except Exception as e:
+        emit("chat_error", str(e), broadcast=False)
+
 
 class Login(Resource):
     def post(self):

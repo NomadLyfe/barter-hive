@@ -215,7 +215,7 @@
     overflow-y: auto;
 }
 
-.friends h3, .bdays h3, .chats h3 {
+.friends h3, .bdays h3 {
     margin: 5px 0px 5px 5px;
 }
 
