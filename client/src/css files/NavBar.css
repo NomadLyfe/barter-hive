@@ -69,11 +69,11 @@
     position: fixed;
     top: 70px;
     right: 15px;
-    background: linear-gradient(135deg, #FFF6DB, #ebe0c1); /* Subtle beige gradient */
+    background: linear-gradient(135deg, #FFF6DB, #dac48a); /* Subtle beige gradient */
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Soft elevated shadow */
     border-radius: 12px;
     padding: 10px 0; /* Adds space inside the dropdown */
-    animation: fadeIn 0.3s ease-out; /* Smooth dropdown appearance */
+    animation: fadeIn2 0.5s ease-out;
     z-index: 10;
 }
 
@@ -114,12 +114,12 @@
 }
 
 /* Smooth dropdown animation */
-@keyframes fadeIn {
-    from {
+@keyframes fadeIn2 {
+    0% {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translateY(10px);
     }
-    to {
+    100% {
         opacity: 1;
         transform: translateY(0);
     }

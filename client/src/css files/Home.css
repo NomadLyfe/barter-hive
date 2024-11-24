@@ -313,7 +313,9 @@
     font-weight: bold;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     z-index: 9;
-    margin-top: -150px;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, 0);
 }
 
 .about {
@@ -334,6 +336,9 @@
 
 .profile-pic-container {
     position: relative;
+    border-radius: 10px;
+    background-color: #FFF6DB;
+    height: 245px;
 }
 
 .profile-status {
@@ -345,6 +350,7 @@
     font-size: 0.8rem;
     padding: 5px 10px;
     border-radius: 15px;
+    z-index: 9;
 }
 
 .basic_info {
@@ -353,26 +359,34 @@
     /* align-items: center; */
     /* background: linear-gradient(180deg, #3b41313a, #ebe0c1); */
     border-radius: 10px;
-    width: fit-content;
+    width: max-content;
+    height: max-content;
 }
 
 .basic_info img {
+    position: relative;
     border-radius: 50%;
     width: 225px;
     height: 225px;
+    margin: 10px;
 }
 
 .basic_info img:hover {
     box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+    z-index: 10;
 }
 
 .extra_info {
     display: flex;
     flex-direction: column;
     width: max-content;
-    margin: 10px 10px;
+    margin: 10px 0px;
+    padding: 0px 10px;
     /* background: linear-gradient(180deg, #3b41313a, #ebe0c1); */
-    border-radius: 10px;
+    border-left: 1px solid transparent;
+    border-right: 1px solid transparent;
+    border-image: linear-gradient(#3b413100 2%, #3b4131d2, #3b413100 98%);
+    border-image-slice: 1;
 }
 
 .extra_info * {
@@ -393,13 +407,13 @@
 }
 
 .about_me h2 {
-    margin: 5px;
+    margin: 0px 20px 10px 20px;
     width: max-content;
+    text-align: start;
 }
 
 .about_me p {
-    margin: 10px;
-    margin-right: 20px;
+    margin: 10px 20px;
     text-align: start;
 }
 
@@ -411,7 +425,7 @@
 }
 
 .name_and_buttons h1 {
-    margin: 10px 30px 20px 0;
+    margin: 10px 24px;
 }
 
 .name_and_buttons button {
