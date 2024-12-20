@@ -8,6 +8,7 @@ import { Country, State, City }  from 'country-state-city';
 
 function Signup() {
     const { setUser, navigate } = useContext(Context)
+    const [loginError, setLoginError] = useState(false);
     const c = Country.getAllCountries()
     const countries = c.map((country, i) => {
         return (
@@ -23,8 +24,8 @@ function Signup() {
     const userRegEx = /^[A-Za-z][A-Za-z0-9_]{4,24}$/
 
     const formSchema = yup.object().shape({
-        username: yup.string().required('Must enter username').min(5).max(25).matches(userRegEx, 'You are using illegal characters for username'),
-        password: yup.string().required('Must enter password').min(8).max(25).matches(passRegEx, 'You are not meeing password requirements'),
+        username: yup.string().required('Must enter username').min(5, 'Username must be at least 5 characters').max(25, 'Username must be at most 25 characters').matches(userRegEx, 'You are using illegal characters for username'),
+        password: yup.string().required('Must enter password').min(8, 'Password must be at least 5 characters').max(25, 'Password must be at most 25 characters').matches(passRegEx, 'You are not meeing password requirements'),
         passwordconf: yup.string().required().min(8).max(25).matches(passRegEx, 'You are not meeing password requirements'),
         email: yup.string().required().max(50).matches(emailRegEx, 'Email is not valid'),
         bday: yup.date().required(),
@@ -48,6 +49,7 @@ function Signup() {
         },
         validationSchema: formSchema,
         onSubmit: (values) => {
+            console.log("HELLO?!?")
             if (values.password === values.passwordconf) {
                 fetch('/api/users', {
                     method: 'POST',
@@ -63,6 +65,8 @@ function Signup() {
                             });
                             navigate(`/`)
                         });
+                    } else if (resp.status === 401) {
+                        setLoginError(true);
                     }
                 });
                 formik.resetForm();
@@ -150,6 +154,7 @@ function Signup() {
                     <option></option>
                     {cities}
                 </select>
+                {loginError && <p className="error-message">Invalid username or password. Please try again.</p>}
                 <button type='submit'>SIGN UP</button>
                 <a onClick={handleClick}>Or Login</a>
             </form>

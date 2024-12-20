@@ -14,12 +14,14 @@ load_dotenv()
 origins = None
 if os.environ.get('FLASK_ENV') == 'production':
     origins = [
+        "http://xxxxx.ngrok.io",
         'http://127.0.0.1:8000',
         'https://barter-hive.onrender.com'
     ]
 else:
     origins = [
         "*",
+        "http://xxxxx.ngrok.io",
         "http://127.0.0.1:5173",
         'http://127.0.0.1:8000',
         'https://barter-hive.onrender.com'

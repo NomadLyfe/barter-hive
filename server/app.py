@@ -83,6 +83,7 @@ def handle_stop_typing(data):
 
 class Login(Resource):
     def post(self):
+        print(1)
         username = request.get_json().get("username")
         user = User.query.filter_by(username=username).first()
         password = request.get_json().get("password")
@@ -146,6 +147,7 @@ class Users(Resource):
         return user.to_dict(), 201
 
     def post(self):
+        print("hi")
         username = request.get_json().get("username")
         email = request.get_json().get("email")
         bday = request.get_json().get("bday")

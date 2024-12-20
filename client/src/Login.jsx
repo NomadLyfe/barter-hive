@@ -7,7 +7,7 @@ import logoNoBack from './images/logo-no-background.svg';
 
 function Login() {
     // const { user, setUser, navigate, setPosts, offset, setOffset, setShowingposts, setNumposts, setMaxposts } = useContext(Context)
-    const { setUser, navigate } = useContext(Context)
+    const { setUser, navigate } = useContext(Context);
     const [loginError, setLoginError] = useState(false);
 
     const formSchema = yup.object().shape({
